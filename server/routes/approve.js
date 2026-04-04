@@ -84,6 +84,10 @@ router.post('/', async (req, res) => {
       targetLang: language,
       context,
       projectId: segment.project_id,
+      detectedLanguage: segment.detected_language || null,
+      detectionConfidence: segment.detection_confidence || null,
+      detectedScript: segment.detected_script || null,
+      sourceLanguageDisplay: segment.source_language_display || null,
     });
 
     // ═══ Revision logging via ragEngine (§3.2.3) ═══
@@ -225,6 +229,10 @@ router.post('/bulk', async (req, res) => {
             targetLang: language,
             context,
             projectId: segment.project_id,
+            detectedLanguage: segment.detected_language || null,
+            detectionConfidence: segment.detection_confidence || null,
+            detectedScript: segment.detected_script || null,
+            sourceLanguageDisplay: segment.source_language_display || null,
           });
         } catch (e) {
           console.warn(`TM Write failed for bulk segment ${segment.id}:`, e.message);

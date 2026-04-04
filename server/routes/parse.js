@@ -1,3 +1,10 @@
+// ═══════════════════════════════════════════════════════════════
+// Modified: 2026-04-04 — Added automatic language detection per segment.
+// After document parsing, detectLanguageBatch() is called to identify
+// the source language of each segment. Results are stored in DB and
+// returned in the API response with a detectedLanguages summary.
+// ═══════════════════════════════════════════════════════════════
+
 import { Router } from 'express';
 import multer from 'multer';
 import mammoth from 'mammoth';
@@ -6,6 +13,7 @@ import db from '../db.js';
 import ragEngine from '../rag-engine.js';
 import { isMockMode } from '../gemini.js';
 import { parseDocxStructured } from '../parsers/docx-structured.js';
+import { detectLanguageBatch, getLanguageDisplayName } from '../language-detector.js';
 
 // ═══ Pre-load pdf-parse at startup (not per-request) ═══
 let _cachedPdfParse = null;
@@ -24,34 +32,125 @@ const SUPPORTED_EXTENSIONS = new Set([
 
 // ═══════════════════════════════════════════════════════════════
 // Smart Segmentation with Abbreviation Protection
+// Enhanced: Multi-script support for mixed-language documents
+// (Hindi/Marathi/Gujarati danda, script-boundary splitting, etc.)
 // ═══════════════════════════════════════════════════════════════
 
 const ABBREVIATIONS = /(?:Dr|Mr|Mrs|Ms|Prof|Sr|Jr|St|U\.S|Inc|Ltd|Corp|etc|vs|e\.g|i\.e)\./gi;
 
+/**
+ * Classify a Unicode code point into a script family.
+ * Returns 'latin', 'devanagari', 'bengali', 'tamil', 'telugu', 'gujarati',
+ * 'gurmukhi', 'kannada', 'malayalam', 'odia', 'arabic', 'cjk', or 'other'.
+ */
+function detectScript(char) {
+  const cp = char.codePointAt(0);
+  if (cp >= 0x0041 && cp <= 0x024F) return 'latin';       // Basic Latin + Latin Extended
+  if (cp >= 0x0900 && cp <= 0x097F) return 'devanagari';   // Hindi, Marathi, Sanskrit, Nepali
+  if (cp >= 0x0980 && cp <= 0x09FF) return 'bengali';      // Bengali, Assamese
+  if (cp >= 0x0A00 && cp <= 0x0A7F) return 'gurmukhi';     // Punjabi
+  if (cp >= 0x0A80 && cp <= 0x0AFF) return 'gujarati';     // Gujarati
+  if (cp >= 0x0B00 && cp <= 0x0B7F) return 'odia';         // Odia
+  if (cp >= 0x0B80 && cp <= 0x0BFF) return 'tamil';        // Tamil
+  if (cp >= 0x0C00 && cp <= 0x0C7F) return 'telugu';       // Telugu
+  if (cp >= 0x0C80 && cp <= 0x0CFF) return 'kannada';      // Kannada
+  if (cp >= 0x0D00 && cp <= 0x0D7F) return 'malayalam';    // Malayalam
+  if (cp >= 0x0600 && cp <= 0x06FF) return 'arabic';       // Arabic, Urdu
+  if (cp >= 0x4E00 && cp <= 0x9FFF) return 'cjk';          // CJK Unified
+  if (cp >= 0x3040 && cp <= 0x30FF) return 'cjk';          // Hiragana + Katakana
+  if (cp >= 0xAC00 && cp <= 0xD7AF) return 'cjk';          // Korean Hangul
+  return 'other';
+}
+
+/**
+ * Split text at major script-boundary transitions.
+ * E.g., when text switches from Latin (English) to Devanagari (Hindi),
+ * we insert a split at the boundary. Only splits between "real" scripts
+ * (not digits, punctuation, or whitespace which are 'other').
+ */
+function splitOnScriptChange(text) {
+  if (!text || text.length < 10) return [text];
+
+  const parts = [];
+  let current = '';
+  let currentScript = null;
+
+  for (const char of text) {
+    const script = detectScript(char);
+
+    // Skip 'other' (digits, punctuation, whitespace) — they don't trigger a split
+    if (script === 'other') {
+      current += char;
+      continue;
+    }
+
+    // If we haven't established a script yet, set it
+    if (currentScript === null) {
+      currentScript = script;
+      current += char;
+      continue;
+    }
+
+    // Same script — keep accumulating
+    if (script === currentScript) {
+      current += char;
+      continue;
+    }
+
+    // Script change detected! Flush the current chunk.
+    const trimmed = current.trim();
+    if (trimmed.length > 3) {
+      parts.push(trimmed);
+    }
+    current = char;
+    currentScript = script;
+  }
+
+  // Flush remainder
+  const trimmed = current.trim();
+  if (trimmed.length > 3) {
+    parts.push(trimmed);
+  }
+
+  return parts.length > 0 ? parts : [text];
+}
+
 function smartSplit(text) {
   let safe = text.replace(ABBREVIATIONS, (m) => m.replace(/\./g, '‡'));
-  const raw = safe.split(/(?<=[.!?])\s+(?=[A-Z])/);
+
+  // ── Step 1: Split on Latin sentence boundaries ──
+  // Original: (?<=[.!?])\s+(?=[A-Z])
+  // Enhanced: also split on Indic Danda (।) and Double Danda (॥),
+  //           and after .!? followed by ANY letter (not just uppercase Latin)
+  const raw = safe.split(/(?<=[.!?।॥])\s+(?=[\p{L}])/u);
   
   const chunks = [];
   for (let s of raw) {
     s = s.replace(/‡/g, '.').trim();
     if (s.length < 3) continue;
-    
-    // Fallback chunking: if a single run-on sentence exceeds 400 chars, split it by words
-    if (s.length > 400) {
-      let currentChunk = '';
-      const words = s.split(' ');
-      for (const word of words) {
-        if (currentChunk.length + word.length > 380) { // Leave room for padding
-          chunks.push(currentChunk.trim());
-          currentChunk = word + ' ';
-        } else {
-          currentChunk += word + ' ';
+
+    // ── Step 2: Further split if a chunk still mixes scripts ──
+    const scriptParts = splitOnScriptChange(s);
+    for (let part of scriptParts) {
+      part = part.trim();
+      if (part.length < 3) continue;
+
+      // Fallback chunking: if a single run-on sentence exceeds 400 chars, split by words
+      if (part.length > 400) {
+        let currentChunk = '';
+        const words = part.split(' ');
+        for (const word of words) {
+          if (currentChunk.length + word.length > 380) {
+            chunks.push(currentChunk.trim());
+            currentChunk = word + ' ';
+          } else {
+            currentChunk += word + ' ';
+          }
         }
+        if (currentChunk.trim().length > 0) chunks.push(currentChunk.trim());
+      } else {
+        chunks.push(part);
       }
-      if (currentChunk.trim().length > 0) chunks.push(currentChunk.trim());
-    } else {
-      chunks.push(s);
     }
   }
   return chunks;
@@ -80,14 +179,22 @@ function extractSegmentsFromHtml(html) {
     const formatType = detectFormatType(block);
     const text = block.replace(/<[^>]+>/g, '').trim();
     if (text.length > 3) {
-      // Split ANY format type (paragraphs, list items, quotes) if it exceeds 150 chars
-      if (text.length > 150 && formatType !== 'heading') {
-        const sentences = smartSplit(text);
-        for (const sentence of sentences) {
-          segments.push({ text: sentence, formatType });
+      // Step 1: Pre-split this block on script boundaries
+      const scriptParts = splitOnScriptChange(text);
+
+      for (const part of scriptParts) {
+        const cleaned = part.trim();
+        if (cleaned.length < 4) continue;
+
+        // Split ANY format type (paragraphs, list items, quotes) if it exceeds 150 chars
+        if (cleaned.length > 150 && formatType !== 'heading') {
+          const sentences = smartSplit(cleaned);
+          for (const sentence of sentences) {
+            segments.push({ text: sentence, formatType });
+          }
+        } else {
+          segments.push({ text: cleaned, formatType });
         }
-      } else {
-        segments.push({ text, formatType });
       }
     }
   }
@@ -96,36 +203,57 @@ function extractSegmentsFromHtml(html) {
 
 // ═══════════════════════════════════════════════════════════════
 // Shared: Convert raw text → segment array
+// Enhanced: Pre-splits on script boundaries for mixed-language docs
 // ═══════════════════════════════════════════════════════════════
 
 function textToSegments(text) {
+  // ── Step 1: Split on double newlines (paragraph boundaries) ──
   const paragraphs = text.split(/\n{2,}|\r\n{2,}/).filter((p) => p.trim().length > 3);
   const segments = [];
 
   for (const para of paragraphs) {
     const trimmed = para.trim();
-    if (trimmed.length > 100) {
-      const sentences = smartSplit(trimmed);
-      for (const sentence of sentences) {
-        segments.push({ text: sentence, formatType: 'paragraph' });
-      }
-    } else if (trimmed.length > 3) {
-      segments.push({ text: trimmed, formatType: 'paragraph' });
-    }
-  }
 
-  // If double-newline split produced nothing, try single newline
-  if (segments.length === 0) {
-    const lines = text.split(/\n|\r\n/).filter((l) => l.trim().length > 3);
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (trimmed.length > 100) {
-        const sentences = smartSplit(trimmed);
+    // ── Step 2: Pre-split this paragraph on script boundaries ──
+    // This catches cases where English and Hindi share a paragraph
+    // with no double-newline between them (only a single newline or space).
+    const scriptParts = splitOnScriptChange(trimmed);
+
+    for (const part of scriptParts) {
+      const cleaned = part.trim();
+      if (cleaned.length < 4) continue;
+
+      if (cleaned.length > 100) {
+        const sentences = smartSplit(cleaned);
         for (const sentence of sentences) {
           segments.push({ text: sentence, formatType: 'paragraph' });
         }
       } else {
-        segments.push({ text: trimmed, formatType: 'paragraph' });
+        segments.push({ text: cleaned, formatType: 'paragraph' });
+      }
+    }
+  }
+
+  // ── Fallback: If double-newline split produced nothing, try single newline ──
+  if (segments.length === 0) {
+    const lines = text.split(/\n|\r\n/).filter((l) => l.trim().length > 3);
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      // Still apply script-boundary splitting within each line
+      const scriptParts = splitOnScriptChange(trimmed);
+      for (const part of scriptParts) {
+        const cleaned = part.trim();
+        if (cleaned.length < 4) continue;
+
+        if (cleaned.length > 100) {
+          const sentences = smartSplit(cleaned);
+          for (const sentence of sentences) {
+            segments.push({ text: sentence, formatType: 'paragraph' });
+          }
+        } else {
+          segments.push({ text: cleaned, formatType: 'paragraph' });
+        }
       }
     }
   }
@@ -334,12 +462,29 @@ router.post('/', upload.single('file'), async (req, res) => {
     const glossary = ragEngine.glossaryLookup('en', language);
 
     const insertSegment = db.prepare(`
-      INSERT INTO segments (id, project_id, idx, source_text, target_text, original_target, tm_score, match_type, status, violation, format_type, runs_metadata)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)
+      INSERT INTO segments (id, project_id, idx, source_text, target_text, original_target, tm_score, match_type, status, violation, format_type, runs_metadata, detected_language, detection_confidence, detected_script, source_language_display)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const segmentData = [];
     console.log(`   📊 ${segments.length} segments detected from .${ext} file`);
+
+    // ═══════════════════════════════════════════════════════════
+    // Auto Language Detection (2026-04-04)
+    // Detect source language of each segment before DB insert.
+    // Uses Gemini LLM batch detection with Unicode heuristic fallback.
+    // ═══════════════════════════════════════════════════════════
+
+    let detectionResults = [];
+    try {
+      const segmentTexts = segments.map(seg => seg.text);
+      detectionResults = await detectLanguageBatch(segmentTexts);
+      console.log(`   🌐 Language detection complete for ${detectionResults.length} segments`);
+    } catch (detectionErr) {
+      console.warn(`   ⚠ Language detection failed (non-fatal): ${detectionErr.message}`);
+      // Fill with unknowns — do NOT crash the parse route
+      detectionResults = segments.map(() => ({ language: 'unknown', confidence: 0, script: 'unknown' }));
+    }
 
     // ═══════════════════════════════════════════════════════════
     // Fast TM Lookup — Exact Match Only (instant, no API calls)
@@ -358,6 +503,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       id: randomUUID(),
       tmResult: null,
       resolved: false,
+      detection: detectionResults[idx] || { language: 'unknown', confidence: 0, script: 'unknown' },
     }));
 
     for (const entry of segmentEntries) {
@@ -381,6 +527,8 @@ router.post('/', upload.single('file'), async (req, res) => {
     // ═══ Insert all segments into DB ═══
     for (const entry of segmentEntries) {
       const tm = entry.tmResult;
+      const det = entry.detection;
+      const sourceDisplayName = getLanguageDisplayName(det.language);
 
       let violation = false;
       if (tm.targetText) {
@@ -393,7 +541,8 @@ router.post('/', upload.single('file'), async (req, res) => {
       insertSegment.run(
         entry.id, projectId, entry.idx, entry.text, targetText, targetText,
         tm.score, tm.matchType, violation ? 1 : 0, entry.formatType,
-        entry.runs ? JSON.stringify(entry.runs) : null
+        entry.runs ? JSON.stringify(entry.runs) : null,
+        det.language, det.confidence, det.script, sourceDisplayName
       );
 
       segmentData.push({
@@ -406,13 +555,30 @@ router.post('/', upload.single('file'), async (req, res) => {
         status: 'PENDING',
         violation,
         formatType: entry.formatType,
+        detected_language: det.language,
+        detection_confidence: det.confidence,
+        detected_script: det.script,
+        source_language_display: sourceDisplayName,
       });
 
       const icon = tm.matchType === 'EXACT' ? '✅' : tm.matchType === 'FUZZY' ? '🟡' : '⬜';
-      console.log(`   ${icon} [${entry.idx}] ${tm.matchType} (${tm.score}): "${entry.text.substring(0, 50)}..."`);
+      const langIcon = det.language !== 'unknown' ? ` [${sourceDisplayName}]` : '';
+      console.log(`   ${icon} [${entry.idx}] ${tm.matchType} (${tm.score})${langIcon}: "${entry.text.substring(0, 50)}..."`);
     }
 
+    // ═══ Build detectedLanguages summary ═══
+    const langCounts = {};
+    for (const seg of segmentData) {
+      const lang = seg.detected_language || 'unknown';
+      if (!langCounts[lang]) {
+        langCounts[lang] = { language: lang, displayName: getLanguageDisplayName(lang), segmentCount: 0 };
+      }
+      langCounts[lang].segmentCount++;
+    }
+    const detectedLanguages = Object.values(langCounts).sort((a, b) => b.segmentCount - a.segmentCount);
+
     console.log(`   📊 Total: ${segmentData.length} segments, ${segmentData.filter(s => s.matchType === 'EXACT').length} exact, ${segmentData.filter(s => s.matchType === 'FUZZY').length} fuzzy`);
+    console.log(`   🌐 Languages detected: ${detectedLanguages.map(d => `${d.displayName}(${d.segmentCount})`).join(', ')}`);
 
     res.json({
       projectId: Number(projectId),
@@ -422,6 +588,7 @@ router.post('/', upload.single('file'), async (req, res) => {
       segments: segmentData,
       totalSegments: segmentData.length,
       documentName: req.file.originalname,
+      detectedLanguages,
     });
   } catch (err) {
     console.error('Parse error:', err);

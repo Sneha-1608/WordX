@@ -82,10 +82,11 @@ export const SUPPORTED_LANGUAGES = [
   'gu_IN', 'pa_IN', 'or_IN', 'as_IN', 'mai_IN', 'sd_IN', 'ks_IN',
   'ne_NP', 'ur_PK', 'si_LK', 'mni_IN', 'brx_IN', 'doi_IN',
   'sat_IN', 'kok_IN', 'sa_IN',
-  // ── European Languages (Gemini) ──
+  // ── European Languages (DeepL / Gemini) ──
+  'en_US', 'en_GB',
   'fr_FR', 'de_DE', 'es_ES', 'pt_BR', 'it_IT', 'nl_NL',
   'ru_RU', 'pl_PL', 'sv_SE', 'tr_TR',
-  // ── East Asian (Gemini) ──
+  // ── East Asian (DeepL / Gemini) ──
   'ja_JP', 'ko_KR', 'zh_CN',
   // ── Other (Gemini) ──
   'ar_SA', 'th_TH', 'vi_VN',
@@ -95,7 +96,7 @@ export const SUPPORTED_LANGUAGES = [
 
 // Display names for all languages
 export const LANGUAGE_NAMES = {
-  en: 'English',
+  en: 'English', en_US: 'English (US)', en_GB: 'English (UK)',
   // Indian
   hi_IN: 'Hindi', ta_IN: 'Tamil', te_IN: 'Telugu', kn_IN: 'Kannada',
   ml_IN: 'Malayalam', bn_IN: 'Bengali', mr_IN: 'Marathi', gu_IN: 'Gujarati',

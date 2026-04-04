@@ -116,7 +116,7 @@ const InteractiveSegmentRow = memo(function InteractiveSegmentRow({ segment, isA
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ segmentId: segment.id }),
       });
-    } catch {}
+    } catch { }
     revertSegment(segment.id);
     setLocalText(segment.originalTarget);
     toast.info('Reverted to original.', { duration: 2000 });
@@ -161,31 +161,30 @@ const InteractiveSegmentRow = memo(function InteractiveSegmentRow({ segment, isA
   const matchBadgeType = segment.violation
     ? 'violation'
     : segment.matchType === 'EXACT'
-    ? 'exact'
-    : segment.matchType === 'FUZZY'
-    ? 'fuzzy'
-    : 'new';
+      ? 'exact'
+      : segment.matchType === 'FUZZY'
+        ? 'fuzzy'
+        : 'new';
 
   const matchBadgeText = segment.violation
     ? '⚠ Glossary'
     : segment.matchType === 'EXACT'
-    ? `100% Exact`
-    : segment.matchType === 'FUZZY'
-    ? `${Math.round((segment.tmScore || 0) * 100)}% Fuzzy`
-    : 'AI Translated';
+      ? `100% Exact`
+      : segment.matchType === 'FUZZY'
+        ? `${Math.round((segment.tmScore || 0) * 100)}% Fuzzy`
+        : 'AI Translated';
 
   return (
     <motion.div
       layout
-      className={`w-full flex items-stretch gap-4 px-4 lg:px-6 border-b border-ui-border transition-all duration-200 group cursor-pointer ${
-        isApproved
+      className={`w-full flex items-stretch gap-4 px-4 lg:px-6 border-b border-ui-border transition-all duration-200 group cursor-pointer ${isApproved
           ? 'bg-ui-surface/50'
           : isActive
-          ? 'bg-ui-white shadow-md border-l-[3px] border-l-brand-emerald'
-          : segment.violation
-          ? 'bg-red-50/50 hover:bg-red-50'
-          : 'hover:bg-ui-surface'
-      }`}
+            ? 'bg-ui-white shadow-md border-l-[3px] border-l-brand-emerald'
+            : segment.violation
+              ? 'bg-red-50/50 hover:bg-red-50'
+              : 'hover:bg-ui-surface'
+        }`}
       style={{ minHeight: isApproved ? '56px' : '72px' }}
       animate={{
         opacity: isApproved ? 0.55 : 1,
@@ -400,7 +399,6 @@ export default function TranslationEditor() {
     currentProjectId,
     currentProjectName,
     activeLanguage,
-    sourceLanguage,
     languages,
     leverageRate,
     approvedCount,
@@ -425,7 +423,7 @@ export default function TranslationEditor() {
         setPreviewData(data);
         setShowPreview(true);
       }
-    } catch {}
+    } catch { }
   }, [currentProjectId]);
 
   // Load demo data if no segments
@@ -440,7 +438,7 @@ export default function TranslationEditor() {
               useAppStore.getState().setSegments(data);
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     }
   }, [currentProjectId]);
@@ -639,7 +637,7 @@ export default function TranslationEditor() {
                     toast.loading('Approving all segments...', { id: 'bulkApprove' });
                     // 1. Local update
                     approveAll();
-                    
+
                     // 2. Persist to backend
                     try {
                       const res = await fetch('/api/approve/bulk', {
@@ -704,7 +702,18 @@ export default function TranslationEditor() {
                 <div className="w-[10px]" />
                 <div className="w-[120px] lg:w-[140px] text-label-caps text-ui-slate">TM MATCH</div>
                 <div className="flex-1 text-label-caps text-ui-slate">
-                  SOURCE ({(languages.find(l => l.code === sourceLanguage)?.name || 'EN').toUpperCase().slice(0, 2)})
+                  SOURCE ({(() => {
+                    const detected = segments
+                      .map(s => s.sourceLanguageDisplay)
+                      .filter(Boolean);
+                    if (detected.length === 0) return 'AUTO';
+                    // Find the most common detected language
+                    const counts: Record<string, number> = {};
+                    detected.forEach(l => { counts[l!] = (counts[l!] || 0) + 1; });
+                    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+                    if (!top || top[0] === 'Unknown') return 'AUTO';
+                    return top[0].toUpperCase();
+                  })()})
                 </div>
                 <div className="hidden lg:block w-[1px]" />
                 <div className="flex-1 text-label-caps text-ui-slate">
@@ -833,13 +842,12 @@ export default function TranslationEditor() {
                     {page.paragraphs?.map((para: any) => (
                       <div
                         key={para.id}
-                        className={`mb-3 p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm ${
-                          para.status === 'APPROVED'
+                        className={`mb-3 p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm ${para.status === 'APPROVED'
                             ? 'border-brand-emerald/30 bg-brand-emerald-light/5'
                             : para.status === 'REJECTED'
-                            ? 'border-status-error/30 bg-red-50'
-                            : 'border-ui-border bg-ui-surface/50'
-                        }`}
+                              ? 'border-status-error/30 bg-red-50'
+                              : 'border-ui-border bg-ui-surface/50'
+                          }`}
                         onClick={() => {
                           setActiveSegmentId(para.id);
                           setShowPreview(false);
@@ -850,19 +858,17 @@ export default function TranslationEditor() {
                           {para.targetText || <span className="italic text-ui-slate/40">Not translated</span>}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${
-                            para.matchType === 'EXACT' ? 'bg-brand-emerald-light text-brand-emerald'
-                            : para.matchType === 'FUZZY' ? 'bg-amber-100 text-amber-700'
-                            : para.matchType === 'PROPAGATED' ? 'bg-purple-100 text-purple-700'
-                            : 'bg-ui-surface text-ui-slate'
-                          }`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${para.matchType === 'EXACT' ? 'bg-brand-emerald-light text-brand-emerald'
+                              : para.matchType === 'FUZZY' ? 'bg-amber-100 text-amber-700'
+                                : para.matchType === 'PROPAGATED' ? 'bg-purple-100 text-purple-700'
+                                  : 'bg-ui-surface text-ui-slate'
+                            }`}>
                             {para.matchType || 'NEW'}
                           </span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${
-                            para.status === 'APPROVED' ? 'bg-green-100 text-green-700'
-                            : para.status === 'REJECTED' ? 'bg-red-100 text-red-700'
-                            : 'bg-yellow-100 text-yellow-700'
-                          }`}>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${para.status === 'APPROVED' ? 'bg-green-100 text-green-700'
+                              : para.status === 'REJECTED' ? 'bg-red-100 text-red-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}>
                             {para.status}
                           </span>
                         </div>

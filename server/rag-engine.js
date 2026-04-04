@@ -9,6 +9,10 @@
 //   §3.1  Vector Database  — embedding generation, cosine search
 //   §3.2  SQL Database     — glossary, style profiles, revisions
 //
+// Modified: 2026-04-04 — tmWrite now persists language detection
+// metadata (detected_language, detection_confidence, detected_script,
+// source_language_display). tmGet returns these fields.
+//
 // ═══════════════════════════════════════════════════════════════
 
 import db from './db.js';
@@ -270,6 +274,10 @@ export async function tmWrite({
   embedding = null,
   projectId = null,
   approvedBy = 'admin',
+  detectedLanguage = null,
+  detectionConfidence = null,
+  detectedScript = null,
+  sourceLanguageDisplay = null,
 }) {
   // Generate embedding if not provided
   if (!embedding) {
@@ -295,9 +303,15 @@ export async function tmWrite({
     db.prepare(
       `UPDATE tm_records
        SET target_text = ?, embedding = ?, approved_at = datetime('now'),
-           approved_by = ?, context = ?
+           approved_by = ?, context = ?,
+           detected_language = COALESCE(?, detected_language),
+           detection_confidence = COALESCE(?, detection_confidence),
+           detected_script = COALESCE(?, detected_script),
+           source_language_display = COALESCE(?, source_language_display)
        WHERE id = ?`
-    ).run(targetText, embeddingJson, approvedBy, context, existing.id);
+    ).run(targetText, embeddingJson, approvedBy, context,
+      detectedLanguage, detectionConfidence, detectedScript, sourceLanguageDisplay,
+      existing.id);
 
     return { tmRecordId: existing.id, isNew: false };
   }
@@ -305,11 +319,13 @@ export async function tmWrite({
   const result = db.prepare(
     `INSERT INTO tm_records
        (source_text, target_text, language, source_lang, target_lang,
-        embedding, approved_by, project_id, context)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        embedding, approved_by, project_id, context,
+        detected_language, detection_confidence, detected_script, source_language_display)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     sourceText, targetText, targetLang, sourceLang, targetLang,
-    embeddingJson, approvedBy, projectId, context
+    embeddingJson, approvedBy, projectId, context,
+    detectedLanguage, detectionConfidence, detectedScript, sourceLanguageDisplay
   );
 
   // Write-through to pgvector (async, non-blocking)
@@ -339,7 +355,8 @@ export function tmGet(id) {
   return db.prepare(
     `SELECT id, source_text, target_text, source_lang, target_lang, context,
             approved_at, approved_by, project_id,
-            embedding IS NOT NULL as has_embedding
+            embedding IS NOT NULL as has_embedding,
+            detected_language, detection_confidence, detected_script, source_language_display
      FROM tm_records WHERE id = ?`
   ).get(id) || null;
 }

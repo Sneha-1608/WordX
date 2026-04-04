@@ -1,0 +1,174 @@
+# VerbAI (formerly ClearLingo) — Complete Project Overview
+
+> **AI-Powered Enterprise Translation Platform with Retrieval-Augmented Generation (RAG), Semantic Translation Memory (TM), and Multi-Model LLM Orchestration (Gemini, Sarvam AI, DeepL)**
+> 
+> *Generated: 2026-04-04*
+
+---
+
+## 1. What is VerbAI?
+
+VerbAI is a full-stack, AI-powered Computer-Assisted Translation (CAT) platform built for enterprise document translation. It combines a Translation Memory (TM) engine, RAG, multi-model LLM orchestration, continuous learning pipeline, and automatic language detection into a robust single-server application.
+
+### Core Value Proposition
+
+| **Problem** | **VerbAI Solution** |
+|---|---|
+| Enterprise translation is notoriously slow and expensive. | Semantic TM caching and LLM reference usage reduce raw cost by up to ~94%. |
+| Language inconsistencies plague manual translation processes. | Glossary checking mechanisms and strict pre-translation term injection ensure accuracy. |
+| Mixed languages within global assets. | Automatic language detection using Gemini/Heuristics to identify content on the fly. |
+| Indian language NLP is generally weak via generic models. | Direct routing to Sarvam AI & IndicTransToolkit for 22 scheduled Indian languages. |
+| Rest-of-World language coverage precision. | Routing mechanism directs to DeepL or uses Google Gemini 2.0 Flash fallback. |
+| Document formatting gets wiped during parsing/re-export. | Structured DOCX parser maps bold, italic, font sizing on a per-run basis back to the export. |
+
+---
+
+## 2. Architecture Overview (6 Layers)
+
+VerbAI follows an isolated yet composable 6-Layer Architecture:
+
+1. **Layer 1: Web UI (React):** Home, Upload, Translation Editor, Validation Engine, Analytics Dashboard, and Training Pipeline.
+2. **Layer 2: API Gateway (Express):** Standardizes endpoints (`/parse`, `/translate`, `/validate`, `/approve`, `/export`, `/training`).
+3. **Layer 3: Core RAG Engine:** The Vector TM powered by SQLite + 768-dim embeddings, including strict glossary enforcement, exact string matching, and tone profiles.
+4. **Layer 4: Multi-Model LLM Orchestration:** Smart routing based on source/target parameters to DeepL, Sarvam AI, or Gemini 2.0 Flash. Features semantic deduction caches and automated Quality Assurance (QA).
+5. **Layer 5: Continuous Training Pipeline:** Auto-extraction of datasets from human editor corrections to test fine-tuning optimizations (QLoRA tests/A/B evaluation).
+6. **Layer 6: Analytics Dashboard:** Calculates TM leverage (what % was cached), tracks Glossary Term hitrates, segments velocity, and overall cost savings versus agency.
+
+---
+
+## 3. Technology Stack Breakdown
+
+### Frontend (User Interface)
+- **Framework:** React 18, utilizing Vite as the bundler and fast dev server.
+- **Styling:** Tailwind CSS V4 for atomic utilities; Radix UI providing the accessible headless components (dropdowns, tabs, dialogs).
+- **State Management:** Zustand split into global handlers (`useAppStore` for project segments) and analytical handlers (`useDashboardStore`).
+- **Additional Tools:** Framer Motion (page animations and background RippleGrid), Lucide React (Icons), Recharts (Analytical charting), Sonner (Toast notifications), React Router 7.
+
+### Backend (API & Engine)
+- **Runtime & Host:** Node.js (ESM pattern) and Express 5 for HTTP routing.
+- **Database Layer:** `better-sqlite3` embedded SQLite configured in Write-Ahead Log (WAL) mode for concurrency.
+- **Extractors & Formatters:** Mammoth (Standard DOCX), internal JSZip+fast-xml-parser (Format-preserving DOCX), pdf-parse (PDFs), and xlsx (Excel spreadsheets).
+- **AI Dependencies & Clients:**
+  - Google Generative AI SDK: Serves Gemini 2.0 Flash, validates translation logic, acts as a term extractor, runs auto language detection, and fetches 768-dim vector embeddings (`text-embedding-005`).
+  - Sarvam AI: Dedicated HTTP client connecting to `sarvam-translate:v1` specialized for native translations of languages encompassing India.
+  - DeepL: Third-party integration for exceptionally high-quality global/European locales.
+
+---
+
+## 4. Complete Database Schema (SQLite — `clearlingo.db`)
+
+Over 14 structured tables process data automatically, tracked via `addColumnIfNotExists()` migrations.
+
+### Translation & Projects Core
+- **`projects`**: Translation sets. Fields include: `id`, `name`, `source_language` (often auto-detected), `target_language`, `style_profile`, `context`.
+- **`segments`**: Dissected text elements. Fields include: `id` (UUID), `project_id`, `idx`, `source_text`, `target_text`, `tm_score`, `match_type` (EXACT / FUZZY / NEW), `status` (PENDING / APPROVED / REJECTED), `violation`, `format_type`.
+- **`tm_records`**: The active semantic Translation Memory. Fields include: `source_text`, `target_text`, `source_lang`, `target_lang`, `embedding` (768-dim JSON vector).
+- **`glossary`**: Mandatory mappings. Fields include: `source_term`, `target_term`, `domain`, `is_mandatory`.
+- **`revisions`**: Captured human edits. Measures original outputs vs. human fixes (tracks Levenshtein edit distance logic). Allows the TM to grow smarter.
+
+### Operational Logging Tables
+- **`llm_call_log`**: Detailed metrics covering exact costs, token counts, and API response latencies per external inference call.
+- **`translation_cache`**: Strict semantic deduplication layer to avoid making multiple LLM calls on identically constructed source lines.
+- **`qa_results` & `glossary_checks`**: Maintains post-translation validation records, alerting administrators to any mandatory terms ignored by the LLM logic or spelling irregularities.
+
+---
+
+## 5. Granular End-To-End Workflows
+
+### Phase A: Ingestion & Auto-Detection
+1. A User uploads a document containing English and drops it onto the Upload page, asking for Hindi translation.
+2. `POST /api/parse` fires. 
+3. Parsers convert the uploaded document structure into sequential chunks or logical text segments.
+4. Auto-detection sweeps detect the incoming language logic, removing manual guesswork, writing `detected_lang` back to project profiles.
+
+### Phase B: Translation RAG Engine (`rag-engine.js`)
+5. The system batches the extracted document string fragments.
+6. **Pass 1:** Pure String Match -> Scans SQLite `tm_records` for 100% exact matches. Resulting hits trigger a `tm_score = 1.0`, caching `match_type = EXACT`, completely bypassing LLMs for that segment.
+7. **Pass 2:** Semantic Search -> A single batched API embedding call converts the rest of the unknown chunks into 768-dim vectors. Cosine similarity calculates nearest TM correlations.
+   - Vector Match > 0.95 = Scored as `EXACT`
+   - Vector Match 0.75 to 0.95 = Scored as `FUZZY` (These results will be passed to an LLM context as a "guidance reference").
+   - Vector Match < 0.75 = Scored as `NEW`
+
+### Phase C: Multi-Model Orchestration (`llm-orchestrator.js`)
+8. An algorithmic extraction detects 'Industry terms' in the segment that might need definition, mapping them dynamically dynamically against the Glossary terminology rules.
+9. Sent to the Orchestrator. Is the destination language Indian? (e.g. `ta_IN`, `hi_IN`).
+   - Indian Lang -> Send payload to Sarvam AI.
+   - European/Global Lang -> Send payload to DeepL.
+   - Unavailable/Fallback -> Send payload to Gemini 2.0 Flash.
+
+### Phase D: Editor Audit
+10. The linguist views results in the `TranslationEditor` component interface.
+11. Results indicate origin details: EXACT (colored green), FUZZY (colored yellow), NEW (blue).
+12. Modifications are typed directly into the grid. The linguist clicks `Approve`.
+
+### Phase E: Growth Loop
+13. `POST /api/approve` is triggered. The approved translations are instantly logged to `tm_records` alongside newly baked API embeddings.
+14. Any edits made by the linguist are flagged to the `revisions` table. Next time this exact text comes up, the LLM isn't called—Phase B intercepts it as an EXACT match, eliminating latency and translation costs.
+
+---
+
+## 6. Full Route Manifest
+
+### Core Generation API
+- `POST /api/parse`: Parses `.docx`/`.pdf`/`.xlsx` strings and executes the Phase B TM lookup.
+- `POST /api/translate`: Batch generates translations across the LLM orchestration logic.
+- `POST /api/validate`: Triggered in the editor to run a 5-point quality validation check (Spelling, Grammar, Consistency, Formatting, Glossary injection).
+- `POST /api/approve`: Segment target text is approved, triggering RAG addition logic.
+- `POST /api/export`: Hydrates format maps back to their origins to generate the localized downloadable files.
+
+### Utility & Analysis API
+- `GET /api/segments/:projectId`: Polls state for Editor views.
+- `GET /api/health`: System health (LLM APIs, embedding vectors, routing configs).
+- `GET /api/analytics/dashboard`: Feeds the Recharts graphical displays with TM leverage curves and monetary savings.
+- `GET /api/llm/stats`: Shows total tokens, response latencies, and cache metrics.
+
+---
+
+## 7. Operational Directory Map (`d:\Codes\Real Hackathon`)
+
+```
+├── server/
+│   ├── index.js                     (Core Express entrypoint & listener)
+│   ├── db.js                        (SQLite setup, schemas, and queries)
+│   ├── gemini.js                    (Google Generative AI interface + Embeddings capability)
+│   ├── sarvam.js                    (Sarvam AI integration specifically for Indian targets)
+│   ├── deepL.js                     (DeepL API logic for non-Indian handling)
+│   ├── language-detector.js         (Automatic language detection via heuristic + AI fallback)
+│   ├── rag-engine.js                (Contains exactly matching & cosine similarity retrieval code)
+│   ├── llm-orchestrator.js          (Primary brain: routes to DeepL, Sarvam, or Gemini contextually)
+│   ├── parsers/                     
+│   │   └── docx-structured.js       (Structured XML preservation for DOCX formatting)
+│   └── routes/                      
+│       ├── parse.js, translate.js, analytics.js, export.js, training.js 
+├── src/
+│   ├── main.tsx                     
+│   ├── app/
+│   │   ├── routes.tsx               (Frontend React Router Config)
+│   │   ├── store.ts                 (Zustand App & Dashboard single-source-of-truth stores)
+│   │   ├── screens/                 
+│   │   │   ├── Home.tsx             (Landing page w. Framer Motion RippleGrid)
+│   │   │   ├── DocumentUpload.tsx   (Automated source language detection uploader)
+│   │   │   ├── TranslationEditor.tsx(Human-in-the-loop spreadsheet verification UI)
+│   │   │   └── Analytics.tsx        (Leverage & Cost Analysis)
+│   │   └── components/              (Modular components: Button.tsx, Badge.tsx, Navigation.tsx)
+│   └── styles/
+│       ├── theme.css                (Local variables & brand token mappings)
+│       └── index.css                (Tailwind global definitions)
+├── data_seeds/                      (EuroParl, Samanantar, JSON seed sources during initial dev)
+├── clearlingo.db                    (Primary Local SQLite Datafile)
+├── package.json                     > Node project configuration + run scripts.
+└── .env                             > Crucial Config (Includes GEMINI_API_KEY, SARVAM_API_KEY, DEEPL_API_KEY).
+```
+
+---
+
+## 8. Development & Installation Reference
+
+**Standard Start Scripts:**
+- Start Backend alone: `npm run server`
+- Start Frontend alone: `npm run dev`
+
+**Cost Optimizations In Play:**
+- **Exact Matches:** Bypasses external providers entirely. Costs ₹0 per segment. Results in nearly instantaneous returns compared to a standard 2-3s delay per sentence.
+- **Latency Overhaul:** Re-routing the embeddings generator to fire batches of 50 chunks limits the API handshake down from ~40s (1 sentence at a time) to <0.5s for standard documents.
+- **Mock Fallback (`MOCK_MODE=true`):** Development feature enabling the application to render without burning API keys or incurring token limitations; yields simulated JSON structured response text.
