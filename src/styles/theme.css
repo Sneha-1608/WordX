@@ -1,7 +1,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Verb AI Design System Colors */
+  /* ClearLingo Design System Colors */
   --brand-indigo: #1E1B4B;
   --brand-emerald: #10B981;
   --brand-emerald-light: #D1FAE5;
@@ -90,7 +90,7 @@
 }
 
 @theme inline {
-  /* Map Verb AI colors to Tailwind theme */
+  /* Map ClearLingo colors to Tailwind theme */
   --color-brand-indigo: var(--brand-indigo);
   --color-brand-emerald: var(--brand-emerald);
   --color-brand-emerald-light: var(--brand-emerald-light);
@@ -168,7 +168,7 @@
   }
 }
 
-/* Typography Utility Classes matching Verb AI Design System */
+/* Typography Utility Classes matching ClearLingo Design System */
 @layer utilities {
   /* Display Styles */
   .text-display-hero {

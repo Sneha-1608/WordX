@@ -2,20 +2,24 @@ import sys
 import json
 import os
 import math
-from transformers import TrainingArguments, TrainerCallback
+try:
+    from transformers import TrainingArguments, TrainerCallback
 
-class ProgressCallback(TrainerCallback):
-    def on_log(self, args, state, control, logs=None, **kwargs):
-        if logs is None:
-            return
-        
-        # SFTTrainer logs usually contain "loss" and "epoch"
-        if "loss" in logs and "epoch" in logs:
-            epoch = logs["epoch"]
-            loss = logs["loss"]
-            lr = logs.get("learning_rate", args.learning_rate)
-            # Output in a specific format that node.js `training-pipeline.js` expects
-            print(f"Epoch {epoch:.2f}/3 — loss: {loss:.4f} | lr: {lr:.2e} | batch: {args.per_device_train_batch_size}", flush=True)
+    class ProgressCallback(TrainerCallback):
+        def on_log(self, args, state, control, logs=None, **kwargs):
+            if logs is None:
+                return
+            
+            # SFTTrainer logs usually contain "loss" and "epoch"
+            if "loss" in logs and "epoch" in logs:
+                epoch = logs["epoch"]
+                loss = logs["loss"]
+                lr = logs.get("learning_rate", args.learning_rate)
+                # Output in a specific format that node.js `training-pipeline.js` expects
+                print(f"Epoch {epoch:.2f}/3 — loss: {loss:.4f} | lr: {lr:.2e} | batch: {args.per_device_train_batch_size}", flush=True)
+except ImportError:
+    # Handle gracefully in main()
+    pass
 
 def main():
     if len(sys.argv) < 3:

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, Download, Users, FileText, History, Globe } from 'lucide-react';
@@ -58,7 +58,7 @@ interface SegmentRowProps {
   glossary: { source: string; target: string }[];
 }
 
-function InteractiveSegmentRow({ segment, isActive, onActivate, glossary }: SegmentRowProps) {
+const InteractiveSegmentRow = memo(function InteractiveSegmentRow({ segment, isActive, onActivate, glossary }: SegmentRowProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { approveSegment, revertSegment, updateTargetText } = useAppStore();
   const [localText, setLocalText] = useState(segment.targetText);
@@ -271,7 +271,7 @@ function InteractiveSegmentRow({ segment, isActive, onActivate, glossary }: Segm
       </div>
     </motion.div>
   );
-}
+});
 
 /* ═══════════════════════════════════
    EXPORT MODAL

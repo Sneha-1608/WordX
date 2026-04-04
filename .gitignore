@@ -6,3 +6,11 @@ dist/
 apikeys
 *.db-shm
 *.db-wal
+__pycache__/
+*.pyc
+IndicTransToolkit/
+.git copy/
+*.log
+indictrans_*.txt
+push_error.txt
+indictrans_debug.txt

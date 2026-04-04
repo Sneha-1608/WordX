@@ -29,6 +29,13 @@ import {
   isSarvamSupported,
   getSarvamStatus,
 } from './sarvam.js';
+import {
+  indictransTranslate,
+  isIndictransAvailable,
+  isIndictransSupported,
+  getIndictransStatus,
+  checkIndictransHealth,
+} from './indictrans.js';
 import { rateLimiter } from './middleware.js';
 import { extractTerms, crossReferenceGlossary } from './term-extractor.js';
 import { getCachedTranslation, setCachedTranslation } from './cache-redis.js';
@@ -172,7 +179,17 @@ export function getModelForLanguage(targetLang) {
     : EUROPEAN_LANGS.has(targetLang) ? 'european'
     : 'other';
 
-  // Route Indic languages through Sarvam AI when available
+  // Priority 1: IndicTrans2 (local, free, no API key needed)
+  if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
+    return {
+      model: 'indictrans2-en-indic-dist-200M',
+      engine: 'indictrans2',
+      family,
+      displayName: LANG_NAMES[targetLang] || targetLang,
+    };
+  }
+
+  // Priority 2: Sarvam AI (remote API, Indic languages)
   if (family === 'indic' && isSarvamAvailable() && isSarvamSupported(targetLang)) {
     return {
       model: 'sarvam-translate:v1',
@@ -182,7 +199,7 @@ export function getModelForLanguage(targetLang) {
     };
   }
 
-  // European + other + Sarvam-unsupported → Gemini
+  // Priority 3: Gemini (European + other + fallback)
   return {
     model: 'gemini-2.0-flash',
     engine: 'gemini',
@@ -393,8 +410,7 @@ export async function translateSegment({
 
   // ──────────────────────────────────────────────────────
   // Step 4: Call translation engine (§4.1)
-  //   Sarvam AI for Indic languages, Gemini for others.
-  //   If Sarvam fails → automatic fallback to Gemini.
+  //   IndicTrans2 (local) → Sarvam AI → Gemini (fallback)
   // ──────────────────────────────────────────────────────
   let targetText;
   let errorMessage = null;
@@ -403,8 +419,43 @@ export async function translateSegment({
   let actualModel = routing.model;
 
   try {
-    if (routing.engine === 'sarvam') {
-      // ═══ Sarvam AI path (Indic languages) ═══
+    if (routing.engine === 'indictrans2') {
+      // ═══ IndicTrans2 path (local model, Indic languages) ═══
+      try {
+        const itResult = await indictransTranslate(sourceText, sourceLang, targetLang);
+        targetText = itResult.text;
+        actualEngine = 'indictrans2';
+        actualModel = itResult.model;
+      } catch (itErr) {
+        // Fallback to Sarvam AI if IndicTrans2 fails
+        console.warn(`   ⚠ IndicTrans2 failed for [${routing.displayName}]: ${itErr.message}`);
+        if (isSarvamAvailable() && isSarvamSupported(targetLang)) {
+          console.warn(`   ↪ Falling back to Sarvam AI...`);
+          try {
+            const sarvamResult = await sarvamTranslate(sourceText, sourceLang, targetLang, { mode: 'formal' });
+            targetText = sarvamResult.text;
+            actualEngine = 'sarvam (fallback from indictrans2)';
+            actualModel = sarvamResult.model;
+          } catch (sarvamErr) {
+            console.warn(`   ⚠ Sarvam also failed: ${sarvamErr.message}`);
+            console.warn(`   ↪ Falling back to Gemini...`);
+            targetText = await rateLimiter.execute(() =>
+              translateText(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt)
+            );
+            actualEngine = 'gemini (fallback from indictrans2+sarvam)';
+            actualModel = 'gemini-2.0-flash';
+          }
+        } else {
+          console.warn(`   ↪ Falling back to Gemini...`);
+          targetText = await rateLimiter.execute(() =>
+            translateText(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt)
+          );
+          actualEngine = 'gemini (fallback from indictrans2)';
+          actualModel = 'gemini-2.0-flash';
+        }
+      }
+    } else if (routing.engine === 'sarvam') {
+      // ═══ Sarvam AI path (Indic languages, when IndicTrans2 not available) ═══
       try {
         const sarvamResult = await sarvamTranslate(sourceText, sourceLang, targetLang, {
           mode: 'formal',
@@ -423,7 +474,7 @@ export async function translateSegment({
           )
         );
         actualEngine = 'gemini (fallback from sarvam)';
-        actualModel = 'gemini-1.5-flash';
+        actualModel = 'gemini-2.0-flash';
       }
     } else {
       // ═══ Gemini path (European + other languages) ═══
@@ -907,20 +958,29 @@ export function getStats() {
      FROM llm_call_log ORDER BY created_at DESC LIMIT 10`
   ).all();
 
-  // Sarvam AI status
+  // Translation engine status
   const sarvamStatus = getSarvamStatus();
+  const indictransStatus = getIndictransStatus();
+
+  // Determine primary Indic engine label
+  const indicEngine = isIndictransAvailable()
+    ? 'IndicTrans2 (local)'
+    : isSarvamAvailable()
+      ? 'Sarvam AI (remote)'
+      : 'Gemini 2.0 Flash';
 
   return {
     layer: 4,
-    engine: isSarvamAvailable()
-      ? 'Sarvam AI (Indic) + Gemini 2.0 Flash (Others) + text-embedding-005'
-      : 'Gemini 2.0 Flash + text-embedding-005',
+    engine: `${indicEngine} (Indic) + Gemini 2.0 Flash (Others) + text-embedding-005`,
     mode: isMockMode() ? 'MOCK' : 'LIVE',
     activePrompt: activePromptVersion,
     routing: {
-      indicLanguages: isSarvamAvailable() ? 'sarvam-translate:v1' : 'gemini-2.0-flash',
+      indicLanguages: isIndictransAvailable()
+        ? 'indictrans2-en-indic-dist-200M (local)'
+        : isSarvamAvailable() ? 'sarvam-translate:v1' : 'gemini-2.0-flash',
       europeanLanguages: 'gemini-2.0-flash',
       otherLanguages: 'gemini-2.0-flash',
+      indictrans2: indictransStatus,
       sarvam: sarvamStatus,
     },
     calls: {

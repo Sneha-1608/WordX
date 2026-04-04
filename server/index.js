@@ -20,6 +20,7 @@ import exportTmRouter from './routes/export-tm.js';
 import { errorHandler, requestLogger } from './middleware.js';
 import { isMockMode } from './gemini.js';
 import { isSarvamAvailable, getSarvamStatus } from './sarvam.js';
+import { isIndictransAvailable, getIndictransStatus, checkIndictransHealth } from './indictrans.js';
 import ragEngine from './rag-engine.js';
 import llmOrchestrator from './llm-orchestrator.js';
 import trainingPipeline from './training-pipeline.js';
@@ -452,8 +453,23 @@ httpServer.listen(PORT, async () => {
   const sarvam = isSarvamAvailable();
   const sarvamStatus = sarvam ? '🇮🇳 SARVAM AI CONNECTED' : '⚪ Sarvam unavailable (Gemini fallback)';
 
+  // Check IndicTrans2 microservice
+  const itHealth = await checkIndictransHealth();
+  const itAvailable = isIndictransAvailable();
+  const itStatus = itAvailable
+    ? `🧠 INDICTRANS2 LOCAL ENGINE (${itHealth?.device?.toUpperCase() || 'CUDA'}) — 22 languages`
+    : '⚪ IndicTrans2 not running (start: npm run indictrans)';
+
+  // Determine Indic engine priority
+  const indicEngineLine = itAvailable
+    ? `indictrans2-en-indic-dist-200M (LOCAL ${itHealth?.device?.toUpperCase() || 'GPU'}) → sarvam fallback`
+    : sarvam
+      ? 'sarvam-translate:v1 (22 languages)'
+      : 'gemini-2.0-flash';
+
   console.log(`\n  ═══════════════════════════════════════════════════`);
   console.log(`  ${mode}`);
+  console.log(`  ${itStatus}`);
   console.log(`  ${sarvamStatus}`);
   console.log(`  🌐 ClearLingo API Gateway — http://localhost:${PORT}`);
   console.log(`  ═══════════════════════════════════════════════════`);
@@ -462,7 +478,7 @@ httpServer.listen(PORT, async () => {
   console.log(`     Glossary: ${l3.glossary.total} terms (${l3.glossary.mandatory} mandatory)`);
   console.log(`     Revisions: ${l3.revisions.total} | Style Profiles: ${l3.styleProfiles}`);
   console.log(`\n  🧠 Layer 4 — LLM Orchestrator`);
-  console.log(`     Indic:    ${sarvam ? 'sarvam-translate:v1 (22 languages)' : 'gemini-2.0-flash'}`);
+  console.log(`     Indic:    ${indicEngineLine}`);
   console.log(`     European: gemini-2.0-flash`);
   console.log(`     Prompt: ${l4.activePrompt}`);
   console.log(`     LoRA Adapters: ${l4.adapters.total} (${l4.adapters.active} active)`);

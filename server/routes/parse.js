@@ -7,8 +7,12 @@ import ragEngine from '../rag-engine.js';
 import { isMockMode } from '../gemini.js';
 import { parseDocxStructured } from '../parsers/docx-structured.js';
 
+// ═══ Pre-load pdf-parse at startup (not per-request) ═══
+let _cachedPdfParse = null;
+import('pdf-parse').then(m => { _cachedPdfParse = m; console.log('✅ pdf-parse pre-loaded'); }).catch(() => {});
+
 const router = Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 // ═══════════════════════════════════════════════════════════════
 // Supported file extensions
@@ -156,7 +160,7 @@ async function parseDocx(buffer) {
 
 // ── PDF ──
 async function parsePdf(buffer) {
-  const pdfParseModule = await import('pdf-parse');
+  const pdfParseModule = _cachedPdfParse || await import('pdf-parse');
 
   let text = '';
 

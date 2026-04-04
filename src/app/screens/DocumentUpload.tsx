@@ -49,8 +49,8 @@ export default function DocumentUpload() {
       });
       return false;
     }
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error('File too large. Maximum size is 50MB.', { duration: 4000 });
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File too large. Maximum size is 10MB.', { duration: 4000 });
       return false;
     }
     return true;
@@ -137,46 +137,63 @@ export default function DocumentUpload() {
         setGlossary(glossary);
       }
 
-      toast.success(`Parsed ${data.segmentCount} segments from "${data.projectName}"`, {
+      toast.success(`Parsed ${data.segmentCount} segments — starting translation…`, {
         duration: 3000,
         icon: <CheckCircle2 className="w-5 h-5" />,
       });
 
-      // ═══ Phase 2: Translate via RAG pipeline ═══
-      setParsePhase('translating');
+      // ═══ Navigate IMMEDIATELY — don't wait for translation ═══
+      setIsParsing(false);
+      setParsePhase('idle');
+      navigate('/editor');
 
-      try {
-        const translateRes = await fetch('/api/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            projectId: data.projectId,
-            segments: data.segments,
-            sourceLang: sourceLanguage,
-            targetLang: activeLanguage,
-          }),
-        });
+      // ═══ Phase 2: Background streaming translation ═══
+      const store = useAppStore.getState();
+      store.setTranslationProgress(0, data.segments.length, 0);
 
-        if (translateRes.ok) {
-          const translated = await translateRes.json();
-          setSegments(translated.segments.map((s: any) => ({
-            ...s,
-            originalTarget: s.targetText,
-          })));
-
-          const stats = translated.stats;
-          toast.success(
-            `Translation complete: ${stats.exact} exact, ${stats.fuzzy} fuzzy, ${stats.new} new (${stats.leverageRate}% TM leverage)`,
-            { duration: 4000 }
-          );
+      fetch('/api/translate/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId: data.projectId,
+          segments: data.segments,
+          sourceLang: sourceLanguage,
+          targetLang: activeLanguage,
+        }),
+      }).then(async (streamRes) => {
+        if (!streamRes.ok || !streamRes.body) {
+          store.clearTranslationProgress();
+          return;
         }
-      } catch (translateErr) {
-        console.warn('Translation pipeline error:', translateErr);
-        toast.warning('Translation skipped — segments will need manual translation', { duration: 4000 });
-      }
+        const reader = streamRes.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const event = JSON.parse(line.slice(6));
+              const s = useAppStore.getState();
+              if (event.type === 'segment_done') {
+                s.updateSegmentTranslation(event.segmentId, event.translatedText, event.matchType, event.tmScore);
+                s.setTranslationProgress(event.current, event.total, 0);
+              } else if (event.type === 'segment_error') {
+                s.setTranslationProgress(event.current, event.total, (s.translationProgress?.errors || 0) + 1);
+              } else if (event.type === 'complete') {
+                s.clearTranslationProgress();
+                toast.success(`Translation complete: ${event.total} segments`, { duration: 4000, icon: '✅' });
+              }
+            } catch {}
+          }
+        }
+      }).catch(() => { store.clearTranslationProgress(); });
 
-      // Navigate to validation
-      setTimeout(() => navigate('/validation'), 800);
+      return;
     } catch (err: any) {
       toast.error(err.message || 'Failed to parse document', { duration: 5000 });
     } finally {
@@ -205,8 +222,8 @@ export default function DocumentUpload() {
       <div className="w-[260px] bg-brand-indigo flex flex-col">
         <div className="p-6 border-b border-white/10">
           <Link to="/home" className="text-[22px] font-black">
-            <span className="text-white">Verb</span>
-            <span className="text-brand-emerald"> AI</span>
+            <span className="text-white">Clear</span>
+            <span className="text-brand-emerald">Lingo</span>
           </Link>
         </div>
 
@@ -231,7 +248,15 @@ export default function DocumentUpload() {
           </Link>
         </nav>
 
-
+        <div className="p-6 border-t border-white/10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-brand-emerald flex items-center justify-center text-white font-bold">
+            A
+          </div>
+          <div className="flex-1">
+            <div className="text-body-sm font-medium text-white">Admin</div>
+            <div className="text-[11px] text-white/60">Linguist</div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -247,7 +272,7 @@ export default function DocumentUpload() {
           >
 
             <h1 className="text-[32px] md:text-[40px] font-medium text-brand-indigo tracking-tight leading-tight">
-              Good Afternoon <br/>
+              Good Afternoon, Admin <br/>
               What do you want to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#d946ef] to-[#c026d3]">translate?</span>
             </h1>
           </motion.div>
