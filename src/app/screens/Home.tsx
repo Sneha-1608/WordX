@@ -8,6 +8,7 @@ import { CodeBlock } from '../components/CodeBlock';
 import { PricingCard } from '../components/PricingCard';
 import { ResearchCard } from '../components/ResearchCard';
 import { LanguagePillCard } from '../components/LanguagePillCard';
+import RippleGrid from '../../components/RippleGrid';
 import { ChevronDown } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -202,8 +203,26 @@ export default function Home() {
       {/* ═══════════════════════════════════
           SECTION: HERO
           ═══════════════════════════════════ */}
-      <section id="hero" className="min-h-screen pt-[72px] flex items-center bg-ui-white">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-[80px] w-full py-16 lg:py-24">
+      <section id="hero" className="relative min-h-screen pt-[72px] flex items-center bg-ui-white overflow-hidden">
+        {/* RippleGrid Background */}
+        <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }}>
+          <RippleGrid
+            enableRainbow={false}
+            gridColor="#e2e8f0"
+            rippleIntensity={0.02}
+            gridSize={9}
+            gridThickness={26}
+            fadeDistance={2.8}
+            vignetteStrength={3.5}
+            glowIntensity={0}
+            opacity={0.7}
+            gridRotation={0}
+            mouseInteraction
+            mouseInteractionRadius={1}
+          />
+        </div>
+
+        <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-[80px] w-full py-16 lg:py-24">
           <div className="grid lg:grid-cols-[55%_45%] grid-cols-1 gap-12 lg:gap-16 items-center">
             {/* Left Column */}
             <div className="flex flex-col gap-8">
@@ -674,7 +693,7 @@ export default function Home() {
             {/* Col 1 */}
             <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
               <div className="text-[22px] font-black mb-2">
-                <span className="text-white">Verb</span>
+                <span className="text-white">verb</span>
                 <span className="text-brand-emerald"> AI</span>
               </div>
               <p className="text-body-md" style={{ color: 'rgba(255,255,255,0.50)' }}>
