@@ -1,0 +1,407 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ClearLingo Design System Colors */
+  --brand-indigo: #1E1B4B;
+  --brand-emerald: #10B981;
+  --brand-emerald-light: #D1FAE5;
+  --ui-slate: #64748B;
+  --ui-slate-light: #94A3B8;
+  --ui-border: #E2E8F0;
+  --ui-surface: #F8FAFC;
+  --ui-white: #FFFFFF;
+  --dark-900: #0F0D2E;
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-error: #EF4444;
+
+  /* Spacing System (8px base grid) */
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-6: 48px;
+  --spacing-8: 64px;
+  --spacing-10: 80px;
+  --spacing-12: 96px;
+  --spacing-16: 128px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0px 1px 3px rgba(0,0,0,0.08), 0px 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0px 4px 16px rgba(0,0,0,0.08), 0px 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0px 20px 48px rgba(0,0,0,0.10), 0px 8px 16px rgba(0,0,0,0.06);
+  --shadow-glow: 0px 0px 32px rgba(16,185,129,0.25);
+
+  /* Typography - Font Families */
+  --font-dm-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-jetbrains: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Default theme variables for compatibility */
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: #1E1B4B;
+  --card: #ffffff;
+  --card-foreground: #1E1B4B;
+  --popover: #ffffff;
+  --popover-foreground: #1E1B4B;
+  --primary: #10B981;
+  --primary-foreground: #ffffff;
+  --secondary: #1E1B4B;
+  --secondary-foreground: #ffffff;
+  --muted: #F8FAFC;
+  --muted-foreground: #64748B;
+  --accent: #D1FAE5;
+  --accent-foreground: #10B981;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: #E2E8F0;
+  --input: transparent;
+  --input-background: #F8FAFC;
+  --ring: #10B981;
+}
+
+.dark {
+  --background: #0F0D2E;
+  --foreground: #ffffff;
+  --card: #1E1B4B;
+  --card-foreground: #ffffff;
+  --popover: #1E1B4B;
+  --popover-foreground: #ffffff;
+  --primary: #10B981;
+  --primary-foreground: #ffffff;
+  --secondary: #1E1B4B;
+  --secondary-foreground: #ffffff;
+  --muted: rgba(255,255,255,0.1);
+  --muted-foreground: rgba(255,255,255,0.65);
+  --accent: rgba(16,185,129,0.15);
+  --accent-foreground: #10B981;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255,255,255,0.12);
+  --input: rgba(255,255,255,0.06);
+  --ring: #10B981;
+}
+
+@theme inline {
+  /* Map ClearLingo colors to Tailwind theme */
+  --color-brand-indigo: var(--brand-indigo);
+  --color-brand-emerald: var(--brand-emerald);
+  --color-brand-emerald-light: var(--brand-emerald-light);
+  --color-ui-slate: var(--ui-slate);
+  --color-ui-slate-light: var(--ui-slate-light);
+  --color-ui-border: var(--ui-border);
+  --color-ui-surface: var(--ui-surface);
+  --color-ui-white: var(--ui-white);
+  --color-dark-900: var(--dark-900);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-dm-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+  }
+
+  /* Reset default heading styles */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-dm-sans);
+    margin: 0;
+    padding: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    font-family: var(--font-dm-sans);
+  }
+
+  code, pre {
+    font-family: var(--font-jetbrains);
+  }
+
+  /* Scroll margin for anchor targets */
+  [id] {
+    scroll-margin-top: 80px;
+  }
+}
+
+/* Typography Utility Classes matching ClearLingo Design System */
+@layer utilities {
+  /* Display Styles */
+  .text-display-hero {
+    font-family: var(--font-dm-sans);
+    font-weight: 900;
+    font-size: 96px;
+    line-height: 100%;
+    letter-spacing: -2px;
+    color: var(--brand-indigo);
+  }
+
+  .text-display-h1 {
+    font-family: var(--font-dm-sans);
+    font-weight: 900;
+    font-size: 72px;
+    line-height: 105%;
+    letter-spacing: -1.5px;
+  }
+
+  .text-display-h2 {
+    font-family: var(--font-dm-sans);
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 110%;
+    letter-spacing: -1px;
+  }
+
+  .text-display-h3 {
+    font-family: var(--font-dm-sans);
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 115%;
+  }
+
+  .text-display-h4 {
+    font-family: var(--font-dm-sans);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 120%;
+  }
+
+  /* Body Styles */
+  .text-body-xl {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 170%;
+  }
+
+  .text-body-lg {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 175%;
+  }
+
+  .text-body-md {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 175%;
+  }
+
+  .text-body-sm {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 160%;
+  }
+
+  /* Label Style */
+  .text-label-caps {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 140%;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Code Styles */
+  .text-code-md {
+    font-family: var(--font-jetbrains);
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 180%;
+  }
+
+  .text-code-sm {
+    font-family: var(--font-jetbrains);
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 170%;
+  }
+}
+
+/* ═══════════════════════════════════
+   MARQUEE ANIMATION (CSS-only infinite scroll)
+   ═══════════════════════════════════ */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-container {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  white-space: nowrap;
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ═══════════════════════════════════
+   PIPELINE CONNECTOR (dashed vertical line between process steps)
+   ═══════════════════════════════════ */
+.pipeline-connector {
+  width: 1px;
+  height: 40px;
+  border-left: 1.5px dashed var(--brand-emerald);
+  margin: 0 auto;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════
+   LOADING SCREEN SPLIT ANIMATION
+   ═══════════════════════════════════ */
+@keyframes split-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes split-down {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+.split-top {
+  animation: split-up 0.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.split-bottom {
+  animation: split-down 0.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+/* ═══════════════════════════════════
+   COMPARISON TABLE ROW HOVER
+   ═══════════════════════════════════ */
+.comparison-row {
+  transition: background-color 0.2s ease;
+}
+
+.comparison-row:hover {
+  background-color: rgba(16, 185, 129, 0.03) !important;
+}
+
+/* ═══════════════════════════════════
+   CUSTOM SCROLLBAR (for horizontal scroll areas)
+   ═══════════════════════════════════ */
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVE TYPOGRAPHY OVERRIDES
+   ═══════════════════════════════════ */
+@media (max-width: 768px) {
+  .text-display-hero {
+    font-size: 48px;
+    letter-spacing: -1px;
+  }
+  .text-display-h1 {
+    font-size: 40px;
+    letter-spacing: -1px;
+  }
+  .text-display-h2 {
+    font-size: 36px;
+    letter-spacing: -0.5px;
+  }
+  .text-display-h3 {
+    font-size: 28px;
+  }
+  .text-display-h4 {
+    font-size: 22px;
+  }
+}
+
+/* ═══════════════════════════════════
+   SKELETON SHIMMER ANIMATION
+   ═══════════════════════════════════ */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--ui-border) 25%,
+    var(--ui-surface) 50%,
+    var(--ui-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════
+   DROPZONE STYLES
+   ═══════════════════════════════════ */
+.dropzone-active {
+  border-color: var(--brand-emerald) !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
+}
+
+/* ═══════════════════════════════════
+   TEXTAREA AUTO-EXPAND
+   ═══════════════════════════════════ */
+textarea {
+  overflow: hidden;
+  min-height: 36px;
+}
+

@@ -90,8 +90,11 @@ interface AppState {
   
   updateSegmentStatus: (id: string, status: 'APPROVED' | 'REJECTED' | 'PENDING') => void;
   updateTargetText: (id: string, text: string) => void;
+<<<<<<< HEAD
   updateSegmentFromCollab: (id: string, targetText: string) => void;
   updateSegmentStatusFromCollab: (id: string, status: string) => void;
+=======
+>>>>>>> 3cbd11904509604a357987b4923a2eaf0e35344a
   approveSegment: (id: string, targetText: string) => void;
   revertSegment: (id: string) => void;
   propagateApproval: (ids: string[], targetText: string) => void;
@@ -164,6 +167,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
+<<<<<<< HEAD
   // Collab: update target text from another user's edit
   updateSegmentFromCollab: (id, targetText) => {
     set({
@@ -183,6 +187,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ segments, ...stats });
   },
 
+=======
+>>>>>>> 3cbd11904509604a357987b4923a2eaf0e35344a
   approveSegment: (id, targetText) => {
     const segments = get().segments.map((s) =>
       s.id === id ? { ...s, status: 'APPROVED' as const, targetText } : s
