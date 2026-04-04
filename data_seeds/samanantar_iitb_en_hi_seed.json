@@ -1,0 +1,3502 @@
+[
+  {
+    "source": "Give your application an accessibility workout",
+    "target": "अपने अनुप्रयोग को पहुंचनीयता व्यायाम का लाभ दें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser Accessibility Explorer",
+    "target": "एक्सेर्साइसर पहुंचनीयता अन्वेषक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The default plugin layout for the bottom panel",
+    "target": "निचले पटल के लिए डिफोल्ट प्लग-इन खाका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The default plugin layout for the top panel",
+    "target": "ऊपरी पटल के लिए डिफोल्ट प्लग-इन खाका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "A list of plugins that are disabled by default",
+    "target": "उन प्लग-इनों की सूची जिन्हें डिफोल्ट रूप से निष्क्रिय किया गया है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight duration",
+    "target": "अवधि को हाइलाइट रकें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The duration of the highlight box when selecting accessible nodes",
+    "target": "पहुंचनीय आसंधि (नोड) को चुनते समय हाइलाइट बक्से की अवधि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight border color",
+    "target": "सीमांत (बोर्डर) के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight border.",
+    "target": "हाइलाइट किए गए सीमांत का रंग और अपारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight fill color",
+    "target": "भराई के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight fill.",
+    "target": "हाइलाइट किया गया भराई का रंग और पारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "API Browser",
+    "target": "एपीआई विचरक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Browse the various methods of the current accessible",
+    "target": "इस समय जिसे प्राप्त किया गया हो, उसकी विभिन्न विधियों (मेथड) में विचरण करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hide private attributes",
+    "target": "निजी गुणों को छिपाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Method",
+    "target": "विधि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Property",
+    "target": "गुणधर्म",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Value",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "IPython Console",
+    "target": "आईपाइथन कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interactive console for manipulating currently selected accessible",
+    "target": "इस समय चुने गए एक्सेसेबेल से काम लेने के लिए अंतर्क्रियात्मक कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Monitor Events",
+    "target": "घटनाओं को मानिटर करें (_ M) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "C _ lear Selection",
+    "target": "चुनाव को हटाएं (C _) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Everything",
+    "target": "सभी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected application",
+    "target": "चुने गए अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected accessible",
+    "target": "चुने गए एक्सेसेबेल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Source",
+    "target": "स्रोत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event Monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Shows events as they occur from selected types and sources",
+    "target": "चुने गए प्रकारों और स्रोतों से घटनाएं जैसे-जैसे घटित होती हैं, उन्हें दर्शाता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight last event entry",
+    "target": "अंतिम प्रविष्ट घटना को हाइलाइट करो",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start / stop event recording",
+    "target": "घटना रेकोर्डिंग शुरू करो/रोको",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Clear event log",
+    "target": "घटना रोजनामचा मिटाओ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(no description)",
+    "target": "कोई विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Description",
+    "target": "वर्णन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Show",
+    "target": "दिखाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Accessible",
+    "target": "पहुंचनीय",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Perform action",
+    "target": "कार्रवाई संपन्न करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Acti _ on",
+    "target": "कार्रवाई (_ o) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "ID",
+    "target": "आईडी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Toolkit",
+    "target": "औजार बक्सा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Version",
+    "target": "संस्करण",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Ap _ plication",
+    "target": "अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Col _ lection",
+    "target": "संग्रह",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "0, 0",
+    "target": "0, 0",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Relative position",
+    "target": "सापेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Size",
+    "target": "आकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "WIDGET",
+    "target": "विडजेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Layer",
+    "target": "स्तर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "MDI - Z - order",
+    "target": "एमडीआई-जेड-क्रम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Alpha",
+    "target": "अल्फा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Absolute position",
+    "target": "निरपेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Co _ mponent",
+    "target": "घटक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Des _ ktop",
+    "target": "डेस्कटोप",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale:",
+    "target": "स्थान-विशिष्टः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Document",
+    "target": "प्रलेख",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hyperlink",
+    "target": "हाइपरकड़ी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "H _ ypertext",
+    "target": "हाइपरपाठ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Position",
+    "target": "स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Description",
+    "target": "वर्णन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale",
+    "target": "स्थान-विशिष्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Image",
+    "target": "छवि (_ I) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Lo _ gin Helper",
+    "target": "प्रवेश सहायक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Select All",
+    "target": "सभी चुनें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Selection",
+    "target": "चयन (_ S) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "St _ reamable Content",
+    "target": "प्रवाहित करनेयोग्य विषयवस्तु",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected columns",
+    "target": "चुने गए स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected rows",
+    "target": "चुनी गई पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Columns",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Rows",
+    "target": "पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Table Information",
+    "target": "& lt; bgt; सारणी सूचनाlt;/bgt; ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "name (x, y)",
+    "target": "नाम (x, y) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Header:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Extents:",
+    "target": "विस्तारः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Row",
+    "target": "पंक्ति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Column",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected Cell",
+    "target": "& lt; bgt; चुनी गई कोशिकाlt;/bgt; ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Table",
+    "target": "सारणी (_ T) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Offset",
+    "target": "ओफसेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Include defaults",
+    "target": "डिफोल्टों को शामिल करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Te _ xt",
+    "target": "पाठ (_ x) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Current value",
+    "target": "मौजूदा मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum increment",
+    "target": "न्यूनतम वृद्धि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Maximum value",
+    "target": "अधिकतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum value",
+    "target": "न्यूनतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Val _ ue",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interface Viewer",
+    "target": "अंतराफलक दर्शक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Allows viewing of various interface properties",
+    "target": "अंतराफलक के विभिन्न गुणों को देखने देता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(not implemented)",
+    "target": "(क्रियान्वित नहीं हुआ है) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Name",
+    "target": "नाम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "URI",
+    "target": "यूआरआई",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start",
+    "target": "प्रारंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "End",
+    "target": "अंत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Too many selectable children",
+    "target": "बहुत अधिक चयनीय शिशु हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Quick Select",
+    "target": "तेज चुनाव",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin with various methods of selecting accessibles quickly.",
+    "target": "प्लग-इन जिसमें हैं एक्सेसेबेलों को तेजी से चुनने के लिए कई विधियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect last focused accessible",
+    "target": "अंतिम बार फोकस किए गए एक्सेसेबल को जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect accessible under mouse",
+    "target": "माउस के अधीन जो एक्सेसेबल है, उसे जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Native",
+    "target": "वतनी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Dogtail",
+    "target": "श्वानपुच्छ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "LDTP",
+    "target": "एलडीटीपी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Script Type",
+    "target": "लिपि प्रकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Script Recorder",
+    "target": "लिपि रेकोर्डर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Creates dogtail style scripts",
+    "target": "श्वानपुच्छ शैली की लिपियां निर्मित करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The current script will be lost.",
+    "target": "वर्तमान लिपि (स्क्रिप्ट) खो जाएगी। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Confirm clear",
+    "target": "मिटाने की पुष्टि करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Sche _ ma:",
+    "target": "स्कीमाः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "V _ alidate",
+    "target": "सत्यापन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Idle",
+    "target": "खाली",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "No description",
+    "target": "कोई विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "AT - SPI Validator",
+    "target": "एटी-एसपीआई सत्यापक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Validates application accessibility",
+    "target": "अनुप्रयोग की पहुंचनीयता का सत्यापन करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Level",
+    "target": "स्तर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Role",
+    "target": "भूमिका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Saving",
+    "target": "सहेज रहे हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Validating",
+    "target": "पुष्टि कर रहे हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "EXCEPT",
+    "target": "अपवाद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "ERROR",
+    "target": "त्रुटि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "WARN",
+    "target": "चेतावनी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "INFO",
+    "target": "सूचना",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "DEBUG",
+    "target": "दोषमुक्त करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Basic",
+    "target": "मूल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Tests fundamental GUI application accessibility",
+    "target": "मूलभूत जीयूआई अनुप्रयोग पहुंचनीयता का परीक्षण करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "actionable% s is not focusable or selectable",
+    "target": "% s जिस पर कार्रवाई हो सकती है, वह न तो फोकस करने योग्य है न ही चयनीय",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "interactive% s is not actionable",
+    "target": "अंतर्क्रियात्मक% s कार्रवाई करने योग्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "more than one focused widget",
+    "target": "एक से अधिक विडजेट फोकस में है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has no text interface",
+    "target": "% s का कोई पाठ अंतराफलक नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s index in parent does not match child index",
+    "target": "अभिभावक में% s सूची शिशु सूची सेमेल नहीं खाती",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Missing reciprocal for% s relation",
+    "target": "% s संबंध के लिए अन्योन्य गायब है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s missing name or label",
+    "target": "% s गायब नाम या सूचक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "focusable% s has table interface, no selection interface",
+    "target": "फोकस योग्य% s में सारणी अंतराफलक है, कोई चयनीय अंतराफलक नहीं हैbutton has focused state without focusable state",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has% s state without% s state",
+    "target": "% s में% s स्थिति है, पर उसके साथ% s स्थिति नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s does not belong to a set",
+    "target": "% s किसी समुच्चय का सदस्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% (rolename) s index% (num) d does not match row and column",
+    "target": "% (rolename) s सूची% (num) d पंक्ति और स्तंभ से मेल नहीं खातेparent indexrow and column index",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% (rolename) s parent index% (num1) d does not match row and column index% (num2) d",
+    "target": "% (rolename) s अभिभावक सूची% (num1) d पंक्ति और स्तंभ सूची% (num2) d से मेल नहीं खाते",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has no name or description",
+    "target": "% s का कोई नाम या विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Preferences...",
+    "target": "पसंद (_ P)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Contents",
+    "target": "विषय सूची (_ C) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser could not see the applications on your desktop. You must enable desktop accessibility to fix this problem. Do you want to enable it now?",
+    "target": "एक्सेरसाइसर आपके डेस्कटोप में मौजूद अनुप्रयोग नहीं देख पाया। इस समस्या के समाधान के लिए आपको डेस्कटोप पहुंचनीयता को सक्रिय करना होगा। क्या आप इसे सक्रिय करना चाहते हैं? ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Note: Changes only take effect after logout.",
+    "target": "टिप्पणीः परिवर्तन सत्रांत (लोगआउट) के बाद ही प्रभाव में आएंगे। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Children",
+    "target": "शिशु",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Refresh Registry",
+    "target": "पंजी ताजा करें (_ R) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh all",
+    "target": "सभी को ताजा करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh _ Node",
+    "target": "आसंधि (नोड) को ताजा करें (_ N) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh selected node 's children",
+    "target": "चुनी गई आसंधियों (नोड) के शिशुओं को ताजा करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Component",
+    "target": "घटक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Task",
+    "target": "कार्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Key",
+    "target": "कुंजी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Alt",
+    "target": "आल्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Ctrl",
+    "target": "कंट्रोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Shift",
+    "target": "शिफ्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Top panel",
+    "target": "ऊपरी पटल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Bottom panel",
+    "target": "निचला पटल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "accerciser Preferences",
+    "target": "एक्सेर्साइसर पसंद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugins",
+    "target": "प्लगइन्स",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Global Hotkeys",
+    "target": "सार्वत्रिक फटाफट कुंजियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlighting",
+    "target": "हाइलाइटन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight duration:",
+    "target": "हाइलाइट अवधिः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Border color:",
+    "target": "सीमांत रंगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The border color of the highlight box",
+    "target": "हाइलाइट बक्से का सीमांत रंग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Fill color:",
+    "target": "भराई का रंगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The fill color of the highlight box",
+    "target": "हाइलाइट बक्से का भराई रंग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "translator - credits",
+    "target": "रविशंकर श्रीवास्तव (raviratlami @yahoo. com) राजेश रंजन (rajeshkajha @yahoo. com) ल. बालसुब्रमण्यम (l. balasubramaniam @gmail. com) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "An interactive Python accessibility explorer",
+    "target": "एक अंतर्क्रियात्मक पाइथन पहुंचनीयता अन्वेषक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "accerciser Copyright © 2006, 2007 IBM Corporation (BSD)",
+    "target": "एक्सेर्साइसर सर्वाधिकार © 2006,2007 आईबीएम निगम (बीएसडी) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The New BSD License See the COPYING and NOTICE files for details.",
+    "target": "नया बीएसडी लाइसेन्स विवरण के लिए देखिए प्रतिलिपीकरण और सूचना फाइलें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Web site",
+    "target": "जाल स्थल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Add Bookmark...",
+    "target": "पसंद जोड़ें... (_ A) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Bookmark selected accessible.",
+    "target": "चुने गए एक्सेसेबलों को पुस्तक-चिह्नित करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Edit Bookmarks...",
+    "target": "पुस्तक चिह्न संपादित करें (_ E)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Manage bookmarks.",
+    "target": "पुस्तक-चिह्नों को प्रबंधित करें। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Edit Bookmarks...",
+    "target": "पुस्तक चिह्नों को संपादित करें... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Title",
+    "target": "शीर्षक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Application",
+    "target": "अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Path",
+    "target": "पथ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Add Bookmark...",
+    "target": "पुस्तक-चिह्न जोड़ें... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Title:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Application:",
+    "target": "अनुप्रयोगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Path:",
+    "target": "पथः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin Errors",
+    "target": "प्लग-इन त्रुटियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "View",
+    "target": "दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "No view",
+    "target": "कोई दृश्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Single plugins view",
+    "target": "एकल प्लग-इन दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin View",
+    "target": "प्लग-इन दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin View (% d)",
+    "target": "प्लग-इन दृश्य (% d) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ New view...",
+    "target": "नया दृश्य... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "New View...",
+    "target": "नया दृश्य... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ File",
+    "target": "फाइल (F) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Edit",
+    "target": "संपादित करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Bookmarks",
+    "target": "पुस्तक-चिह्न संपादित करें (_ E)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ View",
+    "target": "दृश्य _ (V) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Help",
+    "target": "मदद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Full name",
+    "target": "पूरा नाम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Key binding",
+    "target": "कुंजी बंधन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Content type",
+    "target": "विषय प्रकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Give your application an accessibility workout",
+    "target": "अपने अनुप्रयोग को पहुंचनीयता व्यायाम का लाभ दें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser Accessibility Explorer",
+    "target": "एक्सेर्साइसर पहुंचनीयता अन्वेषक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The default plugin layout for the bottom panel",
+    "target": "निचले पटल के लिए डिफोल्ट प्लग-इन खाका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The default plugin layout for the top panel",
+    "target": "ऊपरी पटल के लिए डिफोल्ट प्लग-इन खाका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "A list of plugins that are disabled by default",
+    "target": "उन प्लग-इनों की सूची जिन्हें डिफोल्ट रूप से निष्क्रिय किया गया है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight duration",
+    "target": "अवधि को हाइलाइट रकें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The duration of the highlight box when selecting accessible nodes",
+    "target": "पहुंचनीय आसंधि (नोड) को चुनते समय हाइलाइट बक्से की अवधि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight border color",
+    "target": "सीमांत (बोर्डर) के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight border.",
+    "target": "हाइलाइट किए गए सीमांत का रंग और अपारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight fill color",
+    "target": "भराई के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight fill.",
+    "target": "हाइलाइट किया गया भराई का रंग और पारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "API Browser",
+    "target": "एपीआई विचरक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Browse the various methods of the current accessible",
+    "target": "इस समय जिसे प्राप्त किया गया हो, उसकी विभिन्न विधियों (मेथड) में विचरण करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hide private attributes",
+    "target": "निजी गुणों को छिपाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Method",
+    "target": "विधि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Property",
+    "target": "गुणधर्म",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Value",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "IPython Console",
+    "target": "आईपाइथन कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interactive console for manipulating currently selected accessible",
+    "target": "इस समय चुने गए एक्सेसेबेल से काम लेने के लिए अंतर्क्रियात्मक कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Monitor Events",
+    "target": "घटनाओं को मानिटर करें (_ M) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "C _ lear Selection",
+    "target": "चुनाव को हटाएं (C _) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Everything",
+    "target": "सभी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected application",
+    "target": "चुने गए अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected accessible",
+    "target": "चुने गए एक्सेसेबेल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Source",
+    "target": "स्रोत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event Monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Shows events as they occur from selected types and sources",
+    "target": "चुने गए प्रकारों और स्रोतों से घटनाएं जैसे-जैसे घटित होती हैं, उन्हें दर्शाता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight last event entry",
+    "target": "अंतिम प्रविष्ट घटना को हाइलाइट करो",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start / stop event recording",
+    "target": "घटना रेकोर्डिंग शुरू करो/रोको",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Clear event log",
+    "target": "घटना रोजनामचा मिटाओ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(no description)",
+    "target": "कोई विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Description",
+    "target": "वर्णन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Show",
+    "target": "दिखाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Accessible",
+    "target": "पहुंचनीय",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Perform action",
+    "target": "कार्रवाई संपन्न करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Acti _ on",
+    "target": "कार्रवाई (_ o) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "ID",
+    "target": "आईडी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Toolkit",
+    "target": "औजार बक्सा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Version",
+    "target": "संस्करण",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Ap _ plication",
+    "target": "अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Col _ lection",
+    "target": "संग्रह",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "0, 0",
+    "target": "0, 0",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Relative position",
+    "target": "सापेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Size",
+    "target": "आकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "WIDGET",
+    "target": "विडजेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Layer",
+    "target": "स्तर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "MDI - Z - order",
+    "target": "एमडीआई-जेड-क्रम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Alpha",
+    "target": "अल्फा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Absolute position",
+    "target": "निरपेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Co _ mponent",
+    "target": "घटक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Des _ ktop",
+    "target": "डेस्कटोप",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale:",
+    "target": "स्थान-विशिष्टः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Document",
+    "target": "प्रलेख",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hyperlink",
+    "target": "हाइपरकड़ी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "H _ ypertext",
+    "target": "हाइपरपाठ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Position",
+    "target": "स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Description",
+    "target": "वर्णन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale",
+    "target": "स्थान-विशिष्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Image",
+    "target": "छवि (_ I) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Lo _ gin Helper",
+    "target": "प्रवेश सहायक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Select All",
+    "target": "सभी चुनें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Selection",
+    "target": "चयन (_ S) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "St _ reamable Content",
+    "target": "प्रवाहित करनेयोग्य विषयवस्तु",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected columns",
+    "target": "चुने गए स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected rows",
+    "target": "चुनी गई पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Columns",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Rows",
+    "target": "पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Table Information",
+    "target": "& lt; bgt; सारणी सूचनाlt;/bgt; ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "name (x, y)",
+    "target": "नाम (x, y) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Header:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Extents:",
+    "target": "विस्तारः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Row",
+    "target": "पंक्ति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Column",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected Cell",
+    "target": "& lt; bgt; चुनी गई कोशिकाlt;/bgt; ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Table",
+    "target": "सारणी (_ T) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Offset",
+    "target": "ओफसेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Include defaults",
+    "target": "डिफोल्टों को शामिल करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Te _ xt",
+    "target": "पाठ (_ x) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Current value",
+    "target": "मौजूदा मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum increment",
+    "target": "न्यूनतम वृद्धि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Maximum value",
+    "target": "अधिकतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum value",
+    "target": "न्यूनतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Val _ ue",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interface Viewer",
+    "target": "अंतराफलक दर्शक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Allows viewing of various interface properties",
+    "target": "अंतराफलक के विभिन्न गुणों को देखने देता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(not implemented)",
+    "target": "(क्रियान्वित नहीं हुआ है) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Name",
+    "target": "नाम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "URI",
+    "target": "यूआरआई",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start",
+    "target": "प्रारंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "End",
+    "target": "अंत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Too many selectable children",
+    "target": "बहुत अधिक चयनीय शिशु हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Quick Select",
+    "target": "तेज चुनाव",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin with various methods of selecting accessibles quickly.",
+    "target": "प्लग-इन जिसमें हैं एक्सेसेबेलों को तेजी से चुनने के लिए कई विधियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect last focused accessible",
+    "target": "अंतिम बार फोकस किए गए एक्सेसेबल को जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect accessible under mouse",
+    "target": "माउस के अधीन जो एक्सेसेबल है, उसे जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Native",
+    "target": "वतनी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Dogtail",
+    "target": "श्वानपुच्छ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "LDTP",
+    "target": "एलडीटीपी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Script Type",
+    "target": "लिपि प्रकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Script Recorder",
+    "target": "लिपि रेकोर्डर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Creates dogtail style scripts",
+    "target": "श्वानपुच्छ शैली की लिपियां निर्मित करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The current script will be lost.",
+    "target": "वर्तमान लिपि (स्क्रिप्ट) खो जाएगी। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Confirm clear",
+    "target": "मिटाने की पुष्टि करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Sche _ ma:",
+    "target": "स्कीमाः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "V _ alidate",
+    "target": "सत्यापन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Idle",
+    "target": "खाली",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "No description",
+    "target": "कोई विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "AT - SPI Validator",
+    "target": "एटी-एसपीआई सत्यापक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Validates application accessibility",
+    "target": "अनुप्रयोग की पहुंचनीयता का सत्यापन करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Level",
+    "target": "स्तर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Role",
+    "target": "भूमिका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Saving",
+    "target": "सहेज रहे हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Validating",
+    "target": "पुष्टि कर रहे हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "EXCEPT",
+    "target": "अपवाद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "ERROR",
+    "target": "त्रुटि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "WARN",
+    "target": "चेतावनी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "INFO",
+    "target": "सूचना",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "DEBUG",
+    "target": "दोषमुक्त करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Basic",
+    "target": "मूल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Tests fundamental GUI application accessibility",
+    "target": "मूलभूत जीयूआई अनुप्रयोग पहुंचनीयता का परीक्षण करता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "actionable% s is not focusable or selectable",
+    "target": "% s जिस पर कार्रवाई हो सकती है, वह न तो फोकस करने योग्य है न ही चयनीय",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "interactive% s is not actionable",
+    "target": "अंतर्क्रियात्मक% s कार्रवाई करने योग्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "more than one focused widget",
+    "target": "एक से अधिक विडजेट फोकस में है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has no text interface",
+    "target": "% s का कोई पाठ अंतराफलक नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s index in parent does not match child index",
+    "target": "अभिभावक में% s सूची शिशु सूची सेमेल नहीं खाती",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Missing reciprocal for% s relation",
+    "target": "% s संबंध के लिए अन्योन्य गायब है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s missing name or label",
+    "target": "% s गायब नाम या सूचक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "focusable% s has table interface, no selection interface",
+    "target": "फोकस योग्य% s में सारणी अंतराफलक है, कोई चयनीय अंतराफलक नहीं हैbutton has focused state without focusable state",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has% s state without% s state",
+    "target": "% s में% s स्थिति है, पर उसके साथ% s स्थिति नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s does not belong to a set",
+    "target": "% s किसी समुच्चय का सदस्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% (rolename) s index% (num) d does not match row and column",
+    "target": "% (rolename) s सूची% (num) d पंक्ति और स्तंभ से मेल नहीं खातेparent indexrow and column index",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% (rolename) s parent index% (num1) d does not match row and column index% (num2) d",
+    "target": "% (rolename) s अभिभावक सूची% (num1) d पंक्ति और स्तंभ सूची% (num2) d से मेल नहीं खाते",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "% s has no name or description",
+    "target": "% s का कोई नाम या विवरण नहीं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Preferences...",
+    "target": "पसंद (_ P)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Contents",
+    "target": "विषय सूची (_ C) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser could not see the applications on your desktop. You must enable desktop accessibility to fix this problem. Do you want to enable it now?",
+    "target": "एक्सेरसाइसर आपके डेस्कटोप में मौजूद अनुप्रयोग नहीं देख पाया। इस समस्या के समाधान के लिए आपको डेस्कटोप पहुंचनीयता को सक्रिय करना होगा। क्या आप इसे सक्रिय करना चाहते हैं? ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Note: Changes only take effect after logout.",
+    "target": "टिप्पणीः परिवर्तन सत्रांत (लोगआउट) के बाद ही प्रभाव में आएंगे। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Children",
+    "target": "शिशु",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Refresh Registry",
+    "target": "पंजी ताजा करें (_ R) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh all",
+    "target": "सभी को ताजा करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh _ Node",
+    "target": "आसंधि (नोड) को ताजा करें (_ N) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Refresh selected node 's children",
+    "target": "चुनी गई आसंधियों (नोड) के शिशुओं को ताजा करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Component",
+    "target": "घटक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Task",
+    "target": "कार्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Key",
+    "target": "कुंजी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Alt",
+    "target": "आल्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Ctrl",
+    "target": "कंट्रोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Shift",
+    "target": "शिफ्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Top panel",
+    "target": "ऊपरी पटल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Bottom panel",
+    "target": "निचला पटल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "accerciser Preferences",
+    "target": "एक्सेर्साइसर पसंद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugins",
+    "target": "प्लगइन्स",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Global Hotkeys",
+    "target": "सार्वत्रिक फटाफट कुंजियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlighting",
+    "target": "हाइलाइटन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight duration:",
+    "target": "हाइलाइट अवधिः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Border color:",
+    "target": "सीमांत रंगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The border color of the highlight box",
+    "target": "हाइलाइट बक्से का सीमांत रंग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Fill color:",
+    "target": "भराई का रंगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The fill color of the highlight box",
+    "target": "हाइलाइट बक्से का भराई रंग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "translator - credits",
+    "target": "रविशंकर श्रीवास्तव (raviratlami @yahoo. com) राजेश रंजन (rajeshkajha @yahoo. com) ल. बालसुब्रमण्यम (l. balasubramaniam @gmail. com) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "An interactive Python accessibility explorer",
+    "target": "एक अंतर्क्रियात्मक पाइथन पहुंचनीयता अन्वेषक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "accerciser Copyright © 2006, 2007 IBM Corporation (BSD)",
+    "target": "एक्सेर्साइसर सर्वाधिकार © 2006,2007 आईबीएम निगम (बीएसडी) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The New BSD License See the COPYING and NOTICE files for details.",
+    "target": "नया बीएसडी लाइसेन्स विवरण के लिए देखिए प्रतिलिपीकरण और सूचना फाइलें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Web site",
+    "target": "जाल स्थल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Add Bookmark...",
+    "target": "पसंद जोड़ें... (_ A) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Bookmark selected accessible.",
+    "target": "चुने गए एक्सेसेबलों को पुस्तक-चिह्नित करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Edit Bookmarks...",
+    "target": "पुस्तक चिह्न संपादित करें (_ E)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Manage bookmarks.",
+    "target": "पुस्तक-चिह्नों को प्रबंधित करें। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Edit Bookmarks...",
+    "target": "पुस्तक चिह्नों को संपादित करें... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Title",
+    "target": "शीर्षक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Application",
+    "target": "अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Path",
+    "target": "पथ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Add Bookmark...",
+    "target": "पुस्तक-चिह्न जोड़ें... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Title:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Application:",
+    "target": "अनुप्रयोगः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Path:",
+    "target": "पथः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin Errors",
+    "target": "प्लग-इन त्रुटियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "View",
+    "target": "दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "No view",
+    "target": "कोई दृश्य नहीं है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Single plugins view",
+    "target": "एकल प्लग-इन दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin View",
+    "target": "प्लग-इन दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin View (% d)",
+    "target": "प्लग-इन दृश्य (% d) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ New view...",
+    "target": "नया दृश्य... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "New View...",
+    "target": "नया दृश्य... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ File",
+    "target": "फाइल (F) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Edit",
+    "target": "संपादित करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Bookmarks",
+    "target": "पुस्तक-चिह्न संपादित करें (_ E)... ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ View",
+    "target": "दृश्य _ (V) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Help",
+    "target": "मदद",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Full name",
+    "target": "पूरा नाम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Key binding",
+    "target": "कुंजी बंधन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Content type",
+    "target": "विषय प्रकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser",
+    "target": "एक्सेर्साइसर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Give your application an accessibility workout",
+    "target": "अपने अनुप्रयोग को पहुंचनीयता व्यायाम का लाभ दें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Accerciser Accessibility Explorer",
+    "target": "एक्सेर्साइसर पहुंचनीयता अन्वेषक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "A list of plugins that are disabled by default",
+    "target": "उन प्लग-इनों की सूची जिन्हें डिफोल्ट रूप से निष्क्रिय किया गया है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "A list of plugins that are disabled by default.",
+    "target": "उन प्लग-इनों की सूची जिन्हें डिफोल्ट रूप से निष्क्रिय किया गया है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight duration",
+    "target": "अवधि को हाइलाइट रकें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The duration of the highlight box when selecting accessible nodes.",
+    "target": "पहुंचनीय आसंधि नोड को चुनते समय हाइलाइट बक्से की अवधि. ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight fill color",
+    "target": "भराई के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight fill.",
+    "target": "हाइलाइट किया गया भराई का रंग और पारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight border color",
+    "target": "सीमांत (बोर्डर) के रंग को हाइलाइट करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The color and opacity of the highlight border.",
+    "target": "हाइलाइट किए गए सीमांत का रंग और अपारदर्शिता। ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The layout for the bottom panel",
+    "target": "नीचे के पैनल के लिए लेआउट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The layout for the bottom panel pluginview.",
+    "target": "नीचे पैनल pluginview के लिए लेआउट. ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The layout for the top panel",
+    "target": "ऊपरी पटल के लिए खाका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The layout for the top panel pluginview.",
+    "target": "शीर्ष पैनल pluginview के लिए लेआउट. ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Single layout view",
+    "target": "एकल लेआउट दृश्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Available new pluginviews",
+    "target": "नई pluginviews उपलब्ध है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "The default plugin layout for the top panel.",
+    "target": "ऊपरी पटल के लिए डिफोल्ट प्लग-इन खाका. ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "API Browser",
+    "target": "एपीआई विचरक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Browse the various methods of the current accessible",
+    "target": "इस समय जिसे प्राप्त किया गया हो, उसकी विभिन्न विधियों (मेथड) में विचरण करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hide private attributes",
+    "target": "निजी गुणों को छिपाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Method",
+    "target": "विधि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Property",
+    "target": "गुणधर्म",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Value",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "IPython Console",
+    "target": "आईपाइथन कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interactive console for manipulating currently selected accessible",
+    "target": "इस समय चुने गए एक्सेसेबेल से काम लेने के लिए अंतर्क्रियात्मक कन्सोल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Monitor Events",
+    "target": "घटनाओं को मानिटर करें (_ M) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "C _ lear Selection",
+    "target": "चुनाव को हटाएं (C _) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Everything",
+    "target": "सभी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected application",
+    "target": "चुने गए अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected accessible",
+    "target": "चुने गए एक्सेसेबेल",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Source",
+    "target": "स्रोत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Event Monitor",
+    "target": "घटना मानिटर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Shows events as they occur from selected types and sources",
+    "target": "चुने गए प्रकारों और स्रोतों से घटनाएं जैसे-जैसे घटित होती हैं, उन्हें दर्शाता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Highlight last event entry",
+    "target": "अंतिम प्रविष्ट घटना को हाइलाइट करो",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start / stop event recording",
+    "target": "घटना रेकोर्डिंग शुरू करो/रोको",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Clear event log",
+    "target": "घटना रोजनामचा मिटाओ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Child count",
+    "target": "बाल गणना",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Description",
+    "target": "वर्णन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "States",
+    "target": "राज्य",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Attributes",
+    "target": "गुणधर्म",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Show",
+    "target": "दिखाएं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Relations",
+    "target": "संबंध",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Accessible",
+    "target": "पहुंचनीय",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Perform action",
+    "target": "कार्रवाई संपन्न करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Acti _ on",
+    "target": "कार्रवाई (_ o) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "ID",
+    "target": "आईडी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Toolkit",
+    "target": "औजार बक्सा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Version",
+    "target": "संस्करण",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Ap _ plication",
+    "target": "अनुप्रयोग",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Col _ lection",
+    "target": "संग्रह",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "0, 0",
+    "target": "0, 0",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Relative position",
+    "target": "सापेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Size",
+    "target": "आकार",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "WIDGET",
+    "target": "विडजेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Layer",
+    "target": "स्तर",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "MDI - Z - order",
+    "target": "एमडीआई-जेड-क्रम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Alpha",
+    "target": "अल्फा",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Absolute position",
+    "target": "निरपेक्ष स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Co _ mponent",
+    "target": "घटक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Des _ ktop",
+    "target": "डेस्कटोप",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale:",
+    "target": "स्थान-विशिष्टः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Document",
+    "target": "प्रलेख",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Hyperlink",
+    "target": "हाइपरकड़ी",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "H _ ypertext",
+    "target": "हाइपरपाठ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Position",
+    "target": "स्थिति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Locale",
+    "target": "स्थान-विशिष्ट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Image",
+    "target": "छवि (_ I) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Lo _ gin Helper",
+    "target": "प्रवेश सहायक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Select All",
+    "target": "सभी चुनें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Selection",
+    "target": "चयन (_ S) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "St _ reamable Content",
+    "target": "प्रवाहित करनेयोग्य विषयवस्तु",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Caption:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Summary:",
+    "target": "सारांशः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected columns",
+    "target": "चुने गए स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected rows",
+    "target": "चुनी गई पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Columns",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Rows",
+    "target": "पंक्तियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Table Information",
+    "target": "सारणी सूचना",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "name (x, y)",
+    "target": "नाम (x, y) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Header:",
+    "target": "शीर्षकः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Extents:",
+    "target": "विस्तारः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Row",
+    "target": "पंक्ति",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Column",
+    "target": "स्तंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Selected Cell",
+    "target": "चुनी गई कोशिका",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "_ Table",
+    "target": "सारणी (_ T) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Offset",
+    "target": "ओफसेट",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Include defaults",
+    "target": "डिफोल्टों को शामिल करें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start: 0",
+    "target": "प्रारंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "End: 0",
+    "target": "अंतः 0",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Te _ xt",
+    "target": "पाठ (_ x) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Current value",
+    "target": "मौजूदा मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum increment",
+    "target": "न्यूनतम वृद्धि",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Maximum value",
+    "target": "अधिकतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Minimum value",
+    "target": "न्यूनतम मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Val _ ue",
+    "target": "मान",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "unknown",
+    "target": "अज्ञात",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Interface Viewer",
+    "target": "अंतराफलक दर्शक",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Allows viewing of various interface properties",
+    "target": "अंतराफलक के विभिन्न गुणों को देखने देता है",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(not implemented)",
+    "target": "(क्रियान्वित नहीं हुआ है) ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Name",
+    "target": "नाम",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "URI",
+    "target": "यूआरआई",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start",
+    "target": "प्रारंभ",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "End",
+    "target": "अंत",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Too many selectable children",
+    "target": "बहुत अधिक चयनीय शिशु हैं",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "(Editable)",
+    "target": "(संशोधनीय) Start",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Start:% d",
+    "target": "प्रारंभEnd",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Quick Select",
+    "target": "तेज चुनाव",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Plugin with various methods of selecting accessibles quickly.",
+    "target": "प्लग-इन जिसमें हैं एक्सेसेबेलों को तेजी से चुनने के लिए कई विधियां",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect last focused accessible",
+    "target": "अंतिम बार फोकस किए गए एक्सेसेबल को जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Inspect accessible under mouse",
+    "target": "माउस के अधीन जो एक्सेसेबल है, उसे जांचें",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "Sche _ ma:",
+    "target": "स्कीमाः",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  },
+  {
+    "source": "V _ alidate",
+    "target": "सत्यापन",
+    "sourceLang": "en",
+    "targetLang": "hi_IN",
+    "domain": "general"
+  }
+]
