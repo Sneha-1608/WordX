@@ -57,8 +57,7 @@ export async function translateText(sourceText, sourceLang, targetLang, glossary
   const langName = LANG_DISPLAY[targetLang] || targetLang;
 
   // §4.1: Build spec-aligned constrained Enterprise Translator prompt
-  const sourceLangText = sourceLang === 'auto' ? 'the detected source language' : sourceLang;
-  let prompt = `You are a professional Enterprise Translator. Translate from ${sourceLangText} to ${langName} (${targetLang}).
+  let prompt = `You are a professional Enterprise Translator from ${sourceLang} to ${langName} (${targetLang}).
 Return ONLY the translated sentence. No XML, no markdown, no explanations, no quotes.
 
 RULES:

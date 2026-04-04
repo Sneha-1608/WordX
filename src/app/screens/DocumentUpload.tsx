@@ -96,6 +96,10 @@ export default function DocumentUpload() {
 
   const handleUpload = async () => {
     if (!selectedFile) return;
+    if (sourceLanguage === activeLanguage) {
+      toast.error('Source and target language must be different.', { duration: 3000 });
+      return;
+    }
 
     setIsParsing(true);
     setParsePhase('parsing');
@@ -105,7 +109,7 @@ export default function DocumentUpload() {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('language', activeLanguage);
-      formData.append('sourceLang', 'auto');
+      formData.append('sourceLang', sourceLanguage);
 
       const response = await fetch('/api/parse', {
         method: 'POST',
@@ -153,7 +157,7 @@ export default function DocumentUpload() {
         body: JSON.stringify({
           projectId: data.projectId,
           segments: data.segments,
-          sourceLang: 'auto',
+          sourceLang: sourceLanguage,
           targetLang: activeLanguage,
         }),
       }).then(async (streamRes) => {
@@ -337,6 +341,23 @@ export default function DocumentUpload() {
                 </button>
                 
                 <div className="flex items-center gap-1.5 p-1 rounded-xl border border-black/10 bg-white">
+                  <select
+                    value={sourceLanguage}
+                    onChange={(e) => setSourceLanguage(e.target.value)}
+                    className="h-8 px-2 pr-6 rounded-lg bg-transparent text-[13px] font-medium text-brand-indigo outline-none cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
+                  >
+                    {Object.entries(REGION_LABELS).map(([region, label]) => {
+                      const regionLangs = sourceLangs.filter(l => l.region === region);
+                      if (regionLangs.length === 0) return null;
+                      return (
+                        <optgroup key={region} label={label}>
+                          {regionLangs.map(l => <option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+                  <ArrowRight className="w-3 h-3 text-ui-slate" />
                   <select
                     value={activeLanguage}
                     onChange={(e) => setActiveLanguage(e.target.value)}

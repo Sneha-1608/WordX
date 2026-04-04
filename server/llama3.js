@@ -13,7 +13,99 @@ const LANG_DISPLAY = {
   fr_FR: 'French', de_DE: 'German', es_ES: 'Spanish', pt_BR: 'Portuguese',
   it_IT: 'Italian', nl_NL: 'Dutch', ja_JP: 'Japanese', ko_KR: 'Korean',
   zh_CN: 'Chinese',
+  ru_RU: 'Russian', pl_PL: 'Polish', sv_SE: 'Swedish', tr_TR: 'Turkish',
+  ar_SA: 'Arabic', th_TH: 'Thai', vi_VN: 'Vietnamese',
 };
+
+/**
+ * Check if Groq API is available for translation fallback.
+ * @returns {boolean}
+ */
+export function isGroqAvailable() {
+  return !MOCK_MODE && !!process.env.GROQ_API_KEY;
+}
+
+/**
+ * Translate text using Groq API (Llama 3.3 70B) as a fallback.
+ * Used when Gemini is rate-limited or unavailable for non-Indian languages.
+ *
+ * @param {string} sourceText
+ * @param {string} sourceLang
+ * @param {string} targetLang
+ * @param {Array} glossaryTerms [{source, target}]
+ * @param {string|null} fuzzyRef
+ * @param {string} stylePrompt
+ * @returns {Promise<{text: string, model: string, engine: string}>}
+ */
+export async function groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms = [], fuzzyRef = null, stylePrompt = '') {
+  if (!process.env.GROQ_API_KEY) {
+    throw new Error('Groq API key not configured');
+  }
+
+  const langName = LANG_DISPLAY[targetLang] || targetLang;
+
+  let prompt = `You are a professional Enterprise Translator from ${sourceLang} to ${langName} (${targetLang}).
+Return ONLY the translated sentence. No XML, no markdown, no explanations, no quotes.
+
+RULES:
+- Maintain the same tone and register as the source.
+- Preserve any numbers, dates, and proper nouns exactly as they appear.
+- Use formal/professional register for business content.`;
+
+  if (stylePrompt) {
+    prompt += `\n\nSTYLE REQUIREMENTS:${stylePrompt}`;
+  }
+
+  if (glossaryTerms && glossaryTerms.length > 0) {
+    prompt += `\n\nREQUIRED GLOSSARY TERMS (MUST USE EXACTLY IF SOURCE TERM IS PRESENT):`;
+    for (const term of glossaryTerms) {
+      prompt += `\n"${term.source}" → "${term.target}"`;
+    }
+  }
+
+  if (fuzzyRef) {
+    prompt += `\n\nREFERENCE TRANSLATIONS (For Style ONLY):
+Reference: "${fuzzyRef}"
+Use this as a style guide but translate the actual source text below.`;
+  }
+
+  prompt += `\n\nSOURCE TEXT:\n${sourceText}`;
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.3,
+      max_tokens: 2048,
+    }),
+  });
+
+  if (!response.ok) {
+    const errBody = await response.text().catch(() => '');
+    throw new Error(`Groq API error: ${response.status} ${response.statusText} ${errBody}`);
+  }
+
+  const data = await response.json();
+  let text = (data.choices?.[0]?.message?.content || '').trim();
+
+  // Strip wrapping quotes if present
+  if ((text.startsWith('"') && text.endsWith('"')) || (text.startsWith("'") && text.endsWith("'"))) {
+    text = text.slice(1, -1);
+  }
+
+  console.log(`   🦙 Groq [${langName}]: "${sourceText.substring(0, 40)}..." → "${text.substring(0, 40)}..."`);
+
+  return {
+    text,
+    model: 'llama-3.3-70b-versatile',
+    engine: 'groq',
+  };
+}
 
 /**
  * Post-translation QA: Audits a single translation for semantic errors using Llama 3.1.

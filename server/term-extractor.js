@@ -35,9 +35,8 @@ export async function extractTerms(sourceText, sourceLang = 'en') {
     ];
   }
 
-  const langString = sourceLang === 'auto' ? '' : `${sourceLang} `;
   const prompt = `You are a terminology extraction specialist.
-Analyze the following ${langString}text and extract ALL:
+Analyze the following ${sourceLang} text and extract ALL:
 - Domain-specific terminology (legal, medical, financial, technical)
 - Proper nouns and named entities
 - Technical acronyms and abbreviations

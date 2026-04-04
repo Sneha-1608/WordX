@@ -22,7 +22,7 @@ import {
   validateWithGemini,
   isMockMode,
 } from './gemini.js';
-import { qaCheckTranslationLlama as qaCheckTranslation } from './llama3.js';
+import { qaCheckTranslationLlama as qaCheckTranslation, groqTranslate, isGroqAvailable } from './llama3.js';
 import {
   sarvamTranslate,
   isSarvamAvailable,
@@ -172,38 +172,34 @@ const LANG_NAMES = {
  * Fallback: Gemini 1.5 Flash for ALL languages if Sarvam is unavailable
  *
  * @param {string} targetLang
- * @param {string} sourceLang
  * @returns {{ model: string, engine: string, family: string }}
  */
-export function getModelForLanguage(targetLang, sourceLang = 'en') {
+export function getModelForLanguage(targetLang) {
   const family = INDIC_LANGS.has(targetLang) ? 'indic'
     : EUROPEAN_LANGS.has(targetLang) ? 'european'
     : 'other';
 
-  // Local/Indic models generally require English as the source
-  if (sourceLang !== 'auto' && sourceLang === 'en') {
-    // Priority 1: IndicTrans2 (local, free, no API key needed)
-    if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
-      return {
-        model: 'indictrans2-en-indic-dist-200M',
-        engine: 'indictrans2',
-        family,
-        displayName: LANG_NAMES[targetLang] || targetLang,
-      };
-    }
-
-    // Priority 2: Sarvam AI (remote API, Indic languages)
-    if (family === 'indic' && isSarvamAvailable() && isSarvamSupported(targetLang)) {
-      return {
-        model: 'sarvam-translate:v1',
-        engine: 'sarvam',
-        family,
-        displayName: LANG_NAMES[targetLang] || targetLang,
-      };
-    }
+  // Priority 1: IndicTrans2 (local, free, no API key needed)
+  if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
+    return {
+      model: 'indictrans2-en-indic-dist-200M',
+      engine: 'indictrans2',
+      family,
+      displayName: LANG_NAMES[targetLang] || targetLang,
+    };
   }
 
-  // Priority 3: Gemini (European + other + fallback + auto source)
+  // Priority 2: Sarvam AI (remote API, Indic languages)
+  if (family === 'indic' && isSarvamAvailable() && isSarvamSupported(targetLang)) {
+    return {
+      model: 'sarvam-translate:v1',
+      engine: 'sarvam',
+      family,
+      displayName: LANG_NAMES[targetLang] || targetLang,
+    };
+  }
+
+  // Priority 3: Gemini (European + other + fallback)
   return {
     model: 'gemini-2.0-flash',
     engine: 'gemini',
@@ -336,7 +332,7 @@ export async function translateSegment({
   promptVersion = null,
 }) {
   const start = performance.now();
-  const routing = getModelForLanguage(targetLang, sourceLang);
+  const routing = getModelForLanguage(targetLang);
   const version = promptVersion || activePromptVersion;
 
   // ──────────────────────────────────────────────────────
@@ -482,12 +478,31 @@ export async function translateSegment({
       }
     } else {
       // ═══ Gemini path (European + other languages) ═══
-      targetText = await rateLimiter.execute(() =>
-        translateText(
-          sourceText, sourceLang, targetLang,
-          glossaryTerms, fuzzyRef, stylePrompt
-        )
-      );
+      try {
+        targetText = await rateLimiter.execute(() =>
+          translateText(
+            sourceText, sourceLang, targetLang,
+            glossaryTerms, fuzzyRef, stylePrompt
+          )
+        );
+      } catch (geminiErr) {
+        // ═══ Groq fallback when Gemini fails (rate limit, etc.) ═══
+        console.warn(`   ⚠ Gemini failed for [${routing.displayName}]: ${geminiErr.message}`);
+        if (isGroqAvailable()) {
+          console.warn(`   ↪ Falling back to Groq (Llama 3.3 70B)...`);
+          try {
+            const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
+            targetText = groqResult.text;
+            actualEngine = 'groq (fallback from gemini)';
+            actualModel = groqResult.model;
+          } catch (groqErr) {
+            console.warn(`   ⚠ Groq also failed: ${groqErr.message}`);
+            throw groqErr; // Let outer catch handle the final fallback
+          }
+        } else {
+          throw geminiErr; // No Groq available, let outer catch handle it
+        }
+      }
     }
   } catch (err) {
     errorMessage = err.message;
