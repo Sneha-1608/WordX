@@ -25,7 +25,6 @@ export function Navigation() {
   const navLinks = [
     { name: 'HOW IT WORKS', href: '#process' },
     { name: 'LANGUAGES', href: '#languages' },
-    { name: 'PRICING', href: '#pricing' },
     { name: 'RESEARCH', href: '#research' },
     { name: 'CONTACT', href: '#contact' },
   ];
@@ -43,8 +42,8 @@ export function Navigation() {
           {/* Logo */}
           <Link to="/home" className="flex items-center relative z-50">
             <span className="text-[22px] font-black">
-              <span className="text-brand-indigo">Clear</span>
-              <span className="text-brand-emerald">Lingo</span>
+              <span className="text-brand-indigo">Verb</span>
+              <span className="text-brand-emerald"> AI</span>
             </span>
           </Link>
 
@@ -62,12 +61,7 @@ export function Navigation() {
             ))}
           </div>
 
-          {/* CTA Button — Desktop */}
-          <div className="hidden lg:block">
-            <Button variant="primary" size="md">
-              Request Demo
-            </Button>
-          </div>
+
 
           {/* Hamburger — Mobile */}
           <button
@@ -109,16 +103,7 @@ export function Navigation() {
               </motion.a>
             ))}
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-              className="mt-8"
-            >
-              <Button variant="primary" size="lg" onClick={() => setMobileOpen(false)}>
-                Request Demo
-              </Button>
-            </motion.div>
+
           </motion.div>
         )}
       </AnimatePresence>

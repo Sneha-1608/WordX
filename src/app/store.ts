@@ -77,6 +77,9 @@ interface AppState {
   violationCount: number;
   totalCostSaved: number;
 
+  // Streaming Translation Progress (Improvement 5)
+  translationProgress: { current: number; total: number; errors: number } | null;
+
   // Actions
   setProject: (id: number, name: string) => void;
   setSegments: (segments: Segment[]) => void;
@@ -90,11 +93,8 @@ interface AppState {
   
   updateSegmentStatus: (id: string, status: 'APPROVED' | 'REJECTED' | 'PENDING') => void;
   updateTargetText: (id: string, text: string) => void;
-<<<<<<< HEAD
   updateSegmentFromCollab: (id: string, targetText: string) => void;
   updateSegmentStatusFromCollab: (id: string, status: string) => void;
-=======
->>>>>>> 3cbd11904509604a357987b4923a2eaf0e35344a
   approveSegment: (id: string, targetText: string) => void;
   revertSegment: (id: string) => void;
   propagateApproval: (ids: string[], targetText: string) => void;
@@ -103,6 +103,12 @@ interface AppState {
   recalculateStats: () => void;
   autoFixIssues: () => void;
   reset: () => void;
+
+  // Streaming actions (Improvement 5)
+  updateSegmentTranslation: (id: string, targetText: string, matchType: string, tmScore: number) => void;
+  markSegmentError: (id: string, error: string) => void;
+  setTranslationProgress: (current: number, total: number, errors: number) => void;
+  clearTranslationProgress: () => void;
 }
 
 const COST_PER_SEGMENT_AGENCY = 400; // ₹400 per segment at agency rates
@@ -135,6 +141,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   approvedCount: 0,
   violationCount: 0,
   totalCostSaved: 0,
+  translationProgress: null,
 
   // Setters
   setProject: (id, name) => set({ currentProjectId: id, currentProjectName: name }),
@@ -167,7 +174,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
-<<<<<<< HEAD
   // Collab: update target text from another user's edit
   updateSegmentFromCollab: (id, targetText) => {
     set({
@@ -187,8 +193,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ segments, ...stats });
   },
 
-=======
->>>>>>> 3cbd11904509604a357987b4923a2eaf0e35344a
   approveSegment: (id, targetText) => {
     const segments = get().segments.map((s) =>
       s.id === id ? { ...s, status: 'APPROVED' as const, targetText } : s
@@ -286,7 +290,41 @@ export const useAppStore = create<AppState>((set, get) => ({
     approvedCount: 0,
     violationCount: 0,
     totalCostSaved: 0,
+    translationProgress: null,
   }),
+
+  // Streaming actions (Improvement 5)
+  updateSegmentTranslation: (id, targetText, matchType, tmScore) => {
+    const segments = get().segments.map((s) =>
+      s.id === id
+        ? {
+            ...s,
+            targetText,
+            originalTarget: targetText,
+            matchType: matchType as Segment['matchType'],
+            tmScore,
+          }
+        : s
+    );
+    const stats = calculateStats(segments);
+    set({ segments, ...stats });
+  },
+
+  markSegmentError: (id, _error) => {
+    const segments = get().segments.map((s) =>
+      s.id === id ? { ...s, violation: true } : s
+    );
+    const stats = calculateStats(segments);
+    set({ segments, ...stats });
+  },
+
+  setTranslationProgress: (current, total, errors) => {
+    set({ translationProgress: { current, total, errors } });
+  },
+
+  clearTranslationProgress: () => {
+    set({ translationProgress: null });
+  },
 }));
 
 // ═══════════════════════════════════════════════════════════════

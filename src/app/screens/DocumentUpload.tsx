@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { Upload, FileText, X, AlertCircle, CheckCircle2, ArrowRight, Globe } from 'lucide-react';
+import { Upload, FileText, X, AlertCircle, CheckCircle2, ArrowRight, Sparkles, Paperclip, ArrowUp, Zap, Shield, FileOutput, Key, Globe } from 'lucide-react';
 import { Button } from '../components/Button';
 import { useAppStore, Language } from '../store';
 import { toast, Toaster } from 'sonner';
@@ -38,12 +38,12 @@ export default function DocumentUpload() {
       .catch(err => console.warn('Failed to load languages:', err));
   }, []);
 
-  const SUPPORTED_FORMATS = new Set(['docx', 'pdf', 'txt', 'xlsx', 'xls', 'csv', 'pptx', 'html', 'htm', 'rtf', 'md']);
+  const SUPPORTED_FORMATS = new Set(['docx', 'pdf']);
 
   const validateFile = (file: File): boolean => {
     const ext = file.name.split('.').pop()?.toLowerCase() || '';
     if (!SUPPORTED_FORMATS.has(ext)) {
-      toast.error(`Unsupported format: .${ext}. We accept DOCX, PDF, TXT, XLSX, CSV, PPTX, HTML, and more.`, {
+      toast.error(`Unsupported format: .${ext}. We only accept DOCX and PDF files.`, {
         duration: 4000,
         icon: <AlertCircle className="w-5 h-5" />,
       });
@@ -243,242 +243,166 @@ export default function DocumentUpload() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-ui-surface overflow-y-auto">
-        <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex flex-col bg-[#FAFAFA] overflow-y-auto overflow-x-hidden relative">
+        <div className="flex-1 flex flex-col items-center pt-24 px-8 pb-12 w-full max-w-[800px] mx-auto z-10">
+          
+          {/* Header & Glowing Orb */}
           <motion.div
-            className="w-full max-w-[720px]"
+            className="text-center mb-10 w-full flex flex-col items-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+
+            <h1 className="text-[32px] md:text-[40px] font-medium text-brand-indigo tracking-tight leading-tight">
+              Good Afternoon, Admin <br/>
+              What do you want to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#d946ef] to-[#c026d3]">translate?</span>
+            </h1>
+          </motion.div>
+
+          {/* Chat-like Input Card / Dropzone */}
+          <motion.div
+            className={`w-full bg-white rounded-3xl transition-all duration-300 relative ${
+              isDragOver ? 'ring-2 ring-[#d946ef] shadow-[0_0_40px_rgba(217,70,239,0.15)] bg-[#faf5ff]' : 'shadow-[0_2px_18px_rgba(0,0,0,0.04)] ring-1 ring-black/5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]'
+            }`}
+            style={{ minHeight: '160px' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            <div className="text-center mb-8">
-              <h1 className="text-display-h3 text-brand-indigo mb-3">Upload Document</h1>
-              <p className="text-body-lg text-ui-slate">
-                Drop any document file to begin translation
-              </p>
-            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".docx,.pdf"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
 
-            {/* Language Selector Row */}
-            <motion.div
-              className="flex items-center justify-center gap-4 mb-8"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-            >
-              {/* Source Language */}
-              <div className="flex flex-col items-start">
-                <label className="text-[11px] font-semibold text-ui-slate uppercase tracking-wider mb-1.5 ml-1">
-                  From
-                </label>
-                <select
-                  id="source-language-select"
-                  value={sourceLanguage}
-                  onChange={(e) => setSourceLanguage(e.target.value)}
-                  className="h-11 px-4 pr-8 rounded-xl bg-ui-white border border-ui-border text-body-md text-brand-indigo font-medium
-                             hover:border-brand-emerald/50 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/20
-                             outline-none transition-all cursor-pointer appearance-none min-w-[180px]"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 12px center',
-                  }}
-                >
-                  {Object.entries(REGION_LABELS).map(([region, label]) => {
-                    const regionLangs = sourceLangs.filter(l => l.region === region);
-                    if (regionLangs.length === 0) return null;
-                    return (
-                      <optgroup key={region} label={label}>
-                        {regionLangs.map(l => (
-                          <option key={l.code} value={l.code}>{l.flag} {l.name}</option>
-                        ))}
-                      </optgroup>
-                    );
-                  })}
-                </select>
-              </div>
-
-              {/* Arrow */}
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-brand-indigo/10 mt-5">
-                <ArrowRight className="w-5 h-5 text-brand-indigo" />
-              </div>
-
-              {/* Target Language */}
-              <div className="flex flex-col items-start">
-                <label className="text-[11px] font-semibold text-ui-slate uppercase tracking-wider mb-1.5 ml-1">
-                  To
-                </label>
-                <select
-                  id="target-language-select"
-                  value={activeLanguage}
-                  onChange={(e) => setActiveLanguage(e.target.value)}
-                  className="h-11 px-4 pr-8 rounded-xl bg-ui-white border border-ui-border text-body-md text-brand-indigo font-medium
-                             hover:border-brand-emerald/50 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/20
-                             outline-none transition-all cursor-pointer appearance-none min-w-[180px]"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 12px center',
-                  }}
-                >
-                  {Object.entries(REGION_LABELS).filter(([r]) => r !== 'source').map(([region, label]) => {
-                    const regionLangs = allLangs.filter(l => l.region === region);
-                    if (regionLangs.length === 0) return null;
-                    return (
-                      <optgroup key={region} label={label}>
-                        {regionLangs.map(l => (
-                          <option key={l.code} value={l.code}>{l.flag} {l.name}</option>
-                        ))}
-                      </optgroup>
-                    );
-                  })}
-                </select>
-              </div>
-            </motion.div>
-
-            {/* Dropzone */}
-            <motion.div
-              className={`relative rounded-[24px] border-2 border-dashed p-12 transition-all duration-300 cursor-pointer ${
-                isDragOver
-                  ? 'border-brand-emerald bg-brand-emerald-light/50 scale-[1.02]'
-                  : selectedFile
-                  ? 'border-brand-emerald bg-brand-emerald-light/20'
-                  : 'border-ui-border bg-ui-white hover:border-brand-emerald/50 hover:bg-ui-surface'
-              }`}
-              style={{ boxShadow: 'var(--shadow-md)' }}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => !selectedFile && fileInputRef.current?.click()}
-              whileHover={!selectedFile ? { scale: 1.01 } : {}}
-              whileTap={!selectedFile ? { scale: 0.99 } : {}}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".docx,.pdf,.txt,.xlsx,.xls,.csv,.pptx,.html,.htm,.rtf,.md"
-                className="hidden"
-                onChange={handleFileSelect}
-              />
-
+            <div className="p-6 pb-2 min-h-[120px] cursor-text" onClick={() => !selectedFile && fileInputRef.current?.click()}>
               <AnimatePresence mode="wait">
                 {isParsing ? (
-                  <motion.div
-                    key="parsing"
-                    className="flex flex-col items-center gap-6"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {/* Skeleton Loader */}
-                    <div className="w-full space-y-3">
-                      {[...Array(6)].map((_, i) => (
-                        <div key={i} className="flex items-center gap-4">
-                          <div
-                            className="h-3 rounded-full bg-gradient-to-r from-ui-border via-ui-surface to-ui-border skeleton-shimmer"
-                            style={{ width: `${40 + Math.random() * 40}%`, animationDelay: `${i * 0.12}s` }}
-                          />
-                          <div className="w-px h-4 bg-ui-border" />
-                          <div
-                            className="h-3 rounded-full bg-gradient-to-r from-ui-border via-ui-surface to-ui-border skeleton-shimmer"
-                            style={{ width: `${30 + Math.random() * 30}%`, animationDelay: `${i * 0.12 + 0.06}s` }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-body-sm text-ui-slate animate-pulse">
-                      {parsePhase === 'translating'
-                        ? 'Running RAG translation pipeline (TM lookup → Gemini → glossary)...'
-                        : 'Parsing document and building segments...'}
-                    </p>
+                  <motion.div key="parsing" className="flex items-center gap-4 text-ui-slate" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <Sparkles className="w-5 h-5 text-[#d946ef] animate-pulse" />
+                    <span className="text-[15px] animate-pulse">Running translation pipeline...</span>
                   </motion.div>
                 ) : selectedFile ? (
-                  <motion.div
-                    key="selected"
-                    className="flex flex-col items-center gap-4"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <div className="w-16 h-16 rounded-2xl bg-brand-emerald-light flex items-center justify-center">
-                      <FileText className="w-8 h-8 text-brand-emerald" />
+                  <motion.div key="selected" className="flex items-center gap-4 bg-ui-surface p-3 rounded-2xl w-fit pr-10 relative group" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} onClick={e => e.stopPropagation()}>
+                    <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-brand-indigo">
+                      <FileText className="w-5 h-5" />
                     </div>
-                    <div className="text-center">
-                      <p className="text-body-md font-semibold text-brand-indigo">{selectedFile.name}</p>
-                      <p className="text-body-sm text-ui-slate">{formatFileSize(selectedFile.size)}</p>
-                      <p className="text-body-sm text-ui-slate mt-1">
-                        {getLangName(sourceLanguage)} → {getLangName(activeLanguage)}
-                      </p>
+                    <div className="flex flex-col">
+                      <span className="text-[14px] font-medium text-brand-indigo truncate max-w-[200px]">{selectedFile.name}</span>
+                      <span className="text-[12px] text-ui-slate">{formatFileSize(selectedFile.size)}</span>
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFile(null);
-                      }}
-                      className="absolute top-4 right-4 w-8 h-8 rounded-full bg-ui-surface flex items-center justify-center hover:bg-ui-border transition-colors"
-                    >
+                    <button onClick={() => setSelectedFile(null)} className="absolute right-3 opacity-0 group-hover:opacity-100 p-1.5 hover:bg-white rounded-full transition-all">
                       <X className="w-4 h-4 text-ui-slate" />
                     </button>
                   </motion.div>
                 ) : (
-                  <motion.div
-                    key="empty"
-                    className="flex flex-col items-center gap-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <motion.div
-                      className="w-16 h-16 rounded-2xl bg-ui-surface flex items-center justify-center"
-                      animate={{ y: [0, -6, 0] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-                    >
-                      <Upload className="w-8 h-8 text-ui-slate" />
-                    </motion.div>
-                    <div className="text-center">
-                      <p className="text-body-md font-semibold text-brand-indigo">
-                        Drag & drop your document here
-                      </p>
-                      <p className="text-body-sm text-ui-slate mt-1">or click to browse</p>
-                    </div>
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-ui-surface">
-                      <FileText className="w-4 h-4 text-ui-slate" />
-                      <span className="text-code-sm text-ui-slate">DOCX · PDF · TXT · XLSX · CSV · PPTX · HTML</span>
-                    </div>
+                  <motion.div key="empty" className="flex items-start gap-4 text-ui-slate/60 hover:text-ui-slate transition-colors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <Sparkles className="w-5 h-5 mt-0.5 text-brand-indigo" />
+                    <span className="text-[16px] xl:text-[18px]">
+                      {isDragOver ? "Drop your document here..." : "Drop a document here or click to browse"}
+                    </span>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
 
-            {/* Upload Button */}
-            <AnimatePresence>
-              {selectedFile && !isParsing && (
-                <motion.div
-                  className="flex justify-center mt-8"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
+            {/* Bottom Toolbar */}
+            <div className="px-3 py-3 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 rounded-b-3xl">
+              <div className="flex flex-wrap items-center gap-3">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-black/10 bg-white text-[13px] font-medium text-brand-indigo hover:bg-gray-50 transition-colors"
                 >
-                  <Button variant="primary" size="lg" onClick={handleUpload}>
-                    Parse & Begin Translation
-                  </Button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <Paperclip className="w-4 h-4" />
+                  Attach
+                </button>
+                
+                <div className="flex items-center gap-1.5 p-1 rounded-xl border border-black/10 bg-white">
+                  <select
+                    value={sourceLanguage}
+                    onChange={(e) => setSourceLanguage(e.target.value)}
+                    className="h-8 px-2 pr-6 rounded-lg bg-transparent text-[13px] font-medium text-brand-indigo outline-none cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
+                  >
+                    {Object.entries(REGION_LABELS).map(([region, label]) => {
+                      const regionLangs = sourceLangs.filter(l => l.region === region);
+                      if (regionLangs.length === 0) return null;
+                      return (
+                        <optgroup key={region} label={label}>
+                          {regionLangs.map(l => <option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+                  <ArrowRight className="w-3 h-3 text-ui-slate" />
+                  <select
+                    value={activeLanguage}
+                    onChange={(e) => setActiveLanguage(e.target.value)}
+                    className="h-8 px-2 pr-6 rounded-lg bg-transparent text-[13px] font-medium text-brand-indigo outline-none cursor-pointer appearance-none"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
+                  >
+                    {Object.entries(REGION_LABELS).filter(([r]) => r !== 'source').map(([region, label]) => {
+                      const regionLangs = allLangs.filter(l => l.region === region);
+                      if (regionLangs.length === 0) return null;
+                      return (
+                        <optgroup key={region} label={label}>
+                          {regionLangs.map(l => <option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
+                        </optgroup>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
 
-            {/* Info Footer */}
-            <div className="mt-12 flex items-center justify-center gap-6">
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={handleUpload}
+                  disabled={!selectedFile || isParsing}
+                  className={`flex items-center justify-center w-10 h-10 rounded-full transition-all shadow-sm
+                    ${selectedFile && !isParsing 
+                      ? 'bg-brand-indigo text-white hover:bg-black hover:scale-105 active:scale-95 cursor-pointer' 
+                      : 'bg-black/5 text-black/30 cursor-not-allowed'}`}
+                >
+                  <ArrowUp className="w-5 h-5 stroke-[2.5]" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Example / Features Section */}
+          <motion.div
+            className="w-full mt-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <p className="text-[11px] font-semibold text-ui-slate uppercase tracking-wider mb-5 ml-1">
+              GET STARTED WITH THE PLATFORM FEATURES BELOW
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { icon: '🔒', text: 'Files parsed locally' },
-                { icon: '📄', text: '10+ file formats' },
-                { icon: '🌐', text: '36+ languages' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-body-sm text-ui-slate">
-                  <span>{item.icon}</span>
-                  <span>{item.text}</span>
+                { title: 'Local Privacy', desc: 'Secure local parsing', icon: <Shield className="w-4 h-4 text-brand-indigo" /> },
+                { title: 'Document Formats', desc: 'DOCX & PDF formats', icon: <FileOutput className="w-4 h-4 text-brand-indigo" /> },
+                { title: '36+ Languages', desc: 'Indian & Global', icon: <Globe className="w-4 h-4 text-brand-indigo" /> },
+                { title: 'Smart RAG', desc: 'Translation memory', icon: <Zap className="w-4 h-4 text-brand-indigo" /> },
+              ].map((card, i) => (
+                <div key={i} className="bg-white rounded-2xl p-4.5 border border-black/5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-black/10 hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all cursor-pointer flex flex-col h-full">
+                  <p className="text-[14px] font-medium text-brand-indigo leading-tight mb-2 flex-grow">{card.title}</p>
+                  <p className="text-[12px] text-ui-slate flex-grow">{card.desc}</p>
+                  <div className="mt-4 opacity-70">
+                    {card.icon}
+                  </div>
                 </div>
               ))}
             </div>
           </motion.div>
+
         </div>
       </div>
     </div>

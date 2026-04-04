@@ -234,7 +234,7 @@ export default function Home() {
                 className="text-body-lg text-ui-slate max-w-[520px]"
                 {...fadeUpDelay(0.3)}
               >
-                ClearLingo combines Semantic Vector Memory, Constrained LLM Translation, and a
+                Verb AI combines Semantic Vector Memory, Constrained LLM Translation, and a
                 Human-in-the-Loop approval engine. 94% of your translations are served from memory
                 — for free.
               </motion.p>
@@ -243,9 +243,7 @@ export default function Home() {
                 <Button variant="primary" size="lg" onClick={() => navigate('/upload')}>
                   Start Translating →
                 </Button>
-                <Button variant="ghost" size="lg" onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
-                  View Architecture
-                </Button>
+
               </motion.div>
 
               {/* Stat Chips */}
@@ -367,14 +365,14 @@ export default function Home() {
               {
                 step: '01',
                 title: 'Source Quality Validation Engine',
-                desc: "Before a single word is translated, ClearLingo runs 5 parallel audits — spell checks, terminology clustering, date normalization, punctuation compliance, and CMS business rule validation.",
+                desc: "Before a single word is translated, Verb AI runs 5 parallel audits — spell checks, terminology clustering, date normalization, punctuation compliance, and CMS business rule validation.",
                 badge: 'exact' as const,
                 badgeText: 'Pre-Translation',
               },
               {
                 step: '02',
                 title: 'Semantic Translation Memory',
-                desc: "Unlike Trados or Smartcat's rigid string matching, ClearLingo stores every approved translation as a 768-dimensional vector in SQLite. It catches paraphrased meaning — a string matcher never could.",
+                desc: "Unlike Trados or Smartcat's rigid string matching, Verb AI stores every approved translation as a 768-dimensional vector in SQLite. It catches paraphrased meaning — a string matcher never could.",
                 badge: 'fuzzy' as const,
                 badgeText: 'Vector Cosine',
               },
@@ -489,9 +487,9 @@ export default function Home() {
       <section className="bg-ui-white py-[80px] lg:py-[120px]">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-[80px]">
           <motion.div className="mb-16" {...fadeUp}>
-            <SectionLabel>WHY CLEARLINGO?</SectionLabel>
+            <SectionLabel>WHY VERB AI?</SectionLabel>
             <h2 className="text-display-h2 text-brand-indigo mt-4 mb-4">
-              DeepL translates. ClearLingo remembers.
+              DeepL translates. Verb AI remembers.
             </h2>
             <p className="text-body-xl text-ui-slate">
               Every other tool is stateless. We compound.
@@ -509,7 +507,7 @@ export default function Home() {
               <div className="px-6 text-center font-bold text-ui-slate">Smartcat</div>
               <div className="px-6 text-center font-bold text-ui-slate">DeepL</div>
               <div className="px-6 text-center font-bold bg-brand-emerald text-white rounded-tr-[24px]">
-                ClearLingo
+                Verb AI
               </div>
             </div>
 
@@ -582,80 +580,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════
-          SECTION: PRICING
-          ═══════════════════════════════════ */}
-      <section id="pricing" className="bg-ui-white py-[80px] lg:py-[120px]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-[80px]">
-          <motion.div className="mb-16" {...fadeUp}>
-            <SectionLabel>COST OF TRANSLATION</SectionLabel>
-            <h2 className="text-display-h2 text-brand-indigo mt-4 mb-4">
-              ₹40,000 per document. Or ₹4,000.
-            </h2>
-            <p className="text-body-lg text-ui-slate">After TM seeding — 90% cost reduction.</p>
-          </motion.div>
 
-          <div className="flex flex-col lg:flex-row justify-center gap-8 mb-12">
-            <motion.div {...fadeUpDelay(0)}>
-              <PricingCard
-                planName="TRADITIONAL AGENCY"
-                price="₹40,000"
-                perUnit="per document, every time"
-                features={[
-                  { text: 'Manual translator pool', included: false },
-                  { text: 'No semantic memory', included: false },
-                  { text: 'Repeat same work forever', included: false },
-                  { text: 'No glossary enforcement', included: false },
-                  { text: '14-day turnaround', included: false },
-                  { text: 'Linear scaling cost', included: false },
-                ]}
-                ctaText="What you're doing now"
-                ctaVariant="ghost"
-              />
-            </motion.div>
-
-            <motion.div {...fadeUpDelay(0.1)}>
-              <PricingCard
-                planName="CLEARLINGO ENTERPRISE"
-                price="₹4,000"
-                oldPrice="₹40,000"
-                perUnit="per document after TM seeding"
-                features={[
-                  { text: '94% TM leverage rate', included: true },
-                  { text: 'Semantic vector memory', included: true },
-                  { text: 'Translations compound', included: true },
-                  { text: 'Regex glossary enforcement', included: true },
-                  { text: '< 1 hour turnaround', included: true },
-                  { text: 'Cost approaches zero', included: true },
-                ]}
-                ctaText="Request Demo"
-                ctaVariant="primary"
-                featured
-              />
-            </motion.div>
-
-            <motion.div {...fadeUpDelay(0.2)}>
-              <PricingCard
-                planName="CALL CENTER ROI"
-                price="₹30,00,000"
-                perUnit="avoided per year"
-                features={[
-                  { text: '100 docs/year baseline', included: true },
-                  { text: '22 language pairs', included: true },
-                  { text: '90% cost reduction', included: true },
-                ]}
-                ctaText="See the Case Study"
-                ctaVariant="secondary"
-              />
-            </motion.div>
-          </div>
-
-          <motion.p className="text-body-sm italic text-ui-slate text-center" {...fadeUpDelay(0.3)}>
-            Based on real enterprise deployment data. 100 documents/year @ agency rates vs.
-            ClearLingo TM leverage.
-          </motion.p>
-        </div>
-      </section>
 
       {/* ═══════════════════════════════════
           SECTION: RESEARCH (Dark)
@@ -680,7 +605,7 @@ export default function Home() {
               {
                 source: 'EMNLP 2025',
                 title: 'RAGtrans',
-                desc: "Retrieval-Augmented Machine Translation. ClearLingo's 94% TM leverage smashes this published baseline.",
+                desc: "Retrieval-Augmented Machine Translation. Verb AI's 94% TM leverage smashes this published baseline.",
               },
               {
                 source: 'arXiv:2407.01463',
@@ -749,8 +674,8 @@ export default function Home() {
             {/* Col 1 */}
             <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
               <div className="text-[22px] font-black mb-2">
-                <span className="text-white">Clear</span>
-                <span className="text-brand-emerald">Lingo</span>
+                <span className="text-white">Verb</span>
+                <span className="text-brand-emerald"> AI</span>
               </div>
               <p className="text-body-md" style={{ color: 'rgba(255,255,255,0.50)' }}>
                 Semantic memory for enterprise translation. MAAR Architecture. 22 Indian Languages.
@@ -761,7 +686,7 @@ export default function Home() {
             <div>
               <h4 className="text-label-caps text-white mb-4">PRODUCT</h4>
               <div className="flex flex-col gap-3">
-                {['How It Works', 'Languages', 'Architecture', 'Demo', 'Pricing'].map((link) => (
+                {['How It Works', 'Languages'].map((link) => (
                   <a
                     key={link}
                     href="#"
@@ -820,7 +745,7 @@ export default function Home() {
             style={{ borderTop: '1px solid rgba(255,255,255,0.10)' }}
           >
             <p className="text-body-sm" style={{ color: 'rgba(255,255,255,0.40)' }}>
-              © 2025 ClearLingo. All rights reserved.
+              © 2025 Verb AI. All rights reserved.
             </p>
             <p className="text-body-sm" style={{ color: 'rgba(255,255,255,0.40)' }}>
               BLEU. Cosine. Human-approved.

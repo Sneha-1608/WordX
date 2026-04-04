@@ -108,6 +108,15 @@ export default function Analytics() {
   const [qualityCheck, setQualityCheck] = useState<{ averageBleu: number, tests: any[] } | null>(null);
   const [isCheckingQuality, setIsCheckingQuality] = useState(false);
 
+  // Language Pairs (Improvement 3)
+  const [langPairs, setLangPairs] = useState<any[]>([]);
+  const [showLangPairs, setShowLangPairs] = useState(false);
+
+  // Webhook Jobs (Improvement 1)
+  const [webhookData, setWebhookData] = useState<{ jobs: any[], summary: any } | null>(null);
+  const [showWebhooks, setShowWebhooks] = useState(false);
+  const [webhookTestPayload, setWebhookTestPayload] = useState('{\n  "content_id": "test-001",\n  "source_text": "Welcome to our service portal. Your security is our top priority. Contact customer support for assistance.",\n  "source_lang": "en",\n  "target_langs": ["hi_IN"],\n  "project_name": "Webhook Test"\n}');
+
   const runQualityCheck = async () => {
     setIsCheckingQuality(true);
     try {
@@ -129,6 +138,26 @@ export default function Analytics() {
     const interval = setInterval(refreshDashboard, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  // Fetch language pairs
+  useEffect(() => {
+    if (showLangPairs) {
+      fetch('http://localhost:3001/api/analytics/language-pairs')
+        .then((r) => r.json())
+        .then((d) => setLangPairs(d.pairs || []))
+        .catch(() => {});
+    }
+  }, [showLangPairs]);
+
+  // Fetch webhook jobs
+  useEffect(() => {
+    if (showWebhooks) {
+      fetch('http://localhost:3001/api/analytics/webhook-jobs')
+        .then((r) => r.json())
+        .then((d) => setWebhookData(d))
+        .catch(() => {});
+    }
+  }, [showWebhooks]);
 
   // Derived values
   const lev = data?.leverage ?? { leverageRate: 94, exactCount: 52, fuzzyCount: 42, newCount: 6, totalSegments: 100, trend: 8, target: 94 };
@@ -563,7 +592,7 @@ export default function Analytics() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2 }}
             >
               <h3 className="text-body-sm font-bold text-white/90 mb-6">ROI CALCULATOR</h3>
-              <p className="text-[13px] text-white/60 mb-5">Enter your monthly translation volume to see projected savings with ClearLingo.</p>
+              <p className="text-[13px] text-white/60 mb-5">Enter your monthly translation volume to see projected savings with Verb AI.</p>
               <div className="mb-6">
                 <label className="text-[11px] text-white/50 uppercase tracking-wider block mb-2">SEGMENTS PER MONTH</label>
                 <input
@@ -585,7 +614,7 @@ export default function Analytics() {
                   <span className="text-white/80 font-medium line-through">₹{(roiVolume * (cost.costModel?.manual ?? 400)).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-white/60 text-[13px]">With ClearLingo</span>
+                  <span className="text-white/60 text-[13px]">With Verb AI</span>
                   <span className="text-brand-emerald font-bold text-[18px]">₹{(roiVolume * (cost.costModel?.manual ?? 400) - roiSavings).toLocaleString()}</span>
                 </div>
                 <div className="h-px bg-white/10" />
@@ -678,6 +707,174 @@ export default function Analytics() {
               </div>
             </motion.div>
           )}
+          {/* ═══ Language Pairs Panel (Improvement 3) ═══ */}
+          <motion.div
+            className="rounded-[24px] bg-ui-white border border-ui-border p-6 mb-8"
+            style={{ boxShadow: 'var(--shadow-sm)' }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.4 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-body-sm font-bold text-brand-indigo">LANGUAGE PAIR ANALYTICS</h3>
+              <button
+                onClick={() => setShowLangPairs(!showLangPairs)}
+                className="text-body-sm text-brand-emerald hover:underline"
+              >
+                {showLangPairs ? 'Hide' : 'Show Details'}
+              </button>
+            </div>
+            {showLangPairs && langPairs.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-body-sm">
+                  <thead>
+                    <tr className="border-b border-ui-border">
+                      <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Pair</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">Segments</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">Leverage</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">TM Records</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">Glossary</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">Avg Cost</th>
+                      <th className="text-right py-2 px-3 text-label-caps text-ui-slate">Avg Latency</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {langPairs.map((pair: any, i: number) => (
+                      <tr key={i} className="border-b border-ui-border/50 hover:bg-ui-surface/50">
+                        <td className="py-2 px-3 font-medium text-brand-indigo">
+                          {pair.sourceName} → {pair.targetName}
+                        </td>
+                        <td className="text-right py-2 px-3">{pair.totalSegments}</td>
+                        <td className="text-right py-2 px-3">
+                          <span className={`font-semibold ${pair.leverageRate >= 90 ? 'text-brand-emerald' : pair.leverageRate >= 70 ? 'text-status-warning' : 'text-status-error'}`}>
+                            {pair.leverageRate}%
+                          </span>
+                        </td>
+                        <td className="text-right py-2 px-3">{pair.tmRecords}</td>
+                        <td className="text-right py-2 px-3">{pair.glossaryTerms}</td>
+                        <td className="text-right py-2 px-3">₹{pair.avgCost}</td>
+                        <td className="text-right py-2 px-3">{pair.avgLatency}ms</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {showLangPairs && langPairs.length === 0 && (
+              <p className="text-body-sm text-ui-slate/60 text-center py-4">No language pair data yet. Translate some segments first.</p>
+            )}
+          </motion.div>
+
+          {/* ═══ Webhook Jobs Panel (Improvement 1) ═══ */}
+          <motion.div
+            className="rounded-[24px] bg-ui-white border border-ui-border p-6 mb-8"
+            style={{ boxShadow: 'var(--shadow-sm)' }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-body-sm font-bold text-brand-indigo">WEBHOOK CONNECTOR</h3>
+              <button
+                onClick={() => setShowWebhooks(!showWebhooks)}
+                className="text-body-sm text-brand-emerald hover:underline"
+              >
+                {showWebhooks ? 'Hide' : 'Show Jobs & Test'}
+              </button>
+            </div>
+            {showWebhooks && (
+              <div className="space-y-4">
+                {/* Summary */}
+                {webhookData?.summary && (
+                  <div className="grid grid-cols-4 gap-3">
+                    <div className="rounded-lg border border-ui-border p-3 text-center">
+                      <div className="text-[20px] font-bold text-brand-indigo">{webhookData.summary.total}</div>
+                      <div className="text-[10px] text-ui-slate uppercase">Total Jobs</div>
+                    </div>
+                    <div className="rounded-lg border border-ui-border p-3 text-center">
+                      <div className="text-[20px] font-bold text-brand-emerald">{webhookData.summary.completed}</div>
+                      <div className="text-[10px] text-ui-slate uppercase">Completed</div>
+                    </div>
+                    <div className="rounded-lg border border-ui-border p-3 text-center">
+                      <div className="text-[20px] font-bold text-status-error">{webhookData.summary.failed}</div>
+                      <div className="text-[10px] text-ui-slate uppercase">Failed</div>
+                    </div>
+                    <div className="rounded-lg border border-ui-border p-3 text-center">
+                      <div className="text-[20px] font-bold text-status-success">{webhookData.summary.successRate}%</div>
+                      <div className="text-[10px] text-ui-slate uppercase">Success Rate</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Test Webhook */}
+                <div className="rounded-lg border border-ui-border p-4">
+                  <h4 className="text-body-sm font-semibold text-brand-indigo mb-2">Test Webhook Ingestion</h4>
+                  <textarea
+                    value={webhookTestPayload}
+                    onChange={(e) => setWebhookTestPayload(e.target.value)}
+                    className="w-full h-32 text-code-sm font-mono p-3 rounded-lg border border-ui-border bg-ui-surface resize-none"
+                  />
+                  <button
+                    onClick={async () => {
+                      try {
+                        const payload = JSON.parse(webhookTestPayload);
+                        const res = await fetch('http://localhost:3001/api/webhook/ingest', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(payload),
+                        });
+                        const data = await res.json();
+                        alert(`Job created: ${data.jobId}\nSegments: ${data.segmentCount}`);
+                        // Refresh webhook data
+                        setShowWebhooks(false);
+                        setTimeout(() => setShowWebhooks(true), 100);
+                      } catch (err: any) {
+                        alert('Error: ' + err.message);
+                      }
+                    }}
+                    className="mt-2 px-4 py-2 rounded-lg bg-brand-emerald text-white text-body-sm font-medium hover:bg-brand-emerald/90 transition-colors"
+                  >
+                    Send Test Webhook
+                  </button>
+                </div>
+
+                {/* Job List */}
+                {webhookData?.jobs && webhookData.jobs.length > 0 && (
+                  <div className="max-h-[300px] overflow-y-auto">
+                    <table className="w-full text-body-sm">
+                      <thead>
+                        <tr className="border-b border-ui-border sticky top-0 bg-ui-white">
+                          <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Job ID</th>
+                          <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Content</th>
+                          <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Status</th>
+                          <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Callback</th>
+                          <th className="text-left py-2 px-3 text-label-caps text-ui-slate">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {webhookData.jobs.map((job: any) => (
+                          <tr key={job.id} className="border-b border-ui-border/50 hover:bg-ui-surface/50">
+                            <td className="py-2 px-3 font-mono text-[11px]">{job.id.slice(0, 8)}...</td>
+                            <td className="py-2 px-3">{job.content_id || '–'}</td>
+                            <td className="py-2 px-3">
+                              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                                job.status === 'completed' ? 'bg-green-100 text-green-700'
+                                : job.status === 'processing' ? 'bg-blue-100 text-blue-700'
+                                : job.status === 'failed' ? 'bg-red-100 text-red-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                              }`}>
+                                {job.status}
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 text-[11px]">{job.callback_status || '–'}</td>
+                            <td className="py-2 px-3 text-[11px] text-ui-slate/60">
+                              {job.created_at ? new Date(job.created_at).toLocaleString() : '–'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
         </div>
       </div>
     </div>
