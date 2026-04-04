@@ -172,34 +172,38 @@ const LANG_NAMES = {
  * Fallback: Gemini 1.5 Flash for ALL languages if Sarvam is unavailable
  *
  * @param {string} targetLang
+ * @param {string} sourceLang
  * @returns {{ model: string, engine: string, family: string }}
  */
-export function getModelForLanguage(targetLang) {
+export function getModelForLanguage(targetLang, sourceLang = 'en') {
   const family = INDIC_LANGS.has(targetLang) ? 'indic'
     : EUROPEAN_LANGS.has(targetLang) ? 'european'
     : 'other';
 
-  // Priority 1: IndicTrans2 (local, free, no API key needed)
-  if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
-    return {
-      model: 'indictrans2-en-indic-dist-200M',
-      engine: 'indictrans2',
-      family,
-      displayName: LANG_NAMES[targetLang] || targetLang,
-    };
+  // Local/Indic models generally require English as the source
+  if (sourceLang !== 'auto' && sourceLang === 'en') {
+    // Priority 1: IndicTrans2 (local, free, no API key needed)
+    if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
+      return {
+        model: 'indictrans2-en-indic-dist-200M',
+        engine: 'indictrans2',
+        family,
+        displayName: LANG_NAMES[targetLang] || targetLang,
+      };
+    }
+
+    // Priority 2: Sarvam AI (remote API, Indic languages)
+    if (family === 'indic' && isSarvamAvailable() && isSarvamSupported(targetLang)) {
+      return {
+        model: 'sarvam-translate:v1',
+        engine: 'sarvam',
+        family,
+        displayName: LANG_NAMES[targetLang] || targetLang,
+      };
+    }
   }
 
-  // Priority 2: Sarvam AI (remote API, Indic languages)
-  if (family === 'indic' && isSarvamAvailable() && isSarvamSupported(targetLang)) {
-    return {
-      model: 'sarvam-translate:v1',
-      engine: 'sarvam',
-      family,
-      displayName: LANG_NAMES[targetLang] || targetLang,
-    };
-  }
-
-  // Priority 3: Gemini (European + other + fallback)
+  // Priority 3: Gemini (European + other + fallback + auto source)
   return {
     model: 'gemini-2.0-flash',
     engine: 'gemini',
@@ -332,7 +336,7 @@ export async function translateSegment({
   promptVersion = null,
 }) {
   const start = performance.now();
-  const routing = getModelForLanguage(targetLang);
+  const routing = getModelForLanguage(targetLang, sourceLang);
   const version = promptVersion || activePromptVersion;
 
   // ──────────────────────────────────────────────────────
