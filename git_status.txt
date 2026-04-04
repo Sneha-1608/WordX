@@ -1,0 +1,47 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .gitignore
+	modified:   README.md
+	modified:   index.html
+	modified:   package-lock.json
+	modified:   package.json
+	deleted:    postcss.config.mjs
+	modified:   src/app/screens/Home.tsx
+	modified:   src/styles/tailwind.css
+	modified:   tsconfig.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.env
+	build_err.txt
+	clearlingo.db-shm
+	clearlingo.db-wal
+	eslint.config.js
+	git_status.txt
+	lint_output.txt
+	public/
+	replace_script.js
+	src/App.css
+	src/App.jsx
+	src/assets/
+	src/components/Analytics.jsx
+	src/components/DocumentVerification.jsx
+	src/components/HumanApproval.jsx
+	src/components/Noise.css
+	src/components/Noise.jsx
+	src/components/ReviewEditor.jsx
+	src/components/WaveLines.css
+	src/components/WaveLines.jsx
+	src/index.css
+	src/main.jsx
+	src/vite-env.d.ts
+	theme_converter.cjs
+	ts_errors.txt
+	ts_errors2.txt
+	vite.config.js
+
+no changes added to commit (use "git add" and/or "git commit -a")

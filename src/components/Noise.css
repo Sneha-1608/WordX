@@ -1,0 +1,16 @@
+.noise-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999; /* Ensure it stays on top of most elements but below modals */
+  opacity: 0;   /* Hide by default */
+  transition: opacity 0.3s;
+}
+
+/* Only show noise overlay in light mode */
+:root:not([data-theme="dark"]) .noise-overlay {
+  opacity: 1;
+}

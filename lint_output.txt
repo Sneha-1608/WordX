@@ -1,0 +1,73 @@
+
+> verb-ai@0.0.0 lint
+> eslint .
+
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\cache-redis.js
+  107:11  error  Empty block statement  no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\db.js
+  294:11  error  Empty block statement  no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\gemini.js
+  208:13  error  Empty block statement  no-empty
+  222:13  error  Empty block statement  no-empty
+  536:13  error  Empty block statement  no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\index.js
+  23:29  error  'getSarvamStatus' is defined but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+  24:33  error  'getIndictransStatus' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  31:3   error  'getPresenceSnapshot' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\llm-orchestrator.js
+   24:3   error  'validateWithGemini' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   45:3   error  'checkIndictransHealth' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   67:10  error  'isIndicSourceLang' is defined but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+  406:11  error  Empty block statement                                                                         no-empty
+  705:11  error  'known' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\middleware.js
+  129:45  error  'next' is defined but never used  no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\rag-engine.js
+  22:3  error  'cosineSimilarity' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\routes\analytics.js
+  3:8  error  'ragEngine' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\routes\approve.js
+    4:31  error  'logGlossaryCheck' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  167:15  error  Empty block statement                                                                    no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\routes\export.js
+  91:15  error  Empty block statement  no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\routes\parse.js
+   14:10  error  'isMockMode' is defined but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+  316:10  error  'parseTxt' is defined but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+  325:10  error  'parseHtmlFile' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  339:16  error  'parseSpreadsheet' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  339:41  error  'ext' is defined but never used                                                          no-unused-vars
+  370:16  error  'parsePptx' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\routes\translate.js
+  5:10  error  'isMockMode' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\scripts\migrate-to-pgvector.js
+  143:17  error  Empty block statement  no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\training-pipeline.js
+   24:42  error  'getActiveAdapter' is defined but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+   24:60  error  'listAdapters' is defined but never used. Allowed unused vars must match /^[A-Z_]/u          no-unused-vars
+   61:49  error  'pairsCount' is defined but never used                                                       no-unused-vars
+  263:23  error  'stylePrompt' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  425:48  error  'e' is defined but never used                                                                no-unused-vars
+  425:51  error  Empty block statement                                                                        no-empty
+  435:61  error  'e' is defined but never used                                                                no-unused-vars
+  435:64  error  Empty block statement                                                                        no-empty
+
+C:\Users\dudha\OneDrive\Desktop\WordX\server\vector-pg.js
+  25:11  error  'pgvector' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+✖ 36 problems (36 errors, 0 warnings)
+

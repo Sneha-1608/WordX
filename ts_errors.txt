@@ -1,0 +1,172 @@
+src/app/App.tsx(1,32): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/components/Button.tsx(2,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/components/FeatureCard.tsx(1,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/components/Navigation.tsx(1,22): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/components/Navigation.tsx(3,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/components/PricingCard.tsx(1,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/components/ui/accordion.tsx(4,37): error TS2307: Cannot find module '@radix-ui/react-accordion' or its corresponding type declarations.
+src/app/components/ui/alert-dialog.tsx(4,39): error TS2307: Cannot find module '@radix-ui/react-alert-dialog' or its corresponding type declarations.
+src/app/components/ui/alert.tsx(2,40): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/aspect-ratio.tsx(3,39): error TS2307: Cannot find module '@radix-ui/react-aspect-ratio' or its corresponding type declarations.
+src/app/components/ui/avatar.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-avatar' or its corresponding type declarations.
+src/app/components/ui/badge.tsx(2,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+src/app/components/ui/badge.tsx(3,40): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/breadcrumb.tsx(2,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+src/app/components/ui/button.tsx(2,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+src/app/components/ui/button.tsx(3,40): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/calendar.tsx(5,27): error TS2307: Cannot find module 'react-day-picker' or its corresponding type declarations.
+src/app/components/ui/calendar.tsx(63,22): error TS7031: Binding element 'className' implicitly has an 'any' type.
+src/app/components/ui/calendar.tsx(66,23): error TS7031: Binding element 'className' implicitly has an 'any' type.
+src/app/components/ui/carousel.tsx(6,8): error TS2307: Cannot find module 'embla-carousel-react' or its corresponding type declarations.
+src/app/components/ui/chart.tsx(4,36): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+src/app/components/ui/chart.tsx(182,23): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/app/components/ui/chart.tsx(182,29): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/app/components/ui/chart.tsx(278,21): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/app/components/ui/checkbox.tsx(4,36): error TS2307: Cannot find module '@radix-ui/react-checkbox' or its corresponding type declarations.
+src/app/components/ui/collapsible.tsx(3,39): error TS2307: Cannot find module '@radix-ui/react-collapsible' or its corresponding type declarations.
+src/app/components/ui/command.tsx(4,45): error TS2307: Cannot find module 'cmdk' or its corresponding type declarations.
+src/app/components/ui/context-menu.tsx(4,39): error TS2307: Cannot find module '@radix-ui/react-context-menu' or its corresponding type declarations.
+src/app/components/ui/dialog.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-dialog' or its corresponding type declarations.
+src/app/components/ui/drawer.tsx(4,43): error TS2307: Cannot find module 'vaul' or its corresponding type declarations.
+src/app/components/ui/dropdown-menu.tsx(4,40): error TS2307: Cannot find module '@radix-ui/react-dropdown-menu' or its corresponding type declarations.
+src/app/components/ui/form.tsx(4,33): error TS2307: Cannot find module '@radix-ui/react-label' or its corresponding type declarations.
+src/app/components/ui/form.tsx(5,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+src/app/components/ui/hover-card.tsx(4,37): error TS2307: Cannot find module '@radix-ui/react-hover-card' or its corresponding type declarations.
+src/app/components/ui/input-otp.tsx(4,43): error TS2307: Cannot find module 'input-otp' or its corresponding type declarations.
+src/app/components/ui/input-otp.tsx(47,61): error TS2339: Property 'slots' does not exist on type '{}'.
+src/app/components/ui/label.tsx(4,33): error TS2307: Cannot find module '@radix-ui/react-label' or its corresponding type declarations.
+src/app/components/ui/menubar.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-menubar' or its corresponding type declarations.
+src/app/components/ui/navigation-menu.tsx(2,42): error TS2307: Cannot find module '@radix-ui/react-navigation-menu' or its corresponding type declarations.
+src/app/components/ui/navigation-menu.tsx(3,21): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/pagination.tsx(75,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+src/app/components/ui/pagination.tsx(92,7): error TS2783: 'size' is specified more than once, so this usage will be overwritten.
+src/app/components/ui/popover.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-popover' or its corresponding type declarations.
+src/app/components/ui/progress.tsx(4,36): error TS2307: Cannot find module '@radix-ui/react-progress' or its corresponding type declarations.
+src/app/components/ui/radio-group.tsx(4,38): error TS2307: Cannot find module '@radix-ui/react-radio-group' or its corresponding type declarations.
+src/app/components/ui/resizable.tsx(5,37): error TS2307: Cannot find module 'react-resizable-panels' or its corresponding type declarations.
+src/app/components/ui/scroll-area.tsx(4,38): error TS2307: Cannot find module '@radix-ui/react-scroll-area' or its corresponding type declarations.
+src/app/components/ui/select.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-select' or its corresponding type declarations.
+src/app/components/ui/separator.tsx(4,37): error TS2307: Cannot find module '@radix-ui/react-separator' or its corresponding type declarations.
+src/app/components/ui/sheet.tsx(4,33): error TS2307: Cannot find module '@radix-ui/react-dialog' or its corresponding type declarations.
+src/app/components/ui/sidebar.tsx(4,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+src/app/components/ui/sidebar.tsx(5,35): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/sidebar.tsx(270,17): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/components/ui/slider.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-slider' or its corresponding type declarations.
+src/app/components/ui/sonner.tsx(3,26): error TS2307: Cannot find module 'next-themes' or its corresponding type declarations.
+src/app/components/ui/sonner.tsx(4,49): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/app/components/ui/switch.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-switch' or its corresponding type declarations.
+src/app/components/ui/tabs.tsx(4,32): error TS2307: Cannot find module '@radix-ui/react-tabs' or its corresponding type declarations.
+src/app/components/ui/toggle-group.tsx(4,39): error TS2307: Cannot find module '@radix-ui/react-toggle-group' or its corresponding type declarations.
+src/app/components/ui/toggle-group.tsx(5,35): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/toggle.tsx(4,34): error TS2307: Cannot find module '@radix-ui/react-toggle' or its corresponding type declarations.
+src/app/components/ui/toggle.tsx(5,40): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/app/components/ui/tooltip.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-tooltip' or its corresponding type declarations.
+src/app/components/ui/utils.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+src/app/hooks/useCollaboration.ts(44,12): error TS2307: Cannot find module 'socket.io-client' or its corresponding type declarations.
+src/app/routes.tsx(1,37): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/Analytics.tsx(2,22): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/Analytics.tsx(3,49): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/Analytics.tsx(8,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+src/app/screens/Analytics.tsx(24,18): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/DocumentUpload.tsx(2,35): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/DocumentUpload.tsx(3,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/DocumentUpload.tsx(7,32): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/app/screens/DocumentUpload.tsx(93,33): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/DocumentUpload.tsx(200,37): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/DocumentUpload.tsx(302,256): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/screens/DocumentUpload.tsx(349,59): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/DocumentUpload.tsx(353,44): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/Home.tsx(1,29): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/Home.tsx(13,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/LoadingScreen.tsx(2,29): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/LoadingScreen.tsx(3,63): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/LoadingScreen.tsx(10,50): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/LoadingScreen.tsx(17,18): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/TrainingPipeline.tsx(2,22): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/TrainingPipeline.tsx(3,66): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/TrainingPipeline.tsx(9,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+src/app/screens/TrainingPipeline.tsx(26,18): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(2,35): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/TranslationEditor.tsx(3,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/TranslationEditor.tsx(8,32): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/app/screens/TranslationEditor.tsx(139,29): error TS2345: Argument of type '(this: undefined, part: ReactNode) => (string | Element)[] | (number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined)[]' is not assignable to parameter of type '(this: undefined, value: ReactNode, index: number, array: ReactNode[]) => string | Element | readonly (string | Element | null | undefined)[] | null | undefined'.
+  Type '(string | Element)[] | (number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | null | undefined)[]' is not assignable to type 'string | Element | readonly (string | Element | null | undefined)[] | null | undefined'.
+    Type '(number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | null | undefined)[]' is not assignable to type 'string | Element | readonly (string | Element | null | undefined)[] | null | undefined'.
+      Type '(number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | null | undefined)[]' is not assignable to type 'readonly (string | Element | null | undefined)[]'.
+        Type 'number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | null | undefined' is not assignable to type 'string | Element | null | undefined'.
+          Type 'number' is not assignable to type 'string | Element | null | undefined'.
+src/app/screens/TranslationEditor.tsx(331,19): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(452,50): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(454,57): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(505,31): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(518,33): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(519,33): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(670,44): error TS7006: Parameter 'term' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(670,50): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(707,28): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(712,38): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(720,44): error TS7006: Parameter 'l' implicitly has an 'any' type.
+src/app/screens/TranslationEditor.tsx(762,36): error TS7006: Parameter 'seg' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(2,35): error TS2307: Cannot find module 'react-router' or its corresponding type declarations.
+src/app/screens/Validation.tsx(3,80): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
+src/app/screens/Validation.tsx(8,32): error TS2307: Cannot find module 'sonner' or its corresponding type declarations.
+src/app/screens/Validation.tsx(39,50): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(60,20): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(73,35): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(264,49): error TS7006: Parameter 'check' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(264,56): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(266,24): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(276,74): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(320,52): error TS7006: Parameter 'issue' implicitly has an 'any' type.
+src/app/screens/Validation.tsx(320,59): error TS7006: Parameter 'j' implicitly has an 'any' type.
+src/app/store.ts(1,24): error TS2307: Cannot find module 'zustand' or its corresponding type declarations.
+src/app/store.ts(129,46): error TS7006: Parameter 'set' implicitly has an 'any' type.
+src/app/store.ts(129,51): error TS7006: Parameter 'get' implicitly has an 'any' type.
+src/app/store.ts(148,16): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(148,20): error TS7006: Parameter 'name' implicitly has an 'any' type.
+src/app/store.ts(149,17): error TS7006: Parameter 'segments' implicitly has an 'any' type.
+src/app/store.ts(153,23): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+src/app/store.ts(154,23): error TS7006: Parameter 'lang' implicitly has an 'any' type.
+src/app/store.ts(155,18): error TS7006: Parameter 'langs' implicitly has an 'any' type.
+src/app/store.ts(156,25): error TS7006: Parameter 'result' implicitly has an 'any' type.
+src/app/store.ts(157,21): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/store.ts(158,18): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/store.ts(159,17): error TS7006: Parameter 'terms' implicitly has an 'any' type.
+src/app/store.ts(162,25): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(162,29): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/app/store.ts(163,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(170,22): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(170,26): error TS7006: Parameter 'text' implicitly has an 'any' type.
+src/app/store.ts(172,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(179,29): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(179,33): error TS7006: Parameter 'targetText' implicitly has an 'any' type.
+src/app/store.ts(181,37): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(188,35): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(188,39): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/app/store.ts(190,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(197,20): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(197,24): error TS7006: Parameter 'targetText' implicitly has an 'any' type.
+src/app/store.ts(198,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(205,19): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(206,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(213,23): error TS7006: Parameter 'ids' implicitly has an 'any' type.
+src/app/store.ts(213,28): error TS7006: Parameter 'targetText' implicitly has an 'any' type.
+src/app/store.ts(214,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(222,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(232,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(298,30): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(298,34): error TS7006: Parameter 'targetText' implicitly has an 'any' type.
+src/app/store.ts(298,46): error TS7006: Parameter 'matchType' implicitly has an 'any' type.
+src/app/store.ts(298,57): error TS7006: Parameter 'tmScore' implicitly has an 'any' type.
+src/app/store.ts(299,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(314,22): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/app/store.ts(314,26): error TS7006: Parameter '_error' implicitly has an 'any' type.
+src/app/store.ts(315,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/app/store.ts(322,28): error TS7006: Parameter 'current' implicitly has an 'any' type.
+src/app/store.ts(322,37): error TS7006: Parameter 'total' implicitly has an 'any' type.
+src/app/store.ts(322,44): error TS7006: Parameter 'errors' implicitly has an 'any' type.
+src/app/store.ts(421,58): error TS7006: Parameter 'set' implicitly has an 'any' type.
+src/components/ui/button.tsx(1,43): error TS2307: Cannot find module '@base-ui/react/button' or its corresponding type declarations.
+src/components/ui/button.tsx(2,40): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+src/lib/utils.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+src/main.tsx(4,10): error TS2882: Cannot find module or type declarations for side-effect import of './styles/index.css'.
