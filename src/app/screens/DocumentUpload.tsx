@@ -205,8 +205,8 @@ export default function DocumentUpload() {
       <div className="w-[260px] bg-brand-indigo flex flex-col">
         <div className="p-6 border-b border-white/10">
           <Link to="/home" className="text-[22px] font-black">
-            <span className="text-white">Clear</span>
-            <span className="text-brand-emerald">Lingo</span>
+            <span className="text-white">Verb</span>
+            <span className="text-brand-emerald"> AI</span>
           </Link>
         </div>
 
@@ -231,15 +231,7 @@ export default function DocumentUpload() {
           </Link>
         </nav>
 
-        <div className="p-6 border-t border-white/10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-brand-emerald flex items-center justify-center text-white font-bold">
-            A
-          </div>
-          <div className="flex-1">
-            <div className="text-body-sm font-medium text-white">Admin</div>
-            <div className="text-[11px] text-white/60">Linguist</div>
-          </div>
-        </div>
+
       </div>
 
       {/* Main Content */}
@@ -255,7 +247,7 @@ export default function DocumentUpload() {
           >
 
             <h1 className="text-[32px] md:text-[40px] font-medium text-brand-indigo tracking-tight leading-tight">
-              Good Afternoon, Admin <br/>
+              Good Afternoon <br/>
               What do you want to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#d946ef] to-[#c026d3]">translate?</span>
             </h1>
           </motion.div>

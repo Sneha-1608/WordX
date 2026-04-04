@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 // ═══════════════════════════════════
-// ClearLingo Global State (Zustand)
+// Verb AI Global State (Zustand)
 // ═══════════════════════════════════
 
 export interface Segment {
