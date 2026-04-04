@@ -17,6 +17,7 @@ import analyticsRouter from './routes/analytics.js';
 import importTmRouter from './routes/import-tm.js';
 import webhookRouter from './routes/webhook.js';
 import exportTmRouter from './routes/export-tm.js';
+import detectRouter from './routes/detect.js';
 import { errorHandler, requestLogger } from './middleware.js';
 import { isMockMode } from './gemini.js';
 import { isSarvamAvailable, getSarvamStatus } from './sarvam.js';
@@ -153,6 +154,7 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/import-tm', importTmRouter);
 app.use('/api/webhook', webhookRouter);
 app.use('/api/export-tm', exportTmRouter);
+app.use('/api/detect', detectRouter);
 
 // ═══════════════════════════════════════════════════════════════
 // Utility Routes
@@ -176,6 +178,10 @@ app.get('/api/segments/:projectId', (req, res) => {
       status: s.status,
       violation: s.violation === 1,
       formatType: s.format_type || 'paragraph',
+      detectedLanguage: s.detected_language || null,
+      detectionConfidence: s.detection_confidence || 0,
+      detectedScript: s.detected_script || null,
+      sourceLanguageDisplay: s.source_language_display || null,
     }));
 
     res.json(mapped);
@@ -308,8 +314,9 @@ app.get('/api/projects', (req, res) => {
 // Get supported languages (grouped by region)
 app.get('/api/languages', (req, res) => {
   const languages = [
-    // Source languages
-    { code: 'en', name: 'English', region: 'source', flag: '🇬🇧' },
+    // English is auto-detected as source; these are target-language entries
+    { code: 'en_US', name: 'English (US)', region: 'european', flag: '🇺🇸' },
+    { code: 'en_GB', name: 'English (UK)', region: 'european', flag: '🇬🇧' },
 
     // Indian languages
     { code: 'hi_IN', name: 'Hindi', region: 'indian', flag: '🇮🇳' },
@@ -512,7 +519,8 @@ httpServer.listen(PORT, async () => {
   console.log(`     GET  /api/analytics/cost       — Cost savings metrics`);
   console.log(`     POST /api/import-tm         — TMX/CSV translation memory import`);
   console.log(`     GET  /api/qa-results/:id     — QA audit results per project`);
-  console.log(`     GET  /api/health           — Full system status\n`);
+  console.log(`     GET  /api/health           — Full system status`);
+  console.log(`     POST /api/detect            — Standalone language detection\n`);
 
   // ═══ §3.1.1: Seed embeddings via ragEngine ═══
   if (l3.tm.unembedded > 0) {

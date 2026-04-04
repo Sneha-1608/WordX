@@ -26,8 +26,8 @@ export default function DocumentUpload() {
 
   const {
     setProject, setSegments, setIsParsing, isParsing, setGlossary,
-    sourceLanguage, activeLanguage, languages,
-    setSourceLanguage, setActiveLanguage, setLanguages,
+    activeLanguage, languages,
+    setActiveLanguage, setLanguages,
   } = useAppStore();
 
   // Fetch supported languages from API
@@ -96,10 +96,6 @@ export default function DocumentUpload() {
 
   const handleUpload = async () => {
     if (!selectedFile) return;
-    if (sourceLanguage === activeLanguage) {
-      toast.error('Source and target language must be different.', { duration: 3000 });
-      return;
-    }
 
     setIsParsing(true);
     setParsePhase('parsing');
@@ -109,7 +105,6 @@ export default function DocumentUpload() {
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('language', activeLanguage);
-      formData.append('sourceLang', sourceLanguage);
 
       const response = await fetch('/api/parse', {
         method: 'POST',
@@ -157,7 +152,6 @@ export default function DocumentUpload() {
         body: JSON.stringify({
           projectId: data.projectId,
           segments: data.segments,
-          sourceLang: sourceLanguage,
           targetLang: activeLanguage,
         }),
       }).then(async (streamRes) => {
@@ -204,7 +198,6 @@ export default function DocumentUpload() {
 
   // Group languages by region for dropdowns
   const allLangs = languages.filter(l => l.region !== 'source');
-  const sourceLangs = languages; // Any language can be a source
 
   return (
     <div className="w-screen h-screen flex overflow-hidden">
@@ -222,8 +215,8 @@ export default function DocumentUpload() {
       <div className="w-[260px] bg-brand-indigo flex flex-col">
         <div className="p-6 border-b border-white/10">
           <Link to="/home" className="text-[22px] font-black">
-            <span className="text-white">Clear</span>
-            <span className="text-brand-emerald">Lingo</span>
+            <span className="text-white">verb</span>
+            <span className="text-brand-emerald">AI</span>
           </Link>
         </div>
 
@@ -341,22 +334,10 @@ export default function DocumentUpload() {
                 </button>
                 
                 <div className="flex items-center gap-1.5 p-1 rounded-xl border border-black/10 bg-white">
-                  <select
-                    value={sourceLanguage}
-                    onChange={(e) => setSourceLanguage(e.target.value)}
-                    className="h-8 px-2 pr-6 rounded-lg bg-transparent text-[13px] font-medium text-brand-indigo outline-none cursor-pointer appearance-none"
-                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 4px center' }}
-                  >
-                    {Object.entries(REGION_LABELS).map(([region, label]) => {
-                      const regionLangs = sourceLangs.filter(l => l.region === region);
-                      if (regionLangs.length === 0) return null;
-                      return (
-                        <optgroup key={region} label={label}>
-                          {regionLangs.map(l => <option key={l.code} value={l.code}>{l.flag} {l.name}</option>)}
-                        </optgroup>
-                      );
-                    })}
-                  </select>
+                  <div className="h-8 px-3 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center gap-1.5 text-[13px] font-medium text-brand-indigo">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                    Auto-Detect
+                  </div>
                   <ArrowRight className="w-3 h-3 text-ui-slate" />
                   <select
                     value={activeLanguage}

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import llmOrchestrator from '../llm-orchestrator.js';
 import { isMockMode } from '../gemini.js';
 import { getSarvamStatus, sarvamTranslate, isSarvamAvailable } from '../sarvam.js';
+import { getDeeplStatus, deeplTranslate, isDeeplAvailable, getDeeplUsage } from '../deepl.js';
 
 const router = Router();
 
@@ -208,6 +209,60 @@ router.post('/sarvam/translate', async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: 'Sarvam translation failed: ' + err.message });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// DeepL Integration (Non-Indian Languages)
+// ═══════════════════════════════════════════════════════════════
+
+// GET /api/llm/deepl/status — DeepL connection status
+router.get('/deepl/status', async (req, res) => {
+  try {
+    const status = getDeeplStatus();
+    const usage = await getDeeplUsage();
+    res.json({ ...status, usage });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/llm/deepl/translate — Test direct DeepL translation
+router.post('/deepl/translate', async (req, res) => {
+  try {
+    const {
+      sourceText,
+      sourceLang = 'en',
+      targetLang = 'fr_FR',
+      formality = 'prefer_more',
+    } = req.body;
+
+    if (!sourceText) {
+      return res.status(400).json({ error: 'sourceText is required' });
+    }
+
+    if (!isDeeplAvailable()) {
+      return res.status(503).json({
+        error: 'DeepL not available. Set DEEPL_API_KEY in .env',
+        available: false,
+      });
+    }
+
+    const start = performance.now();
+    const result = await deeplTranslate(sourceText, sourceLang, targetLang, { formality });
+    const elapsed = Math.round(performance.now() - start);
+
+    res.json({
+      query: sourceText,
+      translation: result.text,
+      model: result.model,
+      engine: 'deepl',
+      sourceLang: result.sourceLang,
+      targetLang: result.targetLang,
+      latencyMs: elapsed,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'DeepL translation failed: ' + err.message });
   }
 });
 

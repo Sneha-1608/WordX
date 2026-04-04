@@ -2,7 +2,7 @@
 // Layer 4: LLM Orchestration Engine
 // ═══════════════════════════════════════════════════════════════
 //
-// Centralizes ALL LLM interactions for ClearLingo.
+// Centralizes ALL LLM interactions for VerbAI.
 // Implements the Layer 4 spec: Gemini + LoRA + Multi-Model.
 //
 // Sub-components:
@@ -10,8 +10,10 @@
 //   §4.2  text-embedding-004 — 768-dim semantic embeddings
 //   §4.3  LoRA Adapters      — Per-language fine-tuning registry
 //
-// Only invoked for segments classified as "NEW" (score < 0.75)
-// by Layer 3. Exact and fuzzy matches skip the LLM entirely.
+// Modified: 2026-04-04 — sourceLang is now optional. Each segment
+// uses its per-segment detected_language for translation. Added
+// translatedFrom / translatedFromDisplay fields to results.
+// Indic routing now considers source language too.
 //
 // ═══════════════════════════════════════════════════════════════
 
@@ -22,13 +24,19 @@ import {
   validateWithGemini,
   isMockMode,
 } from './gemini.js';
-import { qaCheckTranslationLlama as qaCheckTranslation } from './llama3.js';
+import { qaCheckTranslationLlama as qaCheckTranslation, groqTranslate, isGroqAvailable } from './llama3.js';
 import {
   sarvamTranslate,
   isSarvamAvailable,
   isSarvamSupported,
   getSarvamStatus,
 } from './sarvam.js';
+import {
+  deeplTranslate,
+  isDeeplAvailable,
+  isDeeplSupported,
+  getDeeplStatus,
+} from './deepl.js';
 import {
   indictransTranslate,
   isIndictransAvailable,
@@ -39,6 +47,28 @@ import {
 import { rateLimiter } from './middleware.js';
 import { extractTerms, crossReferenceGlossary } from './term-extractor.js';
 import { getCachedTranslation, setCachedTranslation } from './cache-redis.js';
+import { getLanguageDisplayName } from './language-detector.js';
+
+// ═══════════════════════════════════════════════════════════════
+// BCP-47 → Locale Code Mapping (for Indic source language routing)
+// ═══════════════════════════════════════════════════════════════
+
+// Set of BCP-47 codes for Indian scheduled languages (used for source routing)
+const INDIC_BCP47 = new Set([
+  'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn', 'ml', 'or', 'pa',
+  'as', 'mai', 'sa', 'sd', 'ks', 'ne', 'kok', 'doi', 'mni', 'brx', 'sat', 'si',
+]);
+
+/**
+ * Check if a BCP-47 source language code is an Indic language.
+ * @param {string} bcp47 - e.g. "hi", "mr", "ta"
+ * @returns {boolean}
+ */
+function isIndicSourceLang(bcp47) {
+  if (!bcp47) return false;
+  const base = bcp47.split(/[_-]/)[0].toLowerCase();
+  return INDIC_BCP47.has(base);
+}
 
 // ═══════════════════════════════════════════════════════════════
 // §4.1 — Prompt Template System (Versioned)
@@ -143,6 +173,7 @@ const INDIC_LANGS = new Set([
 ]);
 
 const EUROPEAN_LANGS = new Set([
+  'en_US', 'en_GB',
   'fr_FR', 'de_DE', 'es_ES', 'pt_BR', 'it_IT', 'nl_NL',
   'ru_RU', 'pl_PL', 'sv_SE', 'tr_TR',
   'ja_JP', 'ko_KR', 'zh_CN',
@@ -151,7 +182,7 @@ const EUROPEAN_LANGS = new Set([
 
 // Language display names for logging
 const LANG_NAMES = {
-  en: 'English',
+  en: 'English', en_US: 'English (US)', en_GB: 'English (UK)',
   hi_IN: 'Hindi', ta_IN: 'Tamil', te_IN: 'Telugu', kn_IN: 'Kannada',
   ml_IN: 'Malayalam', bn_IN: 'Bengali', mr_IN: 'Marathi', gu_IN: 'Gujarati',
   pa_IN: 'Punjabi', or_IN: 'Odia', as_IN: 'Assamese', mai_IN: 'Maithili',
@@ -167,9 +198,8 @@ const LANG_NAMES = {
 
 /**
  * §4.1: Multi-model routing.
- * INDIC languages → Sarvam AI (sarvam-translate:v1) when available
- * European / Other  → Gemini 1.5 Flash
- * Fallback: Gemini 1.5 Flash for ALL languages if Sarvam is unavailable
+ * INDIC languages → IndicTrans2 (local) → Sarvam AI → Gemini (fallback)
+ * European / CJK / Other → DeepL API → Gemini (fallback)
  *
  * @param {string} targetLang
  * @returns {{ model: string, engine: string, family: string }}
@@ -178,6 +208,8 @@ export function getModelForLanguage(targetLang) {
   const family = INDIC_LANGS.has(targetLang) ? 'indic'
     : EUROPEAN_LANGS.has(targetLang) ? 'european'
     : 'other';
+
+  // ═══ INDIC LANGUAGES: IndicTrans2 → Sarvam AI → Gemini ═══
 
   // Priority 1: IndicTrans2 (local, free, no API key needed)
   if (family === 'indic' && isIndictransAvailable() && isIndictransSupported(targetLang)) {
@@ -199,7 +231,19 @@ export function getModelForLanguage(targetLang) {
     };
   }
 
-  // Priority 3: Gemini (European + other + fallback)
+  // ═══ NON-INDIC LANGUAGES: DeepL → Gemini ═══
+
+  // Priority 3: DeepL (European, CJK, Arabic — non-Indian languages)
+  if (family !== 'indic' && isDeeplAvailable() && isDeeplSupported(targetLang)) {
+    return {
+      model: 'deepl-translate',
+      engine: 'deepl',
+      family,
+      displayName: LANG_NAMES[targetLang] || targetLang,
+    };
+  }
+
+  // Priority 4: Gemini (ultimate fallback for all languages)
   return {
     model: 'gemini-2.0-flash',
     engine: 'gemini',
@@ -476,14 +520,69 @@ export async function translateSegment({
         actualEngine = 'gemini (fallback from sarvam)';
         actualModel = 'gemini-2.0-flash';
       }
+    } else if (routing.engine === 'deepl') {
+      // ═══ DeepL path (European, CJK, non-Indian languages) ═══
+      try {
+        const deeplResult = await deeplTranslate(sourceText, sourceLang, targetLang, {
+          formality: 'prefer_more',
+        });
+        targetText = deeplResult.text;
+        actualEngine = 'deepl';
+        actualModel = 'deepl-translate';
+      } catch (deeplErr) {
+        // Fallback to Gemini if DeepL fails
+        console.warn(`   ⚠ DeepL failed for [${routing.displayName}]: ${deeplErr.message}`);
+        console.warn(`   ↪ Falling back to Gemini...`);
+        try {
+          targetText = await rateLimiter.execute(() =>
+            translateText(
+              sourceText, sourceLang, targetLang,
+              glossaryTerms, fuzzyRef, stylePrompt
+            )
+          );
+          actualEngine = 'gemini (fallback from deepl)';
+          actualModel = 'gemini-2.0-flash';
+        } catch (geminiErr) {
+          // Fallback to Groq if Gemini also fails
+          console.warn(`   ⚠ Gemini also failed: ${geminiErr.message}`);
+          if (isGroqAvailable()) {
+            console.warn(`   ↪ Falling back to Groq (Llama 3.3 70B)...`);
+            const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
+            targetText = groqResult.text;
+            actualEngine = 'groq (fallback from deepl+gemini)';
+            actualModel = groqResult.model;
+          } else {
+            throw geminiErr;
+          }
+        }
+      }
     } else {
-      // ═══ Gemini path (European + other languages) ═══
-      targetText = await rateLimiter.execute(() =>
-        translateText(
-          sourceText, sourceLang, targetLang,
-          glossaryTerms, fuzzyRef, stylePrompt
-        )
-      );
+      // ═══ Gemini path (fallback for unsupported languages) ═══
+      try {
+        targetText = await rateLimiter.execute(() =>
+          translateText(
+            sourceText, sourceLang, targetLang,
+            glossaryTerms, fuzzyRef, stylePrompt
+          )
+        );
+      } catch (geminiErr) {
+        // ═══ Groq fallback when Gemini fails (rate limit, etc.) ═══
+        console.warn(`   ⚠ Gemini failed for [${routing.displayName}]: ${geminiErr.message}`);
+        if (isGroqAvailable()) {
+          console.warn(`   ↪ Falling back to Groq (Llama 3.3 70B)...`);
+          try {
+            const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
+            targetText = groqResult.text;
+            actualEngine = 'groq (fallback from gemini)';
+            actualModel = groqResult.model;
+          } catch (groqErr) {
+            console.warn(`   ⚠ Groq also failed: ${groqErr.message}`);
+            throw groqErr;
+          }
+        } else {
+          throw geminiErr;
+        }
+      }
     }
   } catch (err) {
     errorMessage = err.message;
@@ -530,6 +629,8 @@ export async function translateSegment({
     estimatedCost: estimateCost(inputTokens, outputTokens, actualModel),
     latencyMs: elapsed,
     promptVersion: version,
+    translatedFrom: sourceLang,
+    translatedFromDisplay: getLanguageDisplayName(sourceLang),
   };
 }
 
@@ -551,9 +652,11 @@ export async function translateSegment({
 export async function translateBatch({
   projectId,
   segments: inputSegments,
-  sourceLang = 'en',
+  sourceLang,  // Now optional — will use per-segment detected_language
   targetLang = 'hi_IN',
 }) {
+  // Default sourceLang to 'en' only if explicitly needed later
+  const globalSourceLang = sourceLang || 'en';
   const batchStart = performance.now();
 
   // ═══ Load project context + style profile (§3.2.2 via ragEngine) ═══
@@ -575,6 +678,10 @@ export async function translateBatch({
       targetText: s.target_text,
       matchType: s.match_type,
       tmScore: s.tm_score,
+      detected_language: s.detected_language || null,
+      detection_confidence: s.detection_confidence || 0,
+      detected_script: s.detected_script || null,
+      source_language_display: s.source_language_display || null,
     }));
   }
 
@@ -583,7 +690,7 @@ export async function translateBatch({
   }
 
   // ═══ Fetch glossary terms (§3.2.1 via ragEngine) ═══
-  const glossary = ragEngine.glossaryLookup(sourceLang, targetLang);
+  const glossary = ragEngine.glossaryLookup(globalSourceLang, targetLang);
   const routing = getModelForLanguage(targetLang);
 
   console.log(`\n🔄 Layer 4 Translation Pipeline`);
@@ -619,7 +726,7 @@ export async function translateBatch({
   const needsEmbedding = [];  // Segments that need embedding + possible LLM
 
   for (const seg of segments) {
-    const exactResult = ragEngine.tmExactLookup(seg.sourceText, sourceLang, targetLang);
+    const exactResult = ragEngine.tmExactLookup(seg.sourceText, globalSourceLang, targetLang);
     if (exactResult) {
       exactResults.push({ seg, tmResult: exactResult });
     } else {
@@ -632,6 +739,9 @@ export async function translateBatch({
   // ═══ Process exact matches (no LLM, no embedding) ═══
   for (const { seg, tmResult } of exactResults) {
     exactCount++;
+    // Determine effective source language for this segment
+    const segSourceLang = (seg.detected_language && seg.detected_language !== 'unknown' && (seg.detection_confidence || 0) >= 0.6)
+      ? seg.detected_language : globalSourceLang;
     const result = {
       id: seg.id,
       sourceText: seg.sourceText,
@@ -642,6 +752,10 @@ export async function translateBatch({
       llmSkipped: true,
       cached: false,
       model: null,
+      translatedFrom: segSourceLang,
+      translatedFromDisplay: getLanguageDisplayName(segSourceLang),
+      detectionConfidence: seg.detection_confidence || 0,
+      detectedScript: seg.detected_script || null,
     };
 
     db.prepare(
@@ -665,9 +779,14 @@ export async function translateBatch({
       const seg = needsEmbedding[i];
       const precomputedEmbedding = embeddings[i];
 
+      // Determine effective source language for this segment
+      const segSourceLang = (seg.detected_language && seg.detected_language !== 'unknown' && (seg.detection_confidence || 0) >= 0.6)
+        ? seg.detected_language : globalSourceLang;
+      const segSourceDisplay = getLanguageDisplayName(segSourceLang);
+
       // TM lookup with precomputed embedding (no network call)
       const tmResult = await ragEngine.tmLookup(
-        seg.sourceText, sourceLang, targetLang, projectContext, precomputedEmbedding
+        seg.sourceText, globalSourceLang, targetLang, projectContext, precomputedEmbedding
       );
 
       // ──────────────────────────────────────────────────────
@@ -685,6 +804,10 @@ export async function translateBatch({
           llmSkipped: true,
           cached: false,
           model: null,
+          translatedFrom: segSourceLang,
+          translatedFromDisplay: segSourceDisplay,
+          detectionConfidence: seg.detection_confidence || 0,
+          detectedScript: seg.detected_script || null,
         };
 
         db.prepare(
@@ -715,10 +838,10 @@ export async function translateBatch({
 
       const allGlossary = [...relevantGlossary, ...termHints];
 
-      // §4.1: Call LLM via orchestrator
+      // §4.1: Call LLM via orchestrator — use per-segment source language
       const llmResult = await translateSegment({
         sourceText: seg.sourceText,
-        sourceLang,
+        sourceLang: segSourceLang,
         targetLang,
         context: projectContext,
         stylePrompt: stylePromptText,
@@ -766,6 +889,10 @@ export async function translateBatch({
         cached: llmResult.cached,
         model: llmResult.model,
         tokens: llmResult.tokens,
+        translatedFrom: segSourceLang,
+        translatedFromDisplay: segSourceDisplay,
+        detectionConfidence: seg.detection_confidence || 0,
+        detectedScript: seg.detected_script || null,
       };
 
       db.prepare(
@@ -795,6 +922,23 @@ export async function translateBatch({
   console.log(`   ${exactCount} exact, ${fuzzyCount} fuzzy, ${newCount} new (${leverageRate}% TM leverage)`);
   console.log(`   ${totalTokens} tokens consumed, ${cacheHits} cache hits\n`);
 
+  // ═══ Build languageSummary — grouped by source language ═══
+  const langSummaryMap = {};
+  for (const r of results) {
+    const src = r.translatedFrom || globalSourceLang;
+    if (!langSummaryMap[src]) {
+      langSummaryMap[src] = {
+        sourceLanguage: src,
+        sourceLanguageDisplay: r.translatedFromDisplay || getLanguageDisplayName(src),
+        segmentCount: 0,
+        targetLanguage: targetLang,
+        targetLanguageDisplay: LANG_NAMES[targetLang] || targetLang,
+      };
+    }
+    langSummaryMap[src].segmentCount++;
+  }
+  const languageSummary = Object.values(langSummaryMap).sort((a, b) => b.segmentCount - a.segmentCount);
+
   return {
     projectId: Number(projectId),
     segments: results,
@@ -817,6 +961,7 @@ export async function translateBatch({
       language: routing.displayName,
       family: routing.family,
     },
+    languageSummary,
     mock: isMockMode(),
   };
 }
@@ -961,6 +1106,7 @@ export function getStats() {
   // Translation engine status
   const sarvamStatus = getSarvamStatus();
   const indictransStatus = getIndictransStatus();
+  const deeplStatus = getDeeplStatus();
 
   // Determine primary Indic engine label
   const indicEngine = isIndictransAvailable()
@@ -969,19 +1115,25 @@ export function getStats() {
       ? 'Sarvam AI (remote)'
       : 'Gemini 2.0 Flash';
 
+  // Determine primary non-Indic engine label
+  const nonIndicEngine = isDeeplAvailable()
+    ? 'DeepL API'
+    : 'Gemini 2.0 Flash';
+
   return {
     layer: 4,
-    engine: `${indicEngine} (Indic) + Gemini 2.0 Flash (Others) + text-embedding-005`,
+    engine: `${indicEngine} (Indic) + ${nonIndicEngine} (Others) + text-embedding-005`,
     mode: isMockMode() ? 'MOCK' : 'LIVE',
     activePrompt: activePromptVersion,
     routing: {
       indicLanguages: isIndictransAvailable()
         ? 'indictrans2-en-indic-dist-200M (local)'
         : isSarvamAvailable() ? 'sarvam-translate:v1' : 'gemini-2.0-flash',
-      europeanLanguages: 'gemini-2.0-flash',
-      otherLanguages: 'gemini-2.0-flash',
+      europeanLanguages: isDeeplAvailable() ? 'deepl-translate' : 'gemini-2.0-flash',
+      otherLanguages: isDeeplAvailable() ? 'deepl-translate' : 'gemini-2.0-flash',
       indictrans2: indictransStatus,
       sarvam: sarvamStatus,
+      deepl: deeplStatus,
     },
     calls: {
       total: totalCalls,

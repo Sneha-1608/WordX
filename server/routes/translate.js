@@ -4,6 +4,7 @@ import ragEngine from '../rag-engine.js';
 import db from '../db.js';
 import { isMockMode } from '../gemini.js';
 import { isLanguageSupported } from '../middleware.js';
+import { getLanguageDisplayName } from '../language-detector.js';
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.post('/', async (req, res) => {
     const {
       projectId,
       segments: inputSegments,
-      sourceLang = 'en',
+      sourceLang,  // Now optional — per-segment detection used when absent
       targetLang = 'hi_IN',
     } = req.body;
 
@@ -66,7 +67,7 @@ router.post('/stream', async (req, res) => {
   res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
-  const { projectId, segments, targetLang = 'hi_IN', sourceLang = 'en', styleProfile, context } = req.body;
+  const { projectId, segments, targetLang = 'hi_IN', sourceLang, styleProfile, context } = req.body;
 
   if (!segments || !Array.isArray(segments)) {
     res.write(`data: ${JSON.stringify({ type: 'error', message: 'segments array required' })}\n\n`);
@@ -84,7 +85,8 @@ router.post('/stream', async (req, res) => {
   const projectContext = project?.context || context || 'General Business';
   const profileName = project?.style_profile || styleProfile || 'professional';
   const { promptText: stylePromptText } = ragEngine.styleProfileGet(profileName);
-  const glossary = ragEngine.glossaryLookup(sourceLang, targetLang);
+  const effectiveSourceLang = sourceLang || 'en';
+  const glossary = ragEngine.glossaryLookup(effectiveSourceLang, targetLang);
 
   // Process segments CONCURRENTLY with a concurrency limit of 5
   const CONCURRENCY = 5;
@@ -100,7 +102,13 @@ router.post('/stream', async (req, res) => {
         (async () => {
           try {
             // First try exact TM lookup (instant)
-            const exactResult = ragEngine.tmExactLookup(segment.sourceText || segment.source_text, sourceLang, targetLang);
+            const exactResult = ragEngine.tmExactLookup(segment.sourceText || segment.source_text, effectiveSourceLang, targetLang);
+
+            // Fetch segment detection metadata from DB
+            const dbSeg = db.prepare('SELECT detected_language, detection_confidence, detected_script, source_language_display FROM segments WHERE id = ?').get(segment.id);
+            const segSourceLang = (dbSeg?.detected_language && dbSeg.detected_language !== 'unknown' && (dbSeg.detection_confidence || 0) >= 0.6)
+              ? dbSeg.detected_language : effectiveSourceLang;
+            const segSourceDisplay = dbSeg?.source_language_display || getLanguageDisplayName(segSourceLang);
 
             if (exactResult) {
               // Update DB
@@ -120,6 +128,8 @@ router.post('/stream', async (req, res) => {
                 cost: 0,
                 current: completed,
                 total: segments.length,
+                translatedFrom: segSourceLang,
+                translatedFromDisplay: segSourceDisplay,
               })}\n\n`);
             } else {
               // Full LLM translation
@@ -130,7 +140,7 @@ router.post('/stream', async (req, res) => {
 
               const llmResult = await llmOrchestrator.translateSegment({
                 sourceText,
-                sourceLang,
+                sourceLang: segSourceLang,
                 targetLang,
                 context: projectContext,
                 stylePrompt: stylePromptText,
@@ -158,6 +168,8 @@ router.post('/stream', async (req, res) => {
                 cost: llmResult.estimatedCost ?? 0,
                 current: completed,
                 total: segments.length,
+                translatedFrom: segSourceLang,
+                translatedFromDisplay: segSourceDisplay,
               })}\n\n`);
             }
           } catch (err) {

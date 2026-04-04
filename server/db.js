@@ -307,6 +307,18 @@ addColumnIfNotExists('segments', 'format_type', 'TEXT', 'paragraph');
 addColumnIfNotExists('segments', 'runs_metadata', 'TEXT');  // JSON blob of formatting runs (DeepTrans)
 addColumnIfNotExists('segments', 'updated_at', 'TEXT');
 
+// segments — auto language detection columns (2026-04-04)
+addColumnIfNotExists('segments', 'detected_language', 'TEXT');
+addColumnIfNotExists('segments', 'detection_confidence', 'REAL');
+addColumnIfNotExists('segments', 'detected_script', 'TEXT');
+addColumnIfNotExists('segments', 'source_language_display', 'TEXT');
+
+// tm_records — auto language detection columns (2026-04-04)
+addColumnIfNotExists('tm_records', 'detected_language', 'TEXT');
+addColumnIfNotExists('tm_records', 'detection_confidence', 'REAL');
+addColumnIfNotExists('tm_records', 'detected_script', 'TEXT');
+addColumnIfNotExists('tm_records', 'source_language_display', 'TEXT');
+
 // glossary migrations
 addColumnIfNotExists('glossary', 'source_lang', 'TEXT', 'en');
 addColumnIfNotExists('glossary', 'target_lang', 'TEXT', 'hi_IN');

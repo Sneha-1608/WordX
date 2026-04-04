@@ -567,7 +567,8 @@ export function logGlossaryCheck({ segmentId, projectId, totalTerms, matchedTerm
 // Helper
 function langCodeToName(code) {
   const map = {
-    en: 'English', hi_IN: 'Hindi', ta_IN: 'Tamil', te_IN: 'Telugu',
+    en: 'English', en_US: 'English (US)', en_GB: 'English (UK)',
+    hi_IN: 'Hindi', ta_IN: 'Tamil', te_IN: 'Telugu',
     kn_IN: 'Kannada', ml_IN: 'Malayalam', bn_IN: 'Bengali', mr_IN: 'Marathi',
     gu_IN: 'Gujarati', pa_IN: 'Punjabi', or_IN: 'Odia', as_IN: 'Assamese',
     ur_PK: 'Urdu', ne_NP: 'Nepali', si_LK: 'Sinhala',

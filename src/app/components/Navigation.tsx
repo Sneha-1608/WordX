@@ -42,8 +42,8 @@ export function Navigation() {
           {/* Logo */}
           <Link to="/home" className="flex items-center relative z-50">
             <span className="text-[22px] font-black">
-              <span className="text-brand-indigo">Verb</span>
-              <span className="text-brand-emerald"> AI</span>
+              <span className="text-brand-indigo">verb</span>
+              <span className="text-brand-emerald">AI</span>
             </span>
           </Link>
 

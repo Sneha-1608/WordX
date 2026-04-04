@@ -14,6 +14,7 @@ export interface Segment {
   matchType: 'EXACT' | 'FUZZY' | 'NEW' | null;
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   violation: boolean;
+  sourceLanguageDisplay?: string | null;
 }
 
 export interface ValidationIssue {

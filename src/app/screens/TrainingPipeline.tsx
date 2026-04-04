@@ -577,8 +577,8 @@ export default function TrainingPipeline() {
       <div className="w-[260px] bg-brand-indigo flex flex-col shrink-0">
         <div className="p-6 border-b border-white/10">
           <Link to="/home" className="text-[22px] font-black">
-            <span className="text-white">Clear</span>
-            <span className="text-brand-emerald">Lingo</span>
+            <span className="text-white">verb</span>
+            <span className="text-brand-emerald">AI</span>
           </Link>
         </div>
         <nav className="flex-1 py-6">
