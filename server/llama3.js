@@ -87,6 +87,10 @@ Use this as a style guide but translate the actual source text below.`;
 
   if (!response.ok) {
     const errBody = await response.text().catch(() => '');
+    // Extract meaningful info from Groq rate limit errors
+    if (response.status === 429 && errBody.includes('tokens per day')) {
+      throw new Error(`Groq daily token limit reached. ${errBody.includes('Upgrade') ? 'Consider upgrading at https://console.groq.com/settings/billing' : 'Try again tomorrow.'}`);
+    }
     throw new Error(`Groq API error: ${response.status} ${response.statusText} ${errBody}`);
   }
 

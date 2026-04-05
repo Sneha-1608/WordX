@@ -12,7 +12,33 @@
 
 import 'dotenv/config';
 
-const SARVAM_API_KEY = process.env.SARVAM_API_KEY;
+const SARVAM_KEYS = [
+  process.env.SARVAM_API_KEY,
+  process.env.SARVAM_API_KEY_2,
+  process.env.SARVAM_API_KEY_3,
+].filter(Boolean);
+
+let currentSarvamKeyIndex = 0;
+const exhaustedSarvamKeys = new Set();
+
+function getCurrentSarvamKey() {
+  // Clear exhausted keys every 10 minutes (credits might be recharged)
+  return SARVAM_KEYS[currentSarvamKeyIndex] || null;
+}
+
+function rotateSarvamKey() {
+  exhaustedSarvamKeys.add(SARVAM_KEYS[currentSarvamKeyIndex]);
+  for (let i = 0; i < SARVAM_KEYS.length; i++) {
+    const idx = (currentSarvamKeyIndex + 1 + i) % SARVAM_KEYS.length;
+    if (!exhaustedSarvamKeys.has(SARVAM_KEYS[idx])) {
+      currentSarvamKeyIndex = idx;
+      console.log(`[Sarvam] 🔄 Rotated to API key #${idx + 1}`);
+      return true;
+    }
+  }
+  return false; // all keys exhausted
+}
+
 const SARVAM_ENDPOINT = 'https://api.sarvam.ai/translate';
 
 // ═══════════════════════════════════════════════════════════════
@@ -69,7 +95,7 @@ const SARVAM_LANG_NAMES = {
  * @returns {boolean}
  */
 export function isSarvamAvailable() {
-  return !!SARVAM_API_KEY && SARVAM_API_KEY.length > 0;
+  return SARVAM_KEYS.length > 0 && exhaustedSarvamKeys.size < SARVAM_KEYS.length;
 }
 
 /**
@@ -133,8 +159,9 @@ export async function sarvamTranslate(sourceText, sourceLang, targetLang, option
 
   if (!sarvamTarget) throw new Error(`Sarvam: Unsupported target language: ${targetLang}`);
 
-  if (!SARVAM_API_KEY) {
-    throw new Error('Sarvam API key not configured. Set SARVAM_API_KEY in .env');
+  const activeKey = getCurrentSarvamKey();
+  if (!activeKey) {
+    throw new Error('Sarvam API: all keys exhausted or not configured. Set SARVAM_API_KEY in .env');
   }
 
   const payload = {
@@ -156,7 +183,7 @@ export async function sarvamTranslate(sourceText, sourceLang, targetLang, option
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'api-subscription-key': SARVAM_API_KEY,
+          'api-subscription-key': getCurrentSarvamKey(),
         },
         body: JSON.stringify(payload),
       });
@@ -168,7 +195,16 @@ export async function sarvamTranslate(sourceText, sourceLang, targetLang, option
         const errMsg = `Sarvam API ${response.status}: ${errorBody}`;
 
         // Don't retry on 4xx (client errors) except 429 (rate limit)
+        // But also fail-fast on 429 if it's quota exhaustion (no credits left)
         if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+          throw new Error(errMsg);
+        }
+        // Quota exhaustion → rotate key before failing
+        if (response.status === 429 && (errorBody.includes('insufficient_quota') || errorBody.includes('No credits'))) {
+          console.warn(`[Sarvam] ⛔ Key #${currentSarvamKeyIndex + 1} has no credits. Rotating...`);
+          if (rotateSarvamKey()) {
+            continue; // retry with next key
+          }
           throw new Error(errMsg);
         }
 

@@ -7,14 +7,72 @@ import 'dotenv/config';
 
 const MOCK_MODE = process.env.MOCK_MODE === 'true' || !process.env.GEMINI_API_KEY;
 
+// ═══════════════════════════════════════════════════════════════
+// Multi-Key Support: Rotate through available API keys
+// ═══════════════════════════════════════════════════════════════
+const API_KEYS = [
+  process.env.GEMINI_API_KEY,
+  process.env.GEMINI_API_KEY_2,
+  process.env.GEMINI_API_KEY_3,
+  process.env.GEMINI_API_KEY_4,
+  process.env.GEMINI_API_KEY_5,
+].filter(Boolean);
+
+let currentKeyIndex = 0;
 let genAI = null;
 let flashModel = null;
 let embeddingModel = null;
 
-if (!MOCK_MODE && process.env.GEMINI_API_KEY) {
-  genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Circuit breaker: tracks which keys have hit daily quota exhaustion
+const exhaustedKeys = new Map(); // key -> expiry timestamp
+const EXHAUSTION_COOLDOWN_MS = 5 * 60 * 1000; // 5 min cooldown before retrying an exhausted key
+
+function initModelsWithKey(apiKey) {
+  genAI = new GoogleGenerativeAI(apiKey);
   flashModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });
+}
+
+/**
+ * Rotate to the next available (non-exhausted) API key.
+ * Returns true if a working key was found, false if all are exhausted.
+ */
+function rotateToNextKey() {
+  const now = Date.now();
+  // Clear expired exhaustions
+  for (const [key, expiry] of exhaustedKeys) {
+    if (now >= expiry) exhaustedKeys.delete(key);
+  }
+
+  for (let i = 0; i < API_KEYS.length; i++) {
+    const idx = (currentKeyIndex + 1 + i) % API_KEYS.length;
+    const key = API_KEYS[idx];
+    if (!exhaustedKeys.has(key)) {
+      currentKeyIndex = idx;
+      initModelsWithKey(key);
+      console.log(`[Gemini] 🔄 Rotated to API key #${idx + 1}`);
+      return true;
+    }
+  }
+  return false; // all keys exhausted
+}
+
+/**
+ * Check if the error indicates DAILY quota exhaustion (not just per-minute rate limit).
+ * Daily exhaustion means retrying is pointless for hours.
+ */
+function isDailyQuotaExhausted(err) {
+  const msg = err?.message || '';
+  // "limit: 0" means the quota bucket is completely empty
+  if (msg.includes('limit: 0')) return true;
+  // FreeTier daily quota exceeded patterns
+  if (msg.includes('FreeTier') && msg.includes('PerDay')) return true;
+  if (msg.includes('GenerateRequestsPerDayPerProjectPerModel')) return true;
+  return false;
+}
+
+if (!MOCK_MODE && API_KEYS.length > 0) {
+  initModelsWithKey(API_KEYS[0]);
 }
 
 export function isMockMode() {
@@ -26,22 +84,38 @@ export function isMockMode() {
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Execute a Gemini API call with exponential backoff on 429 (Too Many Requests).
- * Helps gracefully handle Free Tier API quotas.
+ * Execute a Gemini API call with smart retry strategy:
+ * - Daily quota exhaustion → fail fast + rotate key (no point retrying)
+ * - Per-minute rate limit → short backoff + retry
  */
-export async function withRetry(operation, maxRetries = 2, baseDelay = 2000) {
+export async function withRetry(operation, maxRetries = 2, baseDelay = 1500) {
   let attempt = 0;
   while (attempt < maxRetries) {
     try {
       return await operation();
     } catch (err) {
       const isRateLimit = err.status === 429 || (err.message && (err.message.includes('429') || err.message.toLowerCase().includes('quota') || err.message.toLowerCase().includes('too many requests')));
-      
+
+      // ═══ CIRCUIT BREAKER: Daily quota exhausted → mark key dead, try rotating ═══
+      if (isRateLimit && isDailyQuotaExhausted(err)) {
+        const currentKey = API_KEYS[currentKeyIndex];
+        exhaustedKeys.set(currentKey, Date.now() + EXHAUSTION_COOLDOWN_MS);
+        console.warn(`[Gemini] ⛔ Daily quota EXHAUSTED for API key #${currentKeyIndex + 1}. Circuit breaker activated.`);
+
+        if (rotateToNextKey()) {
+          // Retry immediately with the new key
+          attempt++;
+          continue;
+        }
+        // All keys exhausted — fail fast
+        throw new Error(`All ${API_KEYS.length} Gemini API keys have exhausted their daily quota. Try again later.`);
+      }
+
+      // ═══ Per-minute rate limit: worth retrying with backoff ═══
       if (isRateLimit && attempt < maxRetries - 1) {
         attempt++;
-        // Exponential backoff + jitter (e.g., 2s, 4s, 8s, 16s...)
-        const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
-        console.warn(`[Gemini] API Quota Hit (429). Retrying in ${Math.round(delay)}ms... (Attempt ${attempt}/${maxRetries})`);
+        const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 500;
+        console.warn(`[Gemini] API Rate Limit (429). Retrying in ${Math.round(delay)}ms... (Attempt ${attempt}/${maxRetries})`);
         await new Promise(res => setTimeout(res, delay));
       } else {
         throw err;

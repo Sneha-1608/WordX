@@ -42,7 +42,7 @@ class GeminiRateLimiter {
    * @param {number} maxRetries
    * @returns {Promise<any>}
    */
-  async execute(fn, maxRetries = 3) {
+  async execute(fn, maxRetries = 2) {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       // Wait for rate limit window
       const waitTime = this.getWaitTime();
@@ -55,8 +55,17 @@ class GeminiRateLimiter {
         this.record();
         return await fn();
       } catch (err) {
-        if (err.status === 429 || err.message?.includes('429') || err.message?.includes('RATE_LIMIT')) {
-          const backoff = Math.min(1000 * Math.pow(2, attempt), 30000);
+        const msg = err.message || '';
+        const isRateLimit = err.status === 429 || msg.includes('429') || msg.includes('RATE_LIMIT');
+
+        // Daily quota exhaustion → fail fast, don't waste time retrying
+        if (isRateLimit && (msg.includes('limit: 0') || msg.includes('PerDay') || msg.includes('FreeTier'))) {
+          console.warn(`⛔ Daily quota exhausted — failing fast (no retries).`);
+          throw err;
+        }
+
+        if (isRateLimit && attempt < maxRetries) {
+          const backoff = Math.min(1000 * Math.pow(2, attempt), 16000);
           console.warn(`⚠ Rate limited (429). Backing off ${backoff}ms (attempt ${attempt + 1}/${maxRetries + 1})`);
           await new Promise((r) => setTimeout(r, backoff));
           continue;
