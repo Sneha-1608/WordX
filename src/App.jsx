@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { UploadCloud, ArrowRight, Settings, CheckCircle2, ChevronDown, FileText, RefreshCw, Search, Plus, Home, BarChart3, Sun, Moon, Download } from 'lucide-react';
+import { UploadCloud, ArrowRight, CheckCircle2, ChevronDown, FileText, RefreshCw, Search, Plus, Home, BarChart3, Sun, Moon, Download, Info, Settings } from 'lucide-react';
 import Analytics from './components/Analytics';
 import HumanApproval from './components/HumanApproval';
 import DocumentVerification from './components/DocumentVerification';
+import AboutUs from './components/AboutUs';
 import Silk from './components/Silk';
 import TargetCursor from './components/TargetCursor';
 import './index.css';
@@ -14,17 +15,20 @@ const languages = [
   { code: 'ko_KR', name: 'Korean' }, { code: 'ru_RU', name: 'Russian' },
   { code: 'ar_SA', name: 'Arabic' }, { code: 'ta_IN', name: 'Tamil' },
   { code: 'te_IN', name: 'Telugu' }, { code: 'gu_IN', name: 'Gujarati' },
-  { code: 'mr_IN', name: 'Marathi' }, { code: 'bn_IN', name: 'Bengali' }
+  { code: 'mr_IN', name: 'Marathi' }, { code: 'bn_IN', name: 'Bengali' },
+  { code: 'kn_IN', name: 'Kannada' }, { code: 'ml_IN', name: 'Malayalam' },
+  { code: 'pa_IN', name: 'Punjabi' }, { code: 'or_IN', name: 'Odia' },
+  { code: 'ur_PK', name: 'Urdu' }, { code: 'ne_NP', name: 'Nepali' },
 ];
 
 function App() {
   const [selectedLang, setSelectedLang] = useState('');
   const [file, setFile] = useState(null);
-  const [appState, setAppState] = useState('idle'); // idle, uploading, verifying, translating, approving, done
+  const [appState, setAppState] = useState('idle');
   const [progress, setProgress] = useState(0);
   const [projectId, setProjectId] = useState(null);
   const [segments, setSegments] = useState([]);
-  const [activeTab, setActiveTab] = useState('home'); // home, approval, analytics
+  const [activeTab, setActiveTab] = useState('home');
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,8 +40,8 @@ function App() {
         setIsDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -58,20 +62,22 @@ function App() {
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const dropped = e.dataTransfer.files[0];
+    if (dropped) setFile(dropped);
+  };
+
   const startTranslation = async () => {
     setAppState('uploading');
     setProgress(20);
-
     try {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('language', selectedLang);
-
       const res = await fetch('/api/parse', { method: 'POST', body: formData });
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || 'Parsing failed');
-
       setProjectId(data.projectId);
       setSegments(data.segments || []);
       setProgress(100);
@@ -92,7 +98,6 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, segments, targetLang: selectedLang })
       });
-
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
@@ -104,8 +109,7 @@ function App() {
         if (value) {
           streamedBuffer += decoder.decode(value, { stream: true });
           const parts = streamedBuffer.split('\n\n');
-          streamedBuffer = parts.pop(); // keep partial chunk
-
+          streamedBuffer = parts.pop();
           for (const p of parts) {
             if (p.trim().startsWith('data:')) {
               try {
@@ -144,16 +148,11 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId, language: selectedLang, format: 'docx' })
       });
-
       if (!res.ok) {
         let errMsg = 'Export failed';
-        try {
-          const errData = await res.json();
-          errMsg = errData.error || errMsg;
-        } catch (e) { }
+        try { const e = await res.json(); errMsg = e.error || errMsg; } catch {}
         throw new Error(errMsg);
       }
-
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -180,21 +179,20 @@ function App() {
 
   return (
     <div className="container">
-      <TargetCursor
-        targetSelector=".cursor-target"
-        spinDuration={5}
-        parallaxOn={false}
-        hoverDuration={0.2}
-      />
+      <TargetCursor targetSelector=".cursor-target" spinDuration={5} parallaxOn={false} hoverDuration={0.2} />
+
       <div className="silk-background">
         <Silk
           speed={3}
           scale={1}
-          color="#6c7b39"
+          color={isDarkTheme ? '#059825ff' : '#a7f3d0ff'}
           noiseIntensity={0.6}
           rotation={2}
         />
       </div>
+
+      {/* Wave overlay for light mode */}
+      {!isDarkTheme && <div className="wave-overlay" />}
 
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -222,6 +220,12 @@ function App() {
             >
               <BarChart3 size={16} /> Analytics
             </button>
+            <button
+              className={`nav-link cursor-target ${activeTab === 'about' ? 'active' : ''}`}
+              onClick={() => setActiveTab('about')}
+            >
+              <Info size={16} /> About
+            </button>
           </div>
         </div>
 
@@ -229,16 +233,16 @@ function App() {
           <button
             className="icon-button cursor-target"
             onClick={() => setIsDarkTheme(!isDarkTheme)}
-            style={{ marginRight: '0.5rem' }}
+            title={isDarkTheme ? 'Switch to Light' : 'Switch to Dark'}
           >
             {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          <button className="icon-button cursor-target"><Settings size={20} /></button>
         </div>
       </nav>
 
       <main className="main-content">
         {activeTab === 'analytics' && <Analytics />}
+        {activeTab === 'about' && <AboutUs />}
 
         {activeTab === 'approval' && (
           <HumanApproval
@@ -248,7 +252,7 @@ function App() {
             projectId={projectId}
             onComplete={() => {
               setAppState('done');
-              setActiveTab('home'); // Go back to Home for download
+              setActiveTab('home');
             }}
           />
         )}
@@ -258,16 +262,14 @@ function App() {
             {appState === 'verifying' ? (
               <DocumentVerification
                 fileName={file?.name}
-                onComplete={() => {
-                  runTranslationPipeline();
-                }}
+                onComplete={() => runTranslationPipeline()}
               />
             ) : appState === 'approving' ? (
               <div className="approving-indicator fade-in">
                 <div className="indicator-card glass-panel">
                   <CheckCircle2 size={32} className="text-secondary" />
                   <h3>Translation Ready for Review</h3>
-                  <p>Please check the **Human Approval** tab to approve segments.</p>
+                  <p>Please check the <strong>Human Approval</strong> tab to approve segments.</p>
                   <button className="finalize-btn" onClick={() => setActiveTab('approval')}>
                     Open Approval <ArrowRight size={18} />
                   </button>
@@ -276,19 +278,26 @@ function App() {
             ) : (
               <>
                 <header className="hero">
-                  <h1 className="title">Break Language Barriers <br /> <span className="highlight">Instantly.</span></h1>
+                  <h1 className="title">
+                    Break Language Barriers <br />
+                    <span className="highlight">Instantly.</span>
+                  </h1>
                 </header>
 
                 <div className="app-card glass-panel">
                   {appState === 'idle' && (
                     <div className="compact-interface fade-in">
-                      <div className="compact-box vertical">
+                      <div
+                        className="compact-box vertical"
+                        onDragOver={e => e.preventDefault()}
+                        onDrop={handleDrop}
+                      >
                         <label className={`compact-row-upload ${file ? 'has-file' : ''}`}>
-                          <input type="file" className="file-input" onChange={handleFileChange} />
+                          <input type="file" className="file-input" onChange={handleFileChange} accept=".pdf,.docx,.doc,.txt" />
                           <div className="icon-wrap">
                             {file ? <FileText size={20} className="text-primary" /> : <Plus size={20} />}
                           </div>
-                          <span className="compact-label">{file ? file.name : "Add your document..."}</span>
+                          <span className="compact-label">{file ? file.name : 'Add your document...'}</span>
                         </label>
 
                         <div className="horizontal-divider"></div>
@@ -300,7 +309,7 @@ function App() {
                           >
                             <div className="picker-label-wrap">
                               <Settings size={16} className="text-secondary" />
-                              <span>{selectedLang ? languages.find(l => l.code === selectedLang)?.name : "Translate to..."}</span>
+                              <span>{selectedLang ? languages.find(l => l.code === selectedLang)?.name : 'Translate to...'}</span>
                             </div>
                             <ChevronDown size={16} className={isDropdownOpen ? 'rotate' : ''} />
                           </div>
@@ -369,13 +378,19 @@ function App() {
                         )}
                       </div>
                       <h2 className="status-title">
-                        {appState === 'uploading' ? 'Uploading & Parsing Document...' : `Translating Document...`}
+                        {appState === 'uploading' ? 'Uploading & Parsing Document...' : 'Translating Document...'}
                       </h2>
                       {appState === 'uploading' && <p className="status-desc">{file?.name}</p>}
                       {appState === 'uploading' && (
                         <div className="progress-bar-container">
                           <div className="progress-fill" style={{ width: `${Math.min(progress, 100)}%` }}></div>
                           <span className="progress-text">{Math.min(progress, 100)}%</span>
+                        </div>
+                      )}
+                      {appState === 'translating' && (
+                        <div className="progress-bar-container">
+                          <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                          <span className="progress-text">{progress}%</span>
                         </div>
                       )}
                     </div>
@@ -387,13 +402,15 @@ function App() {
                         <CheckCircle2 size={48} />
                       </div>
                       <h2 className="status-title">Translation Complete!</h2>
-                      <p className="status-desc">Your document has been successfully translated to {selectedLang}.</p>
+                      <p className="status-desc">
+                        Your document has been successfully translated to {languages.find(l => l.code === selectedLang)?.name || selectedLang}.
+                      </p>
                       <div className="result-card fade-in">
                         <div className="file-info-small">
                           <FileText size={32} className="text-primary" />
                           <div>
                             <p className="res-name">{file?.name}</p>
-                            <p className="res-size">Ready for download &middot; 100% Accuracy</p>
+                            <p className="res-size">Ready for download &middot; {segments.length} segments</p>
                           </div>
                         </div>
                         <button className="download-btn" onClick={handleDownload}>
