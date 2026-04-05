@@ -1,0 +1,12 @@
+Merge remote-tracking branch 'sneha/main'
+
+# Conflicts:
+#	package.json
+#	scripts/train_unsloth.py
+#	server/index.js
+#	server/llm-orchestrator.js
+#	server/routes/parse.js
+#	src/app/screens/DocumentUpload.tsx
+#	src/app/screens/TranslationEditor.tsx
+#	src/app/store.ts
+#	src/styles/theme.css

@@ -88,8 +88,9 @@ router.post('/stream', async (req, res) => {
   const effectiveSourceLang = sourceLang || 'en';
   const glossary = ragEngine.glossaryLookup(effectiveSourceLang, targetLang);
 
-  // Process segments CONCURRENTLY with a concurrency limit of 5
-  const CONCURRENCY = 5;
+  // Process segments CONCURRENTLY with a concurrency limit of 2
+  // (reduced from 5 to stay under Gemini free-tier 15 RPM limit)
+  const CONCURRENCY = 2;
   const queue = [...segments];
   let active = 0;
 

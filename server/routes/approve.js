@@ -2,6 +2,7 @@ import { Router } from 'express';
 import db from '../db.js';
 import ragEngine from '../rag-engine.js';
 import { logTranslationEvent, logGlossaryCheck } from './analytics.js';
+import trainingPipeline from '../training-pipeline.js';
 
 const router = Router();
 
@@ -18,6 +19,53 @@ async function broadcastSegmentChange(projectId, segmentId, status, userId) {
     }
   } catch {
     // Socket.io not available — silent no-op
+  }
+}
+
+// Helper to automate the training pipeline when a project reaches 100% approval
+async function checkAndTriggerAutoTraining(projectId) {
+  try {
+    // 1. Check if the project is 100% approved and has segments
+    const stats = db.prepare(`
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'APPROVED' THEN 1 ELSE 0 END) as approved
+      FROM segments WHERE project_id = ?
+    `).get(projectId);
+
+    if (!stats || stats.total === 0 || stats.total !== stats.approved) {
+      return; // Not 100% completed
+    }
+
+    // 2. Fetch project details
+    const project = db.prepare('SELECT source_language, target_language FROM projects WHERE id = ?').get(projectId);
+    if (!project) return;
+
+    console.log(`\n🎉 Project ${projectId} is 100% approved! Triggering automated training pipeline...`);
+
+    // 3. Extract dataset
+    const extractResult = trainingPipeline.extractDataset(project.source_language, project.target_language);
+    
+    if (!extractResult.meetsThreshold) {
+      console.log(`ℹ Extraction complete, but threshold not met (${extractResult.pairsCount}/${extractResult.threshold} pairs). Training not started.`);
+      return;
+    }
+
+    // 4. Create and start training run
+    const runInfo = trainingPipeline.createTrainingRun(extractResult.datasetId);
+    console.log(`🚀 Automated training run ${runInfo.runId} queued. Starting execution...`);
+
+    trainingPipeline.executeTrainingRun(runInfo.runId, (msg) => console.log(`  [Auto-Train] ${msg}`))
+      .then(async (metrics) => {
+        console.log(`✅ Automated training completed! Starting A/B test...`);
+        // 5. Run A/B test (which auto-deploys if it meets requirements)
+        await trainingPipeline.runABTest(runInfo.runId, (abMsg) => console.log(`  [Auto-Eval] ${abMsg}`));
+        console.log(`🎯 Automated pipeline for project ${projectId} has finished.`);
+      })
+      .catch(err => console.error(`❌ Automated training execution failed: ${err.message}`));
+      
+  } catch (error) {
+    console.error(`❌ Error in checkAndTriggerAutoTraining: ${error.message}`);
   }
 }
 
@@ -166,6 +214,11 @@ router.post('/', async (req, res) => {
         }
       } catch {}
     }
+
+    // Check for 100% completion in the background
+    setImmediate(() => {
+      checkAndTriggerAutoTraining(segment.project_id);
+    });
   } catch (err) {
     console.error('Approve error:', err);
     res.status(500).json({ error: 'Approval failed: ' + err.message });
@@ -239,6 +292,9 @@ router.post('/bulk', async (req, res) => {
         }
       }
       console.log(`✅ Background TM writes complete for ${unapproved.length} segments`);
+
+      // Now check if project is 100% complete and auto-train
+      checkAndTriggerAutoTraining(projectId);
     });
   } catch (err) {
     console.error('Bulk Approve error:', err);

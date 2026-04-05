@@ -64,96 +64,24 @@ body {
   flex-direction: column;
 }
 
-.background-shapes {
+.silk-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(160px);
-  opacity: 0.25;
-  animation: float-silent 30s infinite ease-in-out alternate;
-  will-change: transform;
-}
-
-@keyframes float-silent {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    transform: translate(8vw, 4vh) scale(1.2);
-  }
-}
-
-/* Light Mode Exclusives - Flowy Texture */
-:root:not([data-theme="dark"]) .shape {
-  opacity: 0.15; /* More silent in light mode */
-}
-
-:root:not([data-theme="dark"]) .background-shapes::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.35;
-  /* Silent, elegant, fluid topological texture matching Canva's sage vibe */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'%3E%3Cfilter id='fluid'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23fluid)' opacity='0.5'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+  z-index: 0;
   pointer-events: none;
 }
 
-
-.shape-1 {
-  width: 500px;
-  height: 500px;
-  background: var(--primary-color);
-  top: -150px;
-  right: -100px;
-  animation-delay: 0s;
-}
-
-.shape-2 {
-  width: 600px;
-  height: 600px;
-  background: var(--secondary-color);
-  bottom: -200px;
-  left: -200px;
-  animation-delay: -5s;
-}
-
-.shape-3 {
-  width: 400px;
-  height: 400px;
-  background: var(--primary-color);
-  top: 40%;
-  left: 30%;
-  opacity: 0.3;
-  animation-delay: -10s;
-}
-
-@keyframes float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
+/* Semi-transparent overlay so content stays readable on top of Silk */
+.silk-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg-primary);
+  opacity: 0.35;
+  pointer-events: none;
 }
 
 .nav-actions {
@@ -172,6 +100,7 @@ body {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
   z-index: 10;
+  position: relative;
 }
 
 .logo {
@@ -231,6 +160,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .hero {

@@ -73,12 +73,24 @@ export function isSarvamAvailable() {
 }
 
 /**
- * Check if a ClearLingo language code is supported by Sarvam.
+ * Check if a ClearLingo language code is supported by Sarvam as a TARGET language.
  * @param {string} langCode ClearLingo format (e.g. 'hi_IN')
  * @returns {boolean}
  */
 export function isSarvamSupported(langCode) {
   return !!CLEARLINGO_TO_SARVAM[langCode];
+}
+
+/**
+ * Check if a source language is supported by Sarvam.
+ * Sarvam only supports English as the source language.
+ * @param {string} sourceLang BCP-47 or ClearLingo source code (e.g. 'en', 'hi', 'ta')
+ * @returns {boolean}
+ */
+export function isSarvamSourceSupported(sourceLang) {
+  if (!sourceLang) return false;
+  const base = sourceLang.split(/[_-]/)[0].toLowerCase();
+  return base === 'en';
 }
 
 /**
@@ -109,11 +121,16 @@ export async function sarvamTranslate(sourceText, sourceLang, targetLang, option
     maxRetries = 2,
   } = options;
 
+  // ═══ Sarvam only supports English as source language ═══
+  // If source is non-English (e.g. detected as 'hi', 'ta'), reject immediately
+  if (!isSarvamSourceSupported(sourceLang)) {
+    throw new Error(`Sarvam: Unsupported source language: ${sourceLang} (Sarvam only supports English as source)`);
+  }
+
   // Map from ClearLingo to Sarvam lang codes
-  const sarvamSource = toSarvamLangCode(sourceLang);
+  const sarvamSource = toSarvamLangCode(sourceLang) || 'en-IN';  // Always English
   const sarvamTarget = toSarvamLangCode(targetLang);
 
-  if (!sarvamSource) throw new Error(`Sarvam: Unsupported source language: ${sourceLang}`);
   if (!sarvamTarget) throw new Error(`Sarvam: Unsupported target language: ${targetLang}`);
 
   if (!SARVAM_API_KEY) {
@@ -261,6 +278,7 @@ export default {
   sarvamBatchTranslate,
   isSarvamAvailable,
   isSarvamSupported,
+  isSarvamSourceSupported,
   toSarvamLangCode,
   getSarvamStatus,
 };

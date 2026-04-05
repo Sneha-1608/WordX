@@ -16,7 +16,7 @@
 //
 // ═══════════════════════════════════════════════════════════════
 
-import { isMockMode } from './gemini.js';
+import { isMockMode, withRetry } from './gemini.js';
 
 // ═══════════════════════════════════════════════════════════════
 // Language Display Name Map — All 22 Scheduled Indian Languages + Others
@@ -371,7 +371,7 @@ Return ONLY a raw JSON array with exactly ${texts.length} objects, one per segme
 Example format: [{"language":"hi","confidence":0.95,"script":"Devanagari"},{"language":"en","confidence":0.99,"script":"Latin"}]`;
 
   try {
-    const result = await model.generateContent(prompt);
+    const result = await withRetry(() => model.generateContent(prompt));
     const responseText = result.response.text().trim();
 
     // Strip markdown fences if Gemini adds them despite instructions

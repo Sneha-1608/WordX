@@ -19,6 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import { spawn } from 'child_process';
+import http from 'http';
 import db from './db.js';
 import ragEngine from './rag-engine.js';
 import { registerAdapter, updateAdapter, getActiveAdapter, listAdapters } from './llm-orchestrator.js';
@@ -382,59 +383,78 @@ async function runTraining(dataset, langPair, adapterPath, sseCallback) {
 // See Layer_5_Training_Pipeline.md for full config
 async function runUnslothTraining(dataset, langPair, adapterPath, sseCallback) {
   return new Promise((resolve, reject) => {
-    let tmpFile;
-    try {
-      tmpFile = path.join(os.tmpdir(), `train_${langPair}_${Date.now()}.jsonl`);
-      fs.writeFileSync(tmpFile, dataset.map(d => JSON.stringify(d)).join('\n'));
-      
-      let finalMetrics = null;
-      const scriptPath = path.resolve(path.join(__dirname, '..'), 'scripts', 'train_unsloth.py');
-      
-      // Ensure the adapter path directory exists
-      if (!fs.existsSync(adapterPath)) {
-        fs.mkdirSync(adapterPath, { recursive: true });
-      }
-
-      const child = spawn('python', [scriptPath, tmpFile, adapterPath]);
-      
-      child.stdout.on('data', (data) => {
-        const lines = data.toString().split('\n');
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          if (line.startsWith('METRICS_JSON:')) {
-            try {
-              finalMetrics = JSON.parse(line.substring('METRICS_JSON:'.length).trim());
-            } catch (e) {
-              console.error('Failed to parse Python metrics:', e);
-            }
-          } else {
-            console.log(`  🧠 [Python] ${line.trim()}`);
-            if (sseCallback) sseCallback(line.trim());
-          }
-        }
-      });
-      
-      child.stderr.on('data', (data) => {
-        const line = data.toString().trim();
-        if (line) {
-          console.error(`  🧠 [Python ERR] ${line}`);
-        }
-      });
-      
-      child.on('close', (code) => {
-        try { fs.unlinkSync(tmpFile); } catch (e) {} // cleanup
-        if (code !== 0) {
-          reject(new Error(`Python training exited with code ${code}`));
-        } else if (!finalMetrics) {
-          reject(new Error('Python training finished but no METRICS_JSON was returned'));
-        } else {
-          resolve(finalMetrics);
-        }
-      });
-    } catch (err) {
-      if (tmpFile) { try { fs.unlinkSync(tmpFile); } catch (e) {} }
-      reject(err);
+    // Ensure the adapter path directory exists
+    if (!fs.existsSync(adapterPath)) {
+      fs.mkdirSync(adapterPath, { recursive: true });
     }
+
+    const payload = JSON.stringify({ dataset });
+    
+    const req = http.request(
+      {
+        hostname: 'localhost',
+        port: process.env.VERBAI_API_PORT || 8000,
+        path: '/train',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload)
+        }
+      },
+      (res) => {
+        let finalMetrics = null;
+
+        if (res.statusCode !== 200) {
+          return reject(new Error(`Docker API returned status ${res.statusCode}`));
+        }
+
+        let buffer = '';
+
+        res.on('data', (chunk) => {
+          buffer += chunk.toString('utf-8');
+          const lines = buffer.split('\n');
+          // keep the last incomplete sequence
+          buffer = lines.pop(); 
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed) continue;
+            
+            if (trimmed.startsWith('METRICS_JSON:')) {
+              try {
+                finalMetrics = JSON.parse(trimmed.substring('METRICS_JSON:'.length).trim());
+              } catch (e) {
+                console.error('Failed to parse Python metrics:', e);
+              }
+            } else if (trimmed.startsWith('ERROR:')) {
+              console.error(`  🧠 [Docker ERR] ${trimmed}`);
+              if (sseCallback) sseCallback(`[ERR] ${trimmed}`);
+            } else {
+              console.log(`  🧠 [Docker] ${trimmed}`);
+              if (sseCallback) sseCallback(trimmed);
+            }
+          }
+        });
+
+        res.on('end', () => {
+          // Process any remaining buffer just in case
+          if (buffer.trim().startsWith('METRICS_JSON:')) {
+              try {
+                finalMetrics = JSON.parse(buffer.substring('METRICS_JSON:'.length).trim());
+              } catch (e) {}
+          }
+          if (!finalMetrics) {
+            reject(new Error('Python training finished but no METRICS_JSON was returned'));
+          } else {
+            resolve(finalMetrics);
+          }
+        });
+      }
+    );
+
+    req.on('error', (e) => reject(new Error(`Problem communicating with API: ${e.message}`)));
+    req.write(payload);
+    req.end();
   });
 }
 

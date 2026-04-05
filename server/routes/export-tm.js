@@ -51,9 +51,9 @@ router.get('/tmx/:language', (req, res) => {
     tmx += `  </body>\n`;
     tmx += `</tmx>\n`;
 
-    res.setHeader('Content-Type', 'application/x-tmx+xml');
+    res.setHeader('Content-Type', 'application/x-tmx+xml; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="clearlingo-tm-${lang}.tmx"`);
-    res.send(tmx);
+    res.end('\uFEFF' + tmx, 'utf8');
   } catch (err) {
     console.error('TMX export error:', err);
     res.status(500).json({ error: err.message });
@@ -106,9 +106,9 @@ router.get('/xliff/:projectId', (req, res) => {
     xliff += `  </file>\n`;
     xliff += `</xliff>\n`;
 
-    res.setHeader('Content-Type', 'application/xliff+xml');
+    res.setHeader('Content-Type', 'application/xliff+xml; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${project.name.replace(/[^a-zA-Z0-9]/g, '_')}.xliff"`);
-    res.send(xliff);
+    res.end('\uFEFF' + xliff, 'utf8');
   } catch (err) {
     console.error('XLIFF export error:', err);
     res.status(500).json({ error: err.message });

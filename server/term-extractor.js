@@ -8,7 +8,7 @@
 //
 // ═══════════════════════════════════════════════════════════════
 
-import { isMockMode } from './gemini.js';
+import { isMockMode, withRetry } from './gemini.js';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'dotenv/config';
 
@@ -49,7 +49,7 @@ TEXT:
 ${sourceText}`;
 
   try {
-    const result = await flashModel.generateContent(prompt);
+    const result = await withRetry(() => flashModel.generateContent(prompt));
     const raw = result.response.text()
       .replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const parsed = JSON.parse(raw);

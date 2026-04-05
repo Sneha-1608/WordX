@@ -1,0 +1,6 @@
+
+
+
+
+ * Serving Flask app 'indictrans_server'
+ * Debug mode: off

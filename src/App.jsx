@@ -3,7 +3,8 @@ import { UploadCloud, ArrowRight, Settings, CheckCircle2, ChevronDown, FileText,
 import Analytics from './components/Analytics';
 import HumanApproval from './components/HumanApproval';
 import DocumentVerification from './components/DocumentVerification';
-import WaveLines from './components/WaveLines';
+import Silk from './components/Silk';
+import TargetCursor from './components/TargetCursor';
 import './index.css';
 
 const languages = [
@@ -75,7 +76,7 @@ function App() {
       setSegments(data.segments || []);
       setProgress(100);
       setAppState('verifying');
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       alert('Error parsing document: ' + err.message);
       resetState();
@@ -111,7 +112,7 @@ function App() {
                 const msg = JSON.parse(p.substring(5).trim());
                 if (msg.type === 'segment_done') {
                   setProgress(Math.round((msg.current / msg.total) * 100));
-                  setSegments(prev => prev.map(s => 
+                  setSegments(prev => prev.map(s =>
                     s.id === msg.segmentId ? { ...s, targetText: msg.translatedText } : s
                   ));
                 } else if (msg.type === 'complete') {
@@ -123,16 +124,48 @@ function App() {
                   console.warn('Translation issue:', msg);
                 }
               } catch (e) {
-                 console.error('Failed to parse SSE payload', e);
+                console.error('Failed to parse SSE payload', e);
               }
             }
           }
         }
       }
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       alert('Error translating: ' + err.message);
       resetState();
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      const res = await fetch('/api/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId, language: selectedLang, format: 'docx' })
+      });
+
+      if (!res.ok) {
+        let errMsg = 'Export failed';
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || errMsg;
+        } catch (e) { }
+        throw new Error(errMsg);
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `translated_${selectedLang}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Download failed: ' + err.message);
     }
   };
 
@@ -147,11 +180,20 @@ function App() {
 
   return (
     <div className="container">
-      <div className="background-shapes">
-        <WaveLines />
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-        <div className="shape shape-3"></div>
+      <TargetCursor
+        targetSelector=".cursor-target"
+        spinDuration={5}
+        parallaxOn={false}
+        hoverDuration={0.2}
+      />
+      <div className="silk-background">
+        <Silk
+          speed={3}
+          scale={1}
+          color="#6c7b39"
+          noiseIntensity={0.6}
+          rotation={2}
+        />
       </div>
 
       <nav className="navbar">
@@ -163,19 +205,19 @@ function App() {
 
           <div className="nav-links">
             <button
-              className={`nav-link ${activeTab === 'home' ? 'active' : ''}`}
+              className={`nav-link cursor-target ${activeTab === 'home' ? 'active' : ''}`}
               onClick={() => setActiveTab('home')}
             >
               <Home size={16} /> Home
             </button>
             <button
-              className={`nav-link ${activeTab === 'approval' ? 'active' : ''}`}
+              className={`nav-link cursor-target ${activeTab === 'approval' ? 'active' : ''}`}
               onClick={() => setActiveTab('approval')}
             >
               <CheckCircle2 size={16} /> Human Approval
             </button>
             <button
-              className={`nav-link ${activeTab === 'analytics' ? 'active' : ''}`}
+              className={`nav-link cursor-target ${activeTab === 'analytics' ? 'active' : ''}`}
               onClick={() => setActiveTab('analytics')}
             >
               <BarChart3 size={16} /> Analytics
@@ -185,13 +227,13 @@ function App() {
 
         <div className="nav-actions">
           <button
-            className="icon-button"
+            className="icon-button cursor-target"
             onClick={() => setIsDarkTheme(!isDarkTheme)}
             style={{ marginRight: '0.5rem' }}
           >
             {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-          <button className="icon-button"><Settings size={20} /></button>
+          <button className="icon-button cursor-target"><Settings size={20} /></button>
         </div>
       </nav>
 
@@ -200,7 +242,7 @@ function App() {
 
         {activeTab === 'approval' && (
           <HumanApproval
-            targetLang={selectedLang ? languages.find(l=>l.code===selectedLang)?.name : ''}
+            targetLang={selectedLang ? languages.find(l => l.code === selectedLang)?.name : ''}
             targetLangCode={selectedLang}
             segments={segments}
             projectId={projectId}
@@ -258,7 +300,7 @@ function App() {
                           >
                             <div className="picker-label-wrap">
                               <Settings size={16} className="text-secondary" />
-                              <span>{selectedLang ? languages.find(l=>l.code===selectedLang)?.name : "Translate to..."}</span>
+                              <span>{selectedLang ? languages.find(l => l.code === selectedLang)?.name : "Translate to..."}</span>
                             </div>
                             <ChevronDown size={16} className={isDropdownOpen ? 'rotate' : ''} />
                           </div>
@@ -354,7 +396,7 @@ function App() {
                             <p className="res-size">Ready for download &middot; 100% Accuracy</p>
                           </div>
                         </div>
-                        <button className="download-btn">
+                        <button className="download-btn" onClick={handleDownload}>
                           <Download size={20} /> Download
                         </button>
                       </div>

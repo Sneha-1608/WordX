@@ -29,6 +29,7 @@ import {
   sarvamTranslate,
   isSarvamAvailable,
   isSarvamSupported,
+  isSarvamSourceSupported,
   getSarvamStatus,
 } from './sarvam.js';
 import {
@@ -207,7 +208,7 @@ const LANG_NAMES = {
 export function getModelForLanguage(targetLang) {
   const family = INDIC_LANGS.has(targetLang) ? 'indic'
     : EUROPEAN_LANGS.has(targetLang) ? 'european'
-    : 'other';
+      : 'other';
 
   // ═══ INDIC LANGUAGES: IndicTrans2 → Sarvam AI → Gemini ═══
 
@@ -231,10 +232,10 @@ export function getModelForLanguage(targetLang) {
     };
   }
 
-  // ═══ NON-INDIC LANGUAGES: DeepL → Gemini ═══
+  // ═══ EUROPEAN LANGUAGES: DeepL → Gemini ═══
 
-  // Priority 3: DeepL (European, CJK, Arabic — non-Indian languages)
-  if (family !== 'indic' && isDeeplAvailable() && isDeeplSupported(targetLang)) {
+  // Priority 3: DeepL (European languages)
+  if (family === 'european' && isDeeplAvailable() && isDeeplSupported(targetLang)) {
     return {
       model: 'deepl-translate',
       engine: 'deepl',
@@ -269,7 +270,8 @@ function estimateTokens(text, langFamily = 'other') {
 // Gemini 1.5 Flash pricing (per 1M tokens)
 const PRICING = {
   'gemini-2.0-flash': { input: 0.10, output: 0.40 },  // USD per 1M tokens
-  'text-embedding-005': { input: 0.00, output: 0.00 },  // Free in free tier
+  'gemini-1.5-flash': { input: 0.10, output: 0.40 },  // Legacy reference
+  'text-embedding-004': { input: 0.00, output: 0.00 },  // Free in free tier
 };
 
 function estimateCost(inputTokens, outputTokens, model = 'gemini-2.0-flash') {
@@ -403,7 +405,7 @@ export async function translateSegment({
         promptVersion: version,
       };
     }
-  } catch {}
+  } catch { }
 
   // ──────────────────────────────────────────────────────
   // Step 1: Check translation cache (semantic dedup)
@@ -462,6 +464,32 @@ export async function translateSegment({
   let actualEngine = routing.engine;
   let actualModel = routing.model;
 
+  const runGeminiWithGroqFallback = async (fallbackSources) => {
+    try {
+      targetText = await rateLimiter.execute(() =>
+        translateText(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt)
+      );
+      actualEngine = fallbackSources ? `gemini (fallback from ${fallbackSources})` : 'gemini';
+      actualModel = 'gemini-2.0-flash';
+    } catch (geminiErr) {
+      console.warn(`   ⚠ Gemini failed for [${routing.displayName}]: ${geminiErr.message}`);
+      if (isGroqAvailable()) {
+        console.warn(`   ↪ Falling back to Groq Llama 3 (Ultimate Fallback)...`);
+        try {
+          const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
+          targetText = groqResult.text;
+          actualEngine = fallbackSources ? `groq (fallback from gemini+${fallbackSources})` : 'groq (fallback from gemini)';
+          actualModel = groqResult.model;
+        } catch (groqErr) {
+          console.warn(`   ⚠ Groq also failed: ${groqErr.message}`);
+          throw groqErr; // both gemini and groq failed
+        }
+      } else {
+        throw geminiErr;
+      }
+    }
+  };
+
   try {
     if (routing.engine === 'indictrans2') {
       // ═══ IndicTrans2 path (local model, Indic languages) ═══
@@ -473,116 +501,74 @@ export async function translateSegment({
       } catch (itErr) {
         // Fallback to Sarvam AI if IndicTrans2 fails
         console.warn(`   ⚠ IndicTrans2 failed for [${routing.displayName}]: ${itErr.message}`);
-        if (isSarvamAvailable() && isSarvamSupported(targetLang)) {
+        if (isSarvamAvailable() && isSarvamSupported(targetLang) && isSarvamSourceSupported(sourceLang)) {
           console.warn(`   ↪ Falling back to Sarvam AI...`);
           try {
-            const sarvamResult = await sarvamTranslate(sourceText, sourceLang, targetLang, { mode: 'formal' });
+            const sarvamResult = await sarvamTranslate(sourceText, isSarvamSourceSupported(sourceLang) ? sourceLang : 'en', targetLang, { mode: 'formal' });
             targetText = sarvamResult.text;
             actualEngine = 'sarvam (fallback from indictrans2)';
             actualModel = sarvamResult.model;
           } catch (sarvamErr) {
             console.warn(`   ⚠ Sarvam also failed: ${sarvamErr.message}`);
-            console.warn(`   ↪ Falling back to Gemini...`);
-            targetText = await rateLimiter.execute(() =>
-              translateText(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt)
-            );
-            actualEngine = 'gemini (fallback from indictrans2+sarvam)';
-            actualModel = 'gemini-2.0-flash';
+            console.warn(`   ↪ Falling back to Gemini/Groq...`);
+            await runGeminiWithGroqFallback('indictrans2+sarvam');
           }
         } else {
-          console.warn(`   ↪ Falling back to Gemini...`);
-          targetText = await rateLimiter.execute(() =>
-            translateText(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt)
-          );
-          actualEngine = 'gemini (fallback from indictrans2)';
-          actualModel = 'gemini-2.0-flash';
+          console.warn(`   ↪ Falling back to Gemini/Groq...`);
+          await runGeminiWithGroqFallback('indictrans2');
         }
       }
     } else if (routing.engine === 'sarvam') {
-      // ═══ Sarvam AI path (Indic languages, when IndicTrans2 not available) ═══
-      try {
-        const sarvamResult = await sarvamTranslate(sourceText, sourceLang, targetLang, {
-          mode: 'formal',
-        });
-        targetText = sarvamResult.text;
-        actualEngine = 'sarvam';
-        actualModel = sarvamResult.model;
-      } catch (sarvamErr) {
-        // Fallback to Gemini if Sarvam fails
-        console.warn(`   ⚠ Sarvam failed for [${routing.displayName}]: ${sarvamErr.message}`);
-        console.warn(`   ↪ Falling back to Gemini...`);
-        targetText = await rateLimiter.execute(() =>
-          translateText(
-            sourceText, sourceLang, targetLang,
-            glossaryTerms, fuzzyRef, stylePrompt
-          )
-        );
-        actualEngine = 'gemini (fallback from sarvam)';
-        actualModel = 'gemini-2.0-flash';
+      // ═══ Sarvam AI path (Indic languages, English source ONLY) ═══
+      // Sarvam only supports English→Indic, so check source language first
+      if (isSarvamSourceSupported(sourceLang)) {
+        try {
+          const sarvamResult = await sarvamTranslate(sourceText, sourceLang, targetLang, { mode: 'formal' });
+          targetText = sarvamResult.text;
+          actualEngine = 'sarvam';
+          actualModel = sarvamResult.model;
+        } catch (sarvamErr) {
+          // Fallback to IndicTrans2 if Sarvam fails
+          console.warn(`   ⚠ Sarvam failed for [${routing.displayName}]: ${sarvamErr.message}`);
+          if (isIndictransAvailable() && isIndictransSupported(targetLang)) {
+            console.warn(`   ↪ Falling back to IndicTrans2...`);
+            try {
+              const itResult = await indictransTranslate(sourceText, sourceLang, targetLang);
+              targetText = itResult.text;
+              actualEngine = 'indictrans2 (fallback from sarvam)';
+              actualModel = itResult.model;
+            } catch (itErr) {
+              console.warn(`   ⚠ IndicTrans2 also failed: ${itErr.message}`);
+              console.warn(`   ↪ Falling back to Gemini/Groq...`);
+              await runGeminiWithGroqFallback('sarvam+indictrans2');
+            }
+          } else {
+            console.warn(`   ↪ Falling back to Gemini/Groq...`);
+            await runGeminiWithGroqFallback('sarvam');
+          }
+        }
+      } else {
+        // Source language is not English — skip Sarvam entirely, go to Gemini
+        console.warn(`   ⚠ Sarvam skipped: source language "${sourceLang}" is not English`);
+        console.warn(`   ↪ Falling back to Gemini/Groq...`);
+        await runGeminiWithGroqFallback('sarvam-source-unsupported');
       }
     } else if (routing.engine === 'deepl') {
       // ═══ DeepL path (European, CJK, non-Indian languages) ═══
       try {
-        const deeplResult = await deeplTranslate(sourceText, sourceLang, targetLang, {
-          formality: 'prefer_more',
-        });
+        const deeplResult = await deeplTranslate(sourceText, sourceLang, targetLang, { formality: 'prefer_more' });
         targetText = deeplResult.text;
         actualEngine = 'deepl';
         actualModel = 'deepl-translate';
       } catch (deeplErr) {
-        // Fallback to Gemini if DeepL fails
+        // Fallback to Gemini/Groq if DeepL fails
         console.warn(`   ⚠ DeepL failed for [${routing.displayName}]: ${deeplErr.message}`);
-        console.warn(`   ↪ Falling back to Gemini...`);
-        try {
-          targetText = await rateLimiter.execute(() =>
-            translateText(
-              sourceText, sourceLang, targetLang,
-              glossaryTerms, fuzzyRef, stylePrompt
-            )
-          );
-          actualEngine = 'gemini (fallback from deepl)';
-          actualModel = 'gemini-2.0-flash';
-        } catch (geminiErr) {
-          // Fallback to Groq if Gemini also fails
-          console.warn(`   ⚠ Gemini also failed: ${geminiErr.message}`);
-          if (isGroqAvailable()) {
-            console.warn(`   ↪ Falling back to Groq (Llama 3.3 70B)...`);
-            const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
-            targetText = groqResult.text;
-            actualEngine = 'groq (fallback from deepl+gemini)';
-            actualModel = groqResult.model;
-          } else {
-            throw geminiErr;
-          }
-        }
+        console.warn(`   ↪ Falling back to Gemini/Groq...`);
+        await runGeminiWithGroqFallback('deepl');
       }
     } else {
       // ═══ Gemini path (fallback for unsupported languages) ═══
-      try {
-        targetText = await rateLimiter.execute(() =>
-          translateText(
-            sourceText, sourceLang, targetLang,
-            glossaryTerms, fuzzyRef, stylePrompt
-          )
-        );
-      } catch (geminiErr) {
-        // ═══ Groq fallback when Gemini fails (rate limit, etc.) ═══
-        console.warn(`   ⚠ Gemini failed for [${routing.displayName}]: ${geminiErr.message}`);
-        if (isGroqAvailable()) {
-          console.warn(`   ↪ Falling back to Groq (Llama 3.3 70B)...`);
-          try {
-            const groqResult = await groqTranslate(sourceText, sourceLang, targetLang, glossaryTerms, fuzzyRef, stylePrompt);
-            targetText = groqResult.text;
-            actualEngine = 'groq (fallback from gemini)';
-            actualModel = groqResult.model;
-          } catch (groqErr) {
-            console.warn(`   ⚠ Groq also failed: ${groqErr.message}`);
-            throw groqErr;
-          }
-        } else {
-          throw geminiErr;
-        }
-      }
+      await runGeminiWithGroqFallback(null);
     }
   } catch (err) {
     errorMessage = err.message;
@@ -616,7 +602,7 @@ export async function translateSegment({
     // Write-through to Redis L1 cache (async, non-blocking)
     setCachedTranslation(sourceText, sourceLang, targetLang, {
       targetText, model: actualModel, engine: actualEngine,
-    }).catch(() => {});
+    }).catch(() => { });
   }
 
   return {
@@ -699,14 +685,10 @@ export async function translateBatch({
   console.log(`   Context: "${projectContext}" | Style: "${profileName}"`);
   console.log(`   Glossary: ${glossary.length} terms | Mode: ${isMockMode() ? 'MOCK' : 'LIVE'}`);
 
-  // ═══ NEW (DeepTrans): Document-level term extraction ═══
-  const fullSourceText = segments.map(s => s.sourceText).join('\n');
-  const discoveredTerms = await extractTerms(fullSourceText, sourceLang);
-  const { known, unknown } = crossReferenceGlossary(discoveredTerms, glossary);
-
-  if (unknown.length > 0) {
-    console.log(`   🔍 ${unknown.length} new terms discovered: ${unknown.map(t => `"${t.term}"`).join(', ')}`);
-  }
+  // ═══ Term extraction SKIPPED to reduce API calls and latency ═══
+  // On free-tier Gemini, each extra LLM call risks 429 rate limits.
+  // Term extraction is a nice-to-have but adds ~2-5s blocking latency.
+  const unknown = [];
 
   const results = [];
   let exactCount = 0, fuzzyCount = 0, newCount = 0;
@@ -766,7 +748,7 @@ export async function translateBatch({
     console.log(`   ✅ EXACT [${seg.index}] (${tmResult.score}): "${seg.sourceText.substring(0, 40)}..."`);
   }
 
-  // ═══ Pass 2: Batch Embed + TM Lookup + LLM Translation ═══
+  // ═══ Pass 2: Batch Embed + TM Lookup + LLM Translation (PARALLEL) ═══
   if (needsEmbedding.length > 0) {
     // Single batch embed call for ALL non-exact segments
     const { batchEmbed } = await import('./gemini.js');
@@ -775,143 +757,165 @@ export async function translateBatch({
 
     console.log(`   🔍 Pass 2: Batch embedded ${needsEmbedding.length} segments in 1 API call`);
 
-    for (let i = 0; i < needsEmbedding.length; i++) {
-      const seg = needsEmbedding[i];
-      const precomputedEmbedding = embeddings[i];
+    // ═══ Parallel processing with concurrency limit ═══
+    const CONCURRENCY = 2;  // Reduced from 5 to stay under Gemini free-tier RPM limits
+    const segmentQueue = needsEmbedding.map((seg, i) => ({ seg, embedding: embeddings[i] }));
+    let activeCount = 0;
 
-      // Determine effective source language for this segment
-      const segSourceLang = (seg.detected_language && seg.detected_language !== 'unknown' && (seg.detection_confidence || 0) >= 0.6)
-        ? seg.detected_language : globalSourceLang;
-      const segSourceDisplay = getLanguageDisplayName(segSourceLang);
+    await new Promise((resolveAll) => {
+      function processNextSegment() {
+        while (activeCount < CONCURRENCY && segmentQueue.length > 0) {
+          const { seg, embedding } = segmentQueue.shift();
+          activeCount++;
 
-      // TM lookup with precomputed embedding (no network call)
-      const tmResult = await ragEngine.tmLookup(
-        seg.sourceText, globalSourceLang, targetLang, projectContext, precomputedEmbedding
-      );
+          (async () => {
+            try {
+              const precomputedEmbedding = embedding;
 
-      // ──────────────────────────────────────────────────────
-      // EXACT (from vector similarity ≥ 0.95): Use TM directly
-      // ──────────────────────────────────────────────────────
-      if (tmResult.matchType === 'EXACT') {
-        exactCount++;
-        const result = {
-          id: seg.id,
-          sourceText: seg.sourceText,
-          targetText: tmResult.targetText,
-          tmScore: tmResult.score,
-          matchType: 'EXACT',
-          violation: false,
-          llmSkipped: true,
-          cached: false,
-          model: null,
-          translatedFrom: segSourceLang,
-          translatedFromDisplay: segSourceDisplay,
-          detectionConfidence: seg.detection_confidence || 0,
-          detectedScript: seg.detected_script || null,
-        };
+              // Determine effective source language for this segment
+              const segSourceLang = (seg.detected_language && seg.detected_language !== 'unknown' && (seg.detection_confidence || 0) >= 0.6)
+                ? seg.detected_language : globalSourceLang;
+              const segSourceDisplay = getLanguageDisplayName(segSourceLang);
 
-        db.prepare(
-          `UPDATE segments SET target_text = ?, original_target = ?, tm_score = ?, match_type = 'EXACT' WHERE id = ?`
-        ).run(tmResult.targetText, tmResult.targetText, tmResult.score, seg.id);
+              // TM lookup with precomputed embedding (no network call)
+              const tmResult = await ragEngine.tmLookup(
+                seg.sourceText, globalSourceLang, targetLang, projectContext, precomputedEmbedding
+              );
 
-        results.push(result);
-        console.log(`   ✅ EXACT [${seg.index}] (${tmResult.score}): "${seg.sourceText.substring(0, 40)}..."`);
-        continue;
-      }
+              // ──────────────────────────────────────────────────────
+              // EXACT (from vector similarity ≥ 0.95): Use TM directly
+              // ──────────────────────────────────────────────────────
+              if (tmResult.matchType === 'EXACT') {
+                exactCount++;
+                const result = {
+                  id: seg.id,
+                  sourceText: seg.sourceText,
+                  targetText: tmResult.targetText,
+                  tmScore: tmResult.score,
+                  matchType: 'EXACT',
+                  violation: false,
+                  llmSkipped: true,
+                  cached: false,
+                  model: null,
+                  translatedFrom: segSourceLang,
+                  translatedFromDisplay: segSourceDisplay,
+                  detectionConfidence: seg.detection_confidence || 0,
+                  detectedScript: seg.detected_script || null,
+                };
 
-      // ──────────────────────────────────────────────────────
-      // FUZZY or NEW → Layer 4 LLM Translation
-      // ──────────────────────────────────────────────────────
-      const fuzzyRef = tmResult.matchType === 'FUZZY' ? tmResult.targetText : null;
-      if (tmResult.matchType === 'FUZZY') fuzzyCount++;
-      else newCount++;
+                db.prepare(
+                  `UPDATE segments SET target_text = ?, original_target = ?, tm_score = ?, match_type = 'EXACT' WHERE id = ?`
+                ).run(tmResult.targetText, tmResult.targetText, tmResult.score, seg.id);
 
-      // Filter glossary to terms present in this segment
-      const relevantGlossary = glossary.filter((term) =>
-        new RegExp(`\\b${escapeRegex(term.source)}\\b`, 'i').test(seg.sourceText)
-      );
+                results.push(result);
+                console.log(`   ✅ EXACT [${seg.index}] (${tmResult.score}): "${seg.sourceText.substring(0, 40)}..."`);
+                return;
+              }
 
-      // ═══ DeepTrans: Inject discovered-but-unglossaried terms as hints ═══
-      const termHints = unknown
-        .filter(t => new RegExp(`\\b${escapeRegex(t.term)}\\b`, 'i').test(seg.sourceText))
-        .map(t => ({ source: t.term, target: `[translate consistently: ${t.term}]` }));
+              // ──────────────────────────────────────────────────────
+              // FUZZY or NEW → Layer 4 LLM Translation
+              // ──────────────────────────────────────────────────────
+              const fuzzyRef = tmResult.matchType === 'FUZZY' ? tmResult.targetText : null;
+              if (tmResult.matchType === 'FUZZY') fuzzyCount++;
+              else newCount++;
 
-      const allGlossary = [...relevantGlossary, ...termHints];
+              // Filter glossary to terms present in this segment
+              const relevantGlossary = glossary.filter((term) =>
+                new RegExp(`\\b${escapeRegex(term.source)}\\b`, 'i').test(seg.sourceText)
+              );
 
-      // §4.1: Call LLM via orchestrator — use per-segment source language
-      const llmResult = await translateSegment({
-        sourceText: seg.sourceText,
-        sourceLang: segSourceLang,
-        targetLang,
-        context: projectContext,
-        stylePrompt: stylePromptText,
-        glossaryTerms: allGlossary,
-        fuzzyRef,
-        segmentId: seg.id,
-        projectId,
-      });
+              // ═══ DeepTrans: Inject discovered-but-unglossaried terms as hints ═══
+              const termHints = unknown
+                .filter(t => new RegExp(`\\b${escapeRegex(t.term)}\\b`, 'i').test(seg.sourceText))
+                .map(t => ({ source: t.term, target: `[translate consistently: ${t.term}]` }));
 
-      totalTokens += llmResult.tokens.total;
-      totalLLMLatency += llmResult.latencyMs;
-      if (llmResult.cached) cacheHits++;
+              const allGlossary = [...relevantGlossary, ...termHints];
 
-      // §3.2.1: Post-translation glossary enforcement (via ragEngine)
-      const enforcement = ragEngine.glossaryEnforce(seg.sourceText, llmResult.targetText, relevantGlossary);
+              // §4.1: Call LLM via orchestrator — use per-segment source language
+              const llmResult = await translateSegment({
+                sourceText: seg.sourceText,
+                sourceLang: segSourceLang,
+                targetLang,
+                context: projectContext,
+                stylePrompt: stylePromptText,
+                glossaryTerms: allGlossary,
+                fuzzyRef,
+                segmentId: seg.id,
+                projectId,
+              });
 
-      const matchType = tmResult.matchType === 'FUZZY' ? 'FUZZY' : 'NEW';
+              totalTokens += llmResult.tokens.total;
+              totalLLMLatency += llmResult.latencyMs;
+              if (llmResult.cached) cacheHits++;
 
-      // ═══ DeepTrans: Post-translation QA audit ═══
-      let qaIssues = [];
-      let qaPassed = true;
-      if (matchType === 'NEW') {
-        try {
-          const qa = await qaCheckTranslation(seg.sourceText, llmResult.targetText, targetLang);
-          qaPassed = qa.passed;
-          qaIssues = qa.issues || [];
-          if (!qaPassed) {
-            console.log(`   ⚠️ QA [${seg.index}]: ${qaIssues.join('; ')}`);
-          }
-        } catch (qaErr) {
-          console.warn(`   ⚠ QA check failed: ${qaErr.message}`);
+              // §3.2.1: Post-translation glossary enforcement (via ragEngine)
+              const enforcement = ragEngine.glossaryEnforce(seg.sourceText, llmResult.targetText, relevantGlossary);
+
+              const matchType = tmResult.matchType === 'FUZZY' ? 'FUZZY' : 'NEW';
+
+              // ═══ QA check DISABLED to reduce API calls ═══
+              // Each QA check fires another LLM call (Groq/Gemini), adding
+              // latency and rate-limit pressure. Skipping on free tier.
+
+              const result = {
+                id: seg.id,
+                sourceText: seg.sourceText,
+                targetText: llmResult.targetText,
+                tmScore: tmResult.score,
+                matchType,
+                violation: enforcement.violated,
+                qaIssues: [],
+                qaPassed: true,
+                llmSkipped: false,
+                cached: llmResult.cached,
+                model: llmResult.model,
+                tokens: llmResult.tokens,
+                translatedFrom: segSourceLang,
+                translatedFromDisplay: segSourceDisplay,
+                detectionConfidence: seg.detection_confidence || 0,
+                detectedScript: seg.detected_script || null,
+              };
+
+              db.prepare(
+                `UPDATE segments SET target_text = ?, original_target = ?, tm_score = ?, match_type = ?, violation = ? WHERE id = ?`
+              ).run(llmResult.targetText, llmResult.targetText, tmResult.score, matchType, enforcement.violated ? 1 : 0, seg.id);
+
+              results.push(result);
+              const icon = matchType === 'FUZZY' ? '🟡' : '🆕';
+              const cacheIcon = llmResult.cached ? ' 💾' : '';
+              console.log(`   ${icon} ${matchType} [${seg.index}] (${tmResult.score}) ${routing.model}${cacheIcon}: "${seg.sourceText.substring(0, 40)}..."`);
+            } catch (segErr) {
+              console.error(`   ❌ Segment [${seg.index}] error: ${segErr.message}`);
+              results.push({
+                id: seg.id,
+                sourceText: seg.sourceText,
+                targetText: `[Translation pending: ${seg.sourceText.substring(0, 50)}...]`,
+                tmScore: 0,
+                matchType: 'NEW',
+                violation: false,
+                qaIssues: [],
+                qaPassed: true,
+                llmSkipped: false,
+                cached: false,
+                model: null,
+                translatedFrom: globalSourceLang,
+                translatedFromDisplay: getLanguageDisplayName(globalSourceLang),
+                detectionConfidence: 0,
+                detectedScript: null,
+              });
+              newCount++;
+            } finally {
+              activeCount--;
+              processNextSegment();
+              if (activeCount === 0 && segmentQueue.length === 0) resolveAll();
+            }
+          })();
         }
+        // Handle empty queue case
+        if (activeCount === 0 && segmentQueue.length === 0) resolveAll();
       }
-
-      const result = {
-        id: seg.id,
-        sourceText: seg.sourceText,
-        targetText: llmResult.targetText,
-        tmScore: tmResult.score,
-        matchType,
-        violation: enforcement.violated,
-        qaIssues,
-        qaPassed,
-        llmSkipped: false,
-        cached: llmResult.cached,
-        model: llmResult.model,
-        tokens: llmResult.tokens,
-        translatedFrom: segSourceLang,
-        translatedFromDisplay: segSourceDisplay,
-        detectionConfidence: seg.detection_confidence || 0,
-        detectedScript: seg.detected_script || null,
-      };
-
-      db.prepare(
-        `UPDATE segments SET target_text = ?, original_target = ?, tm_score = ?, match_type = ?, violation = ? WHERE id = ?`
-      ).run(llmResult.targetText, llmResult.targetText, tmResult.score, matchType, enforcement.violated ? 1 : 0, seg.id);
-
-      // ═══ DeepTrans: Persist QA results ═══
-      if (qaIssues.length > 0 || !qaPassed) {
-        db.prepare(
-          `INSERT INTO qa_results (segment_id, project_id, source_text, target_text, passed, issues)
-           VALUES (?, ?, ?, ?, ?, ?)`
-        ).run(seg.id, projectId, seg.sourceText, llmResult.targetText, qaPassed ? 1 : 0, JSON.stringify(qaIssues));
-      }
-
-      results.push(result);
-      const icon = matchType === 'FUZZY' ? '🟡' : '🆕';
-      const cacheIcon = llmResult.cached ? ' 💾' : '';
-      console.log(`   ${icon} ${matchType} [${seg.index}] (${tmResult.score}) ${routing.model}${cacheIcon}: "${seg.sourceText.substring(0, 40)}..."`);
-    }
+      processNextSegment();
+    });
   }
 
   const batchElapsed = parseFloat((performance.now() - batchStart).toFixed(2));
@@ -977,7 +981,7 @@ export function registerAdapter({
   adapterName,
   sourceLang = 'en',
   targetLang,
-  baseModel = 'gemini-1.5-flash',
+  baseModel = 'gemini-2.0-flash',
   accuracyBase = null,
   accuracyLora = null,
   trainingPairsCount = 0,
@@ -1122,7 +1126,7 @@ export function getStats() {
 
   return {
     layer: 4,
-    engine: `${indicEngine} (Indic) + ${nonIndicEngine} (Others) + text-embedding-005`,
+    engine: `${indicEngine} (Indic) + ${nonIndicEngine} (Others) + text-embedding-004`,
     mode: isMockMode() ? 'MOCK' : 'LIVE',
     activePrompt: activePromptVersion,
     routing: {

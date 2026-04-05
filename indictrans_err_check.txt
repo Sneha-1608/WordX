@@ -1,0 +1,36 @@
+[IndicTrans2] ============================================================
+[IndicTrans2]   IndicTrans2 Translation Microservice
+[IndicTrans2]   Port: 5400
+[IndicTrans2]   EN\u2192Indic: ai4bharat/indictrans2-en-indic-dist-200M
+[IndicTrans2]   Indic\u2192EN: ai4bharat/indictrans2-indic-en-1B
+[IndicTrans2] ============================================================
+C:\Users\Abhi\AppData\Roaming\Python\Python314\site-packages\triton\windows_utils.py:405: UserWarning: Failed to find CUDA.
+  warnings.warn("Failed to find CUDA.")
+[IndicTrans2] Device: cpu (N/A)
+[IndicTrans2] Using HF_TOKEN for gated model access
+[IndicTrans2] Loading EN\u2192Indic model: ai4bharat/indictrans2-en-indic-dist-200M ...
+C:\Users\Abhi\AppData\Roaming\Python\Python314\site-packages\huggingface_hub\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\Abhi\.cache\huggingface\hub\models--ai4bharat--indictrans2-en-indic-dist-200M. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+A new version of the following files was downloaded from https://huggingface.co/ai4bharat/indictrans2-en-indic-dist-200M:
+- tokenization_indictrans.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/ai4bharat/indictrans2-en-indic-dist-200M:
+- modeling_indictrans.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+[IndicTrans2] Skipping import of cpp extensions due to incompatible torch version. Please upgrade to torch >= 2.11.0 (found 2.10.0+cpu).
+W0404 12:13:28.834000 19644 torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+[IndicTrans2] \u2705 EN\u2192Indic model loaded on cpu
+[IndicTrans2] Loading Indic\u2192EN model: ai4bharat/indictrans2-indic-en-1B ...
+C:\Users\Abhi\AppData\Roaming\Python\Python314\site-packages\huggingface_hub\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\Abhi\.cache\huggingface\hub\models--ai4bharat--indictrans2-indic-en-1B. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+A new version of the following files was downloaded from https://huggingface.co/ai4bharat/indictrans2-indic-en-1B:
+- tokenization_indictrans.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/ai4bharat/indictrans2-indic-en-1B:
+- configuration_indictrans.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.
+A new version of the following files was downloaded from https://huggingface.co/ai4bharat/indictrans2-indic-en-1B:
+- modeling_indictrans.py
+. Make sure to double-check they do not contain any added malicious code. To avoid downloading new versions of the code file, you can pin a revision.

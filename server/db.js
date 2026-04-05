@@ -120,7 +120,7 @@ db.exec(`
     adapter_name  TEXT NOT NULL UNIQUE,        -- e.g. 'lora-en-hi'
     source_lang   TEXT NOT NULL DEFAULT 'en',
     target_lang   TEXT NOT NULL,
-    base_model    TEXT NOT NULL DEFAULT 'gemini-2.0-flash',
+    base_model    TEXT NOT NULL DEFAULT 'gemini-1.5-flash',
     status        TEXT CHECK(status IN ('active','inactive','training','testing')) DEFAULT 'inactive',
     accuracy_base REAL,                        -- base model accuracy (0-1)
     accuracy_lora REAL,                        -- LoRA model accuracy (0-1)
@@ -136,7 +136,7 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS llm_call_log (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     call_type     TEXT NOT NULL,               -- 'translation', 'validation', 'embedding'
-    model         TEXT NOT NULL,               -- 'gemini-2.0-flash', 'text-embedding-005'
+    model         TEXT NOT NULL,               -- 'gemini-1.5-flash', 'text-embedding-004'
     source_lang   TEXT,
     target_lang   TEXT,
     input_tokens  INTEGER,
@@ -188,7 +188,7 @@ db.exec(`
     adapter_name      TEXT NOT NULL,
     source_lang       TEXT NOT NULL DEFAULT 'en',
     target_lang       TEXT NOT NULL DEFAULT 'hi_IN',
-    base_model        TEXT NOT NULL DEFAULT 'gemini-2.0-flash',
+    base_model        TEXT NOT NULL DEFAULT 'gemini-1.5-flash',
     status            TEXT CHECK(status IN ('queued','training','completed','failed','cancelled')) DEFAULT 'queued',
     progress          REAL DEFAULT 0,
     epochs_completed  INTEGER DEFAULT 0,

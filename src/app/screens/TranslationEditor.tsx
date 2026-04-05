@@ -277,7 +277,7 @@ const InteractiveSegmentRow = memo(function InteractiveSegmentRow({ segment, isA
    ═══════════════════════════════════ */
 function ExportModal({ projectId, approvedCount, onClose }: { projectId: number; approvedCount: number; onClose: () => void }) {
   const [isExporting, setIsExporting] = useState(false);
-  const [exportFormat, setExportFormat] = useState<'docx' | 'pdf'>('docx');
+  const [exportFormat, setExportFormat] = useState<'docx' | 'txt'>('docx');
 
   const { activeLanguage } = useAppStore.getState();
 
@@ -336,14 +336,14 @@ function ExportModal({ projectId, approvedCount, onClose }: { projectId: number;
         </p>
 
         <div className="flex gap-4 mb-6">
-          {(['docx', 'pdf'] as const).map((fmt) => (
+          {(['docx', 'txt'] as const).map((fmt) => (
             <label key={fmt} className="flex-1 cursor-pointer">
               <input
                 type="radio"
                 name="export_format"
                 value={fmt}
                 checked={exportFormat === fmt}
-                onChange={(e) => setExportFormat(e.target.value as 'docx' | 'pdf')}
+                onChange={(e) => setExportFormat(e.target.value as 'docx' | 'txt')}
                 className="peer hidden"
               />
               <div className="rounded-xl border border-ui-border p-3 text-center transition-all peer-checked:border-brand-emerald peer-checked:bg-brand-emerald-light/20 peer-checked:text-brand-indigo hover:bg-ui-surface">
@@ -377,9 +377,9 @@ function ExportModal({ projectId, approvedCount, onClose }: { projectId: number;
           </div>
         )}
 
-        {approvedCount < 3 && (
+        {approvedCount === 0 && (
           <p className="text-body-sm text-status-warning mt-4 text-center">
-            ⚠ Approve at least 3 segments to export.
+            ⚠ Approve at least 1 segment to export.
           </p>
         )}
       </motion.div>
@@ -523,7 +523,7 @@ export default function TranslationEditor() {
               variant="primary"
               size="sm"
               onClick={() => setShowExport(true)}
-              disabled={approvedCount < 3}
+              disabled={approvedCount === 0}
             >
               <Download className="w-4 h-4 mr-2" />
               Export

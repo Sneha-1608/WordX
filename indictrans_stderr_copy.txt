@@ -1,0 +1,60 @@
+[IndicTrans2] ============================================================
+[IndicTrans2]   IndicTrans2 Translation Microservice
+[IndicTrans2]   Port: 5400
+[IndicTrans2]   EN\u2192Indic: ai4bharat/indictrans2-en-indic-dist-200M
+[IndicTrans2]   Indic\u2192EN: ai4bharat/indictrans2-indic-en-1B
+[IndicTrans2] ============================================================
+C:\Users\Abhi\AppData\Roaming\Python\Python314\site-packages\triton\windows_utils.py:405: UserWarning: Failed to find CUDA.
+  warnings.warn("Failed to find CUDA.")
+[IndicTrans2] \u274c Failed to load models: cannot import name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils' (unknown location)
+Traceback (most recent call last):
+  File "D:\Codes\Hackathon\scripts\indictrans_server.py", line 108, in load_models
+    from IndicTransToolkit.processor import IndicProcessor
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\__init__.py", line 2, in <module>
+    from .collator import IndicDataCollator
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 7, in <module>
+    class IndicDataCollator:
+    ...<97 lines>...
+                        feature["labels"] = current_labels.astype(np.int64)
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 9, in IndicDataCollator
+    from transformers.tokenization_utils import PreTrainedTokenizerBase
+ImportError: cannot import name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils' (unknown location)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Codes\Hackathon\scripts\indictrans_server.py", line 111, in load_models
+    from IndicTransToolkit.IndicTransToolkit.processor import IndicProcessor
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\__init__.py", line 2, in <module>
+    from .collator import IndicDataCollator
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 7, in <module>
+    class IndicDataCollator:
+    ...<97 lines>...
+                        feature["labels"] = current_labels.astype(np.int64)
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 9, in IndicDataCollator
+    from transformers.tokenization_utils import PreTrainedTokenizerBase
+ImportError: cannot import name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils' (unknown location)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Codes\Hackathon\scripts\indictrans_server.py", line 113, in load_models
+    from IndicTransToolkit import IndicProcessor
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\__init__.py", line 2, in <module>
+    from .collator import IndicDataCollator
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 7, in <module>
+    class IndicDataCollator:
+    ...<97 lines>...
+                        feature["labels"] = current_labels.astype(np.int64)
+  File "D:\Codes\Hackathon\IndicTransToolkit\IndicTransToolkit\collator.py", line 9, in IndicDataCollator
+    from transformers.tokenization_utils import PreTrainedTokenizerBase
+ImportError: cannot import name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils' (unknown location)
+[IndicTrans2] Endpoints:
+[IndicTrans2]   POST /translate        — Single text
+[IndicTrans2]   POST /translate/batch  — Batch texts
+[IndicTrans2]   GET  /health           — Status check
+[IndicTrans2] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5400
+ * Running on http://10.1.120.53:5400
+[IndicTrans2] [33mPress CTRL+C to quit[0m

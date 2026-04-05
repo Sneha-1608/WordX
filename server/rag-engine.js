@@ -756,7 +756,7 @@ export function getStats() {
 
   return {
     layer: 3,
-    engine: 'SQLite + Vectors (text-embedding-005)',
+    engine: 'SQLite + Vectors (text-embedding-004)',
     mode: isMockMode() ? 'MOCK' : 'LIVE',
     embeddingDimension: 768,
     tm: {

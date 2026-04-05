@@ -1,0 +1,35 @@
+# VerbAI v2 — Python dependencies
+# Python 3.10+ | CUDA 11.8+
+
+# Core ML
+torch>=2.2.0
+transformers>=4.40.0
+datasets>=2.18.0
+peft>=0.10.0
+trl>=0.8.6
+bitsandbytes>=0.43.0
+accelerate>=0.28.0
+sentencepiece>=0.2.0
+protobuf>=4.25.0
+
+# RAG — v2 upgrades
+faiss-cpu>=1.7.4                  # use faiss-gpu in Docker with --build-arg
+sentence-transformers>=2.7.0      # LaBSE + mE5-large
+rank-bm25>=0.2.2                  # BM25 sparse retrieval
+rapidfuzz>=3.6.1                  # NEW: fuzzy string matching (3rd retrieval signal)
+
+# Translation quality metrics
+sacrebleu>=2.4.0
+evaluate>=0.4.1
+bert-score>=0.3.13
+unbabel-comet>=2.2.0              # COMETkiwi-22 (QE) + COMET-22 (ref-based)
+# ter (omitted, handled by evaluate natively)
+
+# Utilities
+numpy>=1.26.0
+tqdm>=4.66.0
+
+# API server
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9

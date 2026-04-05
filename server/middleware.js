@@ -70,7 +70,7 @@ class GeminiRateLimiter {
 }
 
 // Singleton rate limiter
-export const rateLimiter = new GeminiRateLimiter(15);
+export const rateLimiter = new GeminiRateLimiter(10);
 
 // ═══════════════════════════════════════════════════════════════
 // Centralized Language Registry

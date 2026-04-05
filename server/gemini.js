@@ -14,11 +14,40 @@ let embeddingModel = null;
 if (!MOCK_MODE && process.env.GEMINI_API_KEY) {
   genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   flashModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-  embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-005' });
+  embeddingModel = genAI.getGenerativeModel({ model: 'text-embedding-004' });
 }
 
 export function isMockMode() {
   return MOCK_MODE;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RETRY STRATEGY (Exponential Backoff with Jitter)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Execute a Gemini API call with exponential backoff on 429 (Too Many Requests).
+ * Helps gracefully handle Free Tier API quotas.
+ */
+export async function withRetry(operation, maxRetries = 2, baseDelay = 2000) {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await operation();
+    } catch (err) {
+      const isRateLimit = err.status === 429 || (err.message && (err.message.includes('429') || err.message.toLowerCase().includes('quota') || err.message.toLowerCase().includes('too many requests')));
+      
+      if (isRateLimit && attempt < maxRetries - 1) {
+        attempt++;
+        // Exponential backoff + jitter (e.g., 2s, 4s, 8s, 16s...)
+        const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
+        console.warn(`[Gemini] API Quota Hit (429). Retrying in ${Math.round(delay)}ms... (Attempt ${attempt}/${maxRetries})`);
+        await new Promise(res => setTimeout(res, delay));
+      } else {
+        throw err;
+      }
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -86,7 +115,7 @@ Use this as a style guide but translate the actual source text below.`;
   prompt += `\n\nSOURCE TEXT:\n${sourceText}`;
 
   try {
-    const result = await flashModel.generateContent(prompt);
+    const result = await withRetry(() => flashModel.generateContent(prompt));
     const response = result.response;
     let text = response.text().trim();
     // Strip any wrapping quotes the model might add
@@ -122,11 +151,16 @@ export async function generateEmbedding(text, context = 'General Business') {
   }
 
   try {
-    const result = await embeddingModel.embedContent(prefixedText);
+    const result = await withRetry(() => embeddingModel.embedContent(prefixedText));
     return result.embedding.values;
   } catch (err) {
-    console.error('Embedding API error:', err.message);
-    console.warn('⚠ Falling back to mock embedding');
+    // A recurring error with text-embedding-004 is a 404 Not Found due to 
+    // API key regional restrictions or Google restricting the models. 
+    if (err.message.includes('not found') || err.status === 404) {
+      console.warn(`[Gemini] Embedding Model 'text-embedding-004' not found for this API key (404). Falling back to mock embeddings.`);
+    } else {
+      console.error('Embedding API error:', err.message);
+    }
     return mockEmbedding(prefixedText);
   }
 }
@@ -156,9 +190,9 @@ export async function batchEmbed(texts, context = 'General Business') {
   try {
     // If within chunk size, single call (the common case)
     if (prefixed.length <= BATCH_CHUNK_SIZE) {
-      const result = await embeddingModel.batchEmbedContents(
+      const result = await withRetry(() => embeddingModel.batchEmbedContents(
         prefixed.map((text) => ({ content: { parts: [{ text }] } }))
-      );
+      ));
       return result.embeddings.map((e) => e.values);
     }
 
@@ -166,14 +200,18 @@ export async function batchEmbed(texts, context = 'General Business') {
     const allEmbeddings = [];
     for (let i = 0; i < prefixed.length; i += BATCH_CHUNK_SIZE) {
       const chunk = prefixed.slice(i, i + BATCH_CHUNK_SIZE);
-      const result = await embeddingModel.batchEmbedContents(
+      const result = await withRetry(() => embeddingModel.batchEmbedContents(
         chunk.map((text) => ({ content: { parts: [{ text }] } }))
-      );
+      ));
       allEmbeddings.push(...result.embeddings.map((e) => e.values));
     }
     return allEmbeddings;
   } catch (err) {
-    console.error('Batch embedding error:', err.message);
+    if (err.message.includes('not found') || err.status === 404) {
+      console.warn(`[Gemini] Embedding Model 'text-embedding-004' not found for this API key (404). Falling back to mock embeddings for batch.`);
+    } else {
+      console.error('Batch embedding error:', err.message);
+    }
     return prefixed.map((t) => mockEmbedding(t));
   }
 }
@@ -200,7 +238,7 @@ export async function validateWithGemini(concatenatedText) {
 TEXT:
 ${concatenatedText}`;
 
-    const termResult = await flashModel.generateContent(termPrompt);
+    const termResult = await withRetry(() => flashModel.generateContent(termPrompt));
     let termIssues = [];
     try {
       const raw = termResult.response.text().replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
@@ -214,7 +252,7 @@ ${concatenatedText}`;
 TEXT:
 ${concatenatedText}`;
 
-    const grammarResult = await flashModel.generateContent(grammarPrompt);
+    const grammarResult = await withRetry(() => flashModel.generateContent(grammarPrompt));
     let grammarIssues = [];
     try {
       const raw = grammarResult.response.text().replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
@@ -263,7 +301,7 @@ If there are problems:
 {"passed": false, "issues": ["issue description 1", "issue description 2"]}`;
 
   try {
-    const result = await flashModel.generateContent(prompt);
+    const result = await withRetry(() => flashModel.generateContent(prompt));
     const raw = result.response.text()
       .replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     return JSON.parse(raw);
@@ -393,7 +431,7 @@ const MOCK_TRANSLATIONS_MR = {
 
 function mockTranslate(sourceText, targetLang) {
   return new Promise((resolve) => {
-    const delay = 800 + Math.random() * 1200; // 800-2000ms realistic delay
+    const delay = 50 + Math.random() * 150; // 50-200ms realistic delay
     setTimeout(() => {
       const dict = targetLang.startsWith('mr') ? MOCK_TRANSLATIONS_MR : MOCK_TRANSLATIONS_HI;
 

@@ -1,0 +1,32 @@
+[IndicTrans2] ============================================================
+[IndicTrans2]   IndicTrans2 Translation Microservice
+[IndicTrans2]   Port: 5400
+[IndicTrans2]   EN\u2192Indic: ai4bharat/indictrans2-en-indic-dist-200M
+[IndicTrans2]   Indic\u2192EN: ai4bharat/indictrans2-indic-en-1B
+[IndicTrans2] ============================================================
+C:\Users\Abhi\AppData\Roaming\Python\Python314\site-packages\triton\windows_utils.py:405: UserWarning: Failed to find CUDA.
+  warnings.warn("Failed to find CUDA.")
+[IndicTrans2] Device: cpu (N/A)
+[IndicTrans2] Using HF_TOKEN for gated model access
+[IndicTrans2] Loading EN\u2192Indic model: ai4bharat/indictrans2-en-indic-dist-200M ...
+[IndicTrans2] Skipping import of cpp extensions due to incompatible torch version. Please upgrade to torch >= 2.11.0 (found 2.10.0+cpu).
+W0404 12:18:15.761000 91676 torch\distributed\elastic\multiprocessing\redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+[IndicTrans2] \u2705 EN\u2192Indic model loaded on cpu
+[IndicTrans2] Loading Indic\u2192EN model: ai4bharat/indictrans2-indic-en-1B ...
+[IndicTrans2] \u2705 Indic\u2192EN model loaded on cpu
+[IndicTrans2] \u2705 Both models loaded and ready!
+[IndicTrans2] Endpoints:
+[IndicTrans2]   POST /translate        — Single text
+[IndicTrans2]   POST /translate/batch  — Batch texts
+[IndicTrans2]   GET  /health           — Status check
+[IndicTrans2] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5400
+ * Running on http://10.1.120.53:5400
+[IndicTrans2] [33mPress CTRL+C to quit[0m
+[IndicTrans2] 127.0.0.1 - - [04/Apr/2026 12:19:27] "GET /health HTTP/1.1" 200 -
+[IndicTrans2] Preprocessing 1 texts [eng_Latn\u2192hin_Deva]...
+[IndicTrans2] Preprocessed batch: ['eng_Latn hin_Deva Hello , how are you today ?']...
+[IndicTrans2] Tokenized input shape: torch.Size([1, 10])
+[IndicTrans2] Translation error: 'NoneType' object has no attribute 'shape'
+[IndicTrans2] 127.0.0.1 - - [04/Apr/2026 12:19:38] "[35m[1mPOST /translate HTTP/1.1[0m" 500 -
