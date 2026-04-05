@@ -150,7 +150,7 @@ function App() {
       });
       if (!res.ok) {
         let errMsg = 'Export failed';
-        try { const e = await res.json(); errMsg = e.error || errMsg; } catch {}
+        try { const e = await res.json(); errMsg = e.error || errMsg; } catch { }
         throw new Error(errMsg);
       }
       const blob = await res.blob();
@@ -183,19 +183,12 @@ function App() {
 
       <div className="silk-background">
         <Silk
-          speed={6}
+          speed={3}
           scale={1}
           color={isDarkTheme ? '#059825ff' : '#a7f3d0ff'}
           noiseIntensity={0.6}
           rotation={2}
         />
-      </div>
-
-      {/* Animated Blobs */}
-      <div className="bg-blobs">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="blob blob-3"></div>
       </div>
 
       {/* Wave overlay for light mode */}
