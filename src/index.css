@@ -121,13 +121,67 @@ body {
 }
 
 @keyframes waveFloat {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(3%, 2%) rotate(1deg); }
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(5%, 3%) rotate(2deg) scale(1.05); }
+  100% { transform: translate(-2%, 5%) rotate(-1deg) scale(1); }
 }
 
 @keyframes waveSway {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-3%); }
+  0% { transform: translateX(0) scaleY(1); }
+  50% { transform: translateX(-5%) scaleY(1.1); }
+  100% { transform: translateX(2%) scaleY(1); }
+}
+
+/* Background Blobs */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: blob-float 25s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  background: var(--secondary-color);
+  top: -100px;
+  left: -100px;
+}
+
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(52, 211, 153, 0.3);
+  bottom: -50px;
+  right: -50px;
+  animation-delay: -5s;
+  animation-duration: 30s;
+}
+
+.blob-3 {
+  width: 300px;
+  height: 300px;
+  background: rgba(16, 185, 129, 0.2);
+  top: 40%;
+  right: 20%;
+  animation-delay: -10s;
+  animation-duration: 35s;
+}
+
+@keyframes blob-float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(100px, 50px) rotate(120deg); }
+  66% { transform: translate(-50px, 100px) rotate(240deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
 }
 
 .nav-actions {

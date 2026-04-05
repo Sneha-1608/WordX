@@ -183,12 +183,19 @@ function App() {
 
       <div className="silk-background">
         <Silk
-          speed={3}
+          speed={6}
           scale={1}
           color={isDarkTheme ? '#059825ff' : '#a7f3d0ff'}
           noiseIntensity={0.6}
           rotation={2}
         />
+      </div>
+
+      {/* Animated Blobs */}
+      <div className="bg-blobs">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
       </div>
 
       {/* Wave overlay for light mode */}
@@ -293,7 +300,7 @@ function App() {
                         onDrop={handleDrop}
                       >
                         <label className={`compact-row-upload ${file ? 'has-file' : ''}`}>
-                          <input type="file" className="file-input" onChange={handleFileChange} accept=".pdf,.docx,.doc,.txt" />
+                          <input type="file" className="file-input" onChange={handleFileChange} accept=".pdf,.docx,.doc" />
                           <div className="icon-wrap">
                             {file ? <FileText size={20} className="text-primary" /> : <Plus size={20} />}
                           </div>
@@ -348,11 +355,9 @@ function App() {
 
                         <div className="compact-box-footer">
                           <div className="compact-hints">
-                            <span>PDF, DOCX, TXT</span>
+                            <span>PDF, DOCX</span>
                             <span className="dot"></span>
-                            <span>Max 50MB</span>
-                            <span className="dot"></span>
-                            <span className="secure"><CheckCircle2 size={12} /> Secure</span>
+                            <span>Max 10MB</span>
                           </div>
 
                           <button

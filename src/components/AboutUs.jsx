@@ -10,7 +10,7 @@ const STEPS = [
     icon: Upload,
     step: '01',
     title: 'Upload Your Document',
-    desc: 'Drag and drop any PDF, DOCX, or TXT file. Our parser preserves original formatting, tables, headers, and styles while extracting clean text segments.',
+    desc: 'Drag and drop any PDF or DOCX file. Our parser preserves original formatting, tables, headers, and styles while extracting clean text segments.',
     color: '#10b981',
   },
   {

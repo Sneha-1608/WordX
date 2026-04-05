@@ -337,13 +337,14 @@ function ExportModal({ projectId, approvedCount, onClose }: { projectId: number;
 
         <div className="flex gap-4 mb-6">
           {(['docx', 'txt'] as const).map((fmt) => (
+          {(['docx'] as const).map((fmt) => (
             <label key={fmt} className="flex-1 cursor-pointer">
               <input
                 type="radio"
                 name="export_format"
                 value={fmt}
                 checked={exportFormat === fmt}
-                onChange={(e) => setExportFormat(e.target.value as 'docx' | 'txt')}
+                onChange={(e) => setExportFormat(e.target.value as 'docx')}
                 className="peer hidden"
               />
               <div className="rounded-xl border border-ui-border p-3 text-center transition-all peer-checked:border-brand-emerald peer-checked:bg-brand-emerald-light/20 peer-checked:text-brand-indigo hover:bg-ui-surface">

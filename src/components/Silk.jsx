@@ -54,15 +54,16 @@ void main() {
   vec2  tex        = uv * uScale;
   float tOffset    = uSpeed * uTime;
 
-  tex.y += 0.03 * sin(8.0 * tex.x - tOffset);
+  tex.y += 0.08 * sin(6.0 * tex.x - tOffset);
+  tex.x += 0.04 * cos(4.0 * tex.y + tOffset * 0.5);
 
-  float pattern = 0.6 +
-                  0.4 * sin(5.0 * (tex.x + tex.y +
-                                   cos(3.0 * tex.x + 5.0 * tex.y) +
-                                   0.02 * tOffset) +
-                           sin(20.0 * (tex.x + tex.y - 0.1 * tOffset)));
+  float pattern = 0.55 +
+                  0.45 * sin(4.0 * (tex.x + tex.y +
+                                   cos(4.0 * tex.x + 3.0 * tex.y + tOffset * 0.1) +
+                                   0.04 * tOffset) +
+                           sin(15.0 * (tex.x - tex.y - 0.2 * tOffset)));
 
-  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 15.0 * uNoiseIntensity;
+  vec4 col = vec4(uColor, 1.0) * vec4(pattern) - rnd / 20.0 * uNoiseIntensity;
   col.a = 1.0;
   gl_FragColor = col;
 }
@@ -78,7 +79,7 @@ const SilkPlane = forwardRef(function SilkPlane({ uniforms }, ref) {
   }, [ref, viewport]);
 
   useFrame((_, delta) => {
-    ref.current.material.uniforms.uTime.value += 0.1 * delta;
+    ref.current.material.uniforms.uTime.value += 0.4 * delta;
   });
 
   return (
