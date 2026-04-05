@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState, memo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronRight, Download, Users, FileText, History, Globe } from 'lucide-react';
+import { ChevronRight, Download, Users, FileText, History, Globe, Sparkles, Zap, Shield, Activity, Clock, Heart } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
 import { useAppStore } from '../store';
@@ -9,12 +9,233 @@ import { toast, Toaster } from 'sonner';
 import type { Segment } from '../store';
 
 /* ═══════════════════════════════════
-   FAKE LIVE CURSORS (simulated Yjs)
+   ANIMATED WAVY BACKGROUND (light mode)
    ═══════════════════════════════════ */
-const fakeCursors = [
-  { name: 'Priya S.', color: '#8B5CF6', avatar: 'P' },
-  { name: 'Raj K.', color: '#F59E0B', avatar: 'R' },
-];
+function WavyBackground() {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}
+    >
+      <svg
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        style={{
+          position: 'absolute',
+          width: '200%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          animation: 'wavySlide 18s linear infinite',
+        }}
+      >
+        <defs>
+          <linearGradient id="waveGrad1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.04" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
+        {/* Generate multiple flowing wave lines */}
+        {Array.from({ length: 18 }).map((_, i) => {
+          const y = 40 + i * 48;
+          const amplitude = 12 + (i % 3) * 6;
+          const offset = i * 25;
+          return (
+            <path
+              key={i}
+              d={`M0,${y} C180,${y - amplitude + offset % 20} 360,${y + amplitude - offset % 15} 540,${y} C720,${y - amplitude} 900,${y + amplitude} 1080,${y} C1260,${y - amplitude + 5} 1440,${y + amplitude - 8} 1440,${y} L1440,${y + 2} C1260,${y + amplitude - 6} 1080,${y + 2} 900,${y + amplitude + 2} C720,${y - amplitude + 2} 540,${y + 2} 360,${y + amplitude + 2} C180,${y - amplitude + 2} 0,${y + 2} 0,${y + 2} Z`}
+              fill="none"
+              stroke={i % 3 === 0 ? 'rgba(16,185,129,0.08)' : i % 3 === 1 ? 'rgba(99,102,241,0.05)' : 'rgba(30,27,75,0.04)'}
+              strokeWidth={i % 2 === 0 ? '1' : '0.5'}
+              style={{
+                animation: `wavyFloat ${6 + (i % 4) * 2}s ease-in-out infinite`,
+                animationDelay: `${i * 0.3}s`,
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* Additional flowing curves layer */}
+      <svg
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        style={{
+          position: 'absolute',
+          width: '200%',
+          height: '100%',
+          top: 0,
+          left: '-50%',
+          animation: 'wavySlide2 24s linear infinite',
+          opacity: 0.6,
+        }}
+      >
+        {Array.from({ length: 12 }).map((_, i) => {
+          const y = 60 + i * 70;
+          const amp = 20 + (i % 4) * 8;
+          return (
+            <path
+              key={`b-${i}`}
+              d={`M0,${y} Q360,${y - amp} 720,${y} Q1080,${y + amp} 1440,${y}`}
+              fill="none"
+              stroke={i % 2 === 0 ? 'rgba(16,185,129,0.06)' : 'rgba(30,27,75,0.03)'}
+              strokeWidth="1.2"
+              style={{
+                animation: `wavyFloat ${8 + (i % 3) * 3}s ease-in-out infinite alternate`,
+                animationDelay: `${i * 0.5}s`,
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes wavySlide {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes wavySlide2 {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(50%); }
+        }
+        @keyframes wavyFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════
+   EDITOR HEADER (branded gradient bar)
+   ═══════════════════════════════════ */
+function EditorHeader({ projectName, language }: { projectName: string; language: string }) {
+  return (
+    <motion.div
+      className="relative overflow-hidden"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* Gradient banner */}
+      <div
+        className="h-[140px] flex items-end pb-5 px-8"
+        style={{
+          background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 40%, #10B981 100%)',
+          borderRadius: '0 0 24px 24px',
+        }}
+      >
+        <div className="flex items-end justify-between w-full">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-300" />
+              <span className="text-[11px] font-semibold tracking-wider text-emerald-300 uppercase">Translation Workspace</span>
+            </div>
+            <h1 className="text-[24px] font-bold text-white tracking-tight leading-tight">
+              {projectName || 'Untitled Project'}
+            </h1>
+            <p className="text-[13px] text-white/60">
+              Translating to <span className="text-emerald-300 font-medium">{language}</span> · Powered by Verb AI
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Status indicators */}
+            <div className="hidden lg:flex items-center gap-3">
+              <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[11px] text-white/80 font-medium">Live</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <Shield className="w-3 h-3 text-white/70" />
+                <span className="text-[11px] text-white/80 font-medium">Encrypted</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <Zap className="w-3 h-3 text-yellow-300" />
+                <span className="text-[11px] text-white/80 font-medium">AI-Powered</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ═══════════════════════════════════
+   EDITOR FOOTER (branded status bar)
+   ═══════════════════════════════════ */
+function EditorFooter({ segmentCount, approvedCount, language, leverageRate }: {
+  segmentCount: number;
+  approvedCount: number;
+  language: string;
+  leverageRate: number;
+}) {
+  const progress = segmentCount > 0 ? Math.round((approvedCount / segmentCount) * 100) : 0;
+  const costSaved = Math.round((leverageRate / 100) * segmentCount * 360);
+
+  return (
+    <motion.footer
+      className="border-t border-ui-border bg-white/80 backdrop-blur-sm"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.3 }}
+    >
+      <div className="flex items-center justify-between px-6 h-14">
+        {/* Left — branding */}
+        <div className="flex items-center gap-3">
+          <span className="text-[14px] font-black">
+            <span className="text-brand-indigo">verb</span>
+            <span className="text-brand-emerald">AI</span>
+          </span>
+          <span className="h-4 w-px bg-ui-border" />
+          <span className="text-[11px] text-ui-slate">Enterprise Translation Platform</span>
+        </div>
+
+        {/* Center — progress */}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Activity className="w-3.5 h-3.5 text-brand-emerald" />
+            <span className="text-[11px] font-semibold text-brand-indigo">{progress}% Complete</span>
+            <div className="w-24 h-1.5 bg-ui-surface rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-linear-to-r from-brand-emerald to-brand-indigo rounded-full"
+                initial={{ width: '0%' }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
+          <span className="h-4 w-px bg-ui-border" />
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-3 h-3 text-ui-slate" />
+            <span className="text-[11px] text-ui-slate">{segmentCount - approvedCount} remaining</span>
+          </div>
+          <span className="h-4 w-[1px] bg-ui-border" />
+          <div className="flex items-center gap-1.5">
+            <Zap className="w-3 h-3 text-amber-500" />
+            <span className="text-[11px] text-ui-slate">₹{costSaved.toLocaleString()} saved</span>
+          </div>
+        </div>
+
+        {/* Right — credits */}
+        <div className="flex items-center gap-2 text-[11px] text-ui-slate">
+          <span>Made with</span>
+          <Heart className="w-3 h-3 text-red-400 fill-red-400" />
+          <span>by Team VerbAI</span>
+        </div>
+      </div>
+    </motion.footer>
+  );
+}
+
 
 function LiveCursors() {
   return (
@@ -178,12 +399,12 @@ const InteractiveSegmentRow = memo(function InteractiveSegmentRow({ segment, isA
     <motion.div
       layout
       className={`w-full flex items-stretch gap-4 px-4 lg:px-6 border-b border-ui-border transition-all duration-200 group cursor-pointer ${isApproved
-          ? 'bg-ui-surface/50'
-          : isActive
-            ? 'bg-ui-white shadow-md border-l-[3px] border-l-brand-emerald'
-            : segment.violation
-              ? 'bg-red-50/50 hover:bg-red-50'
-              : 'hover:bg-ui-surface'
+        ? 'bg-ui-surface/50'
+        : isActive
+          ? 'bg-ui-white shadow-md border-l-[3px] border-l-brand-emerald'
+          : segment.violation
+            ? 'bg-red-50/50 hover:bg-red-50'
+            : 'hover:bg-ui-surface'
         }`}
       style={{ minHeight: isApproved ? '56px' : '72px' }}
       animate={{
@@ -462,6 +683,7 @@ export default function TranslationEditor() {
   }, [segments, activeSegmentId]);
 
   const qualityScore = validationResult?.qualityScore || 87;
+  const currentLangName = languages.find(l => l.code === activeLanguage)?.name || activeLanguage;
 
   return (
     <div className="w-screen h-screen flex overflow-hidden">
@@ -493,7 +715,13 @@ export default function TranslationEditor() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
+        {/* Animated Wavy Background (light mode) */}
+        <WavyBackground />
+
+        {/* Branded Header */}
+        <EditorHeader projectName={currentProjectName || 'Policy Document 2024'} language={currentLangName} />
+
         {/* Top Bar */}
         <div className="h-16 bg-ui-white border-b border-ui-border flex items-center justify-between px-6">
           <div className="flex items-center gap-2 text-body-sm text-ui-slate">
@@ -559,7 +787,7 @@ export default function TranslationEditor() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 flex bg-ui-surface overflow-hidden">
+        <div className="flex-1 flex bg-ui-surface/60 backdrop-blur-[2px] overflow-hidden relative z-[1]">
           {/* Left Panel — Stats */}
           <div className="w-[280px] bg-ui-white border-r border-ui-border p-6 flex flex-col gap-8 overflow-y-auto">
             {/* TM Stats */}
@@ -796,6 +1024,14 @@ export default function TranslationEditor() {
             </div>
           </div>
         </div>
+
+        {/* Branded Footer */}
+        <EditorFooter
+          segmentCount={segments.length}
+          approvedCount={approvedCount}
+          language={currentLangName}
+          leverageRate={leverageRate}
+        />
       </div>
 
       {/* Export Modal */}
@@ -843,10 +1079,10 @@ export default function TranslationEditor() {
                       <div
                         key={para.id}
                         className={`mb-3 p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm ${para.status === 'APPROVED'
-                            ? 'border-brand-emerald/30 bg-brand-emerald-light/5'
-                            : para.status === 'REJECTED'
-                              ? 'border-status-error/30 bg-red-50'
-                              : 'border-ui-border bg-ui-surface/50'
+                          ? 'border-brand-emerald/30 bg-brand-emerald-light/5'
+                          : para.status === 'REJECTED'
+                            ? 'border-status-error/30 bg-red-50'
+                            : 'border-ui-border bg-ui-surface/50'
                           }`}
                         onClick={() => {
                           setActiveSegmentId(para.id);
@@ -859,15 +1095,15 @@ export default function TranslationEditor() {
                         </p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${para.matchType === 'EXACT' ? 'bg-brand-emerald-light text-brand-emerald'
-                              : para.matchType === 'FUZZY' ? 'bg-amber-100 text-amber-700'
-                                : para.matchType === 'PROPAGATED' ? 'bg-purple-100 text-purple-700'
-                                  : 'bg-ui-surface text-ui-slate'
+                            : para.matchType === 'FUZZY' ? 'bg-amber-100 text-amber-700'
+                              : para.matchType === 'PROPAGATED' ? 'bg-purple-100 text-purple-700'
+                                : 'bg-ui-surface text-ui-slate'
                             }`}>
                             {para.matchType || 'NEW'}
                           </span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${para.status === 'APPROVED' ? 'bg-green-100 text-green-700'
-                              : para.status === 'REJECTED' ? 'bg-red-100 text-red-700'
-                                : 'bg-yellow-100 text-yellow-700'
+                            : para.status === 'REJECTED' ? 'bg-red-100 text-red-700'
+                              : 'bg-yellow-100 text-yellow-700'
                             }`}>
                             {para.status}
                           </span>

@@ -182,7 +182,7 @@ export default function DocumentUpload() {
                 s.clearTranslationProgress();
                 toast.success(`Translation complete: ${event.total} segments`, { duration: 4000, icon: '✅' });
               }
-            } catch {}
+            } catch { }
           }
         }
       }).catch(() => { store.clearTranslationProgress(); });
@@ -255,7 +255,7 @@ export default function DocumentUpload() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-[#FAFAFA] overflow-y-auto overflow-x-hidden relative">
         <div className="flex-1 flex flex-col items-center pt-24 px-8 pb-12 w-full max-w-[800px] mx-auto z-10">
-          
+
           {/* Header & Glowing Orb */}
           <motion.div
             className="text-center mb-10 w-full flex flex-col items-center"
@@ -265,16 +265,15 @@ export default function DocumentUpload() {
           >
 
             <h1 className="text-[32px] md:text-[40px] font-medium text-brand-indigo tracking-tight leading-tight">
-              Good Afternoon, Admin <br/>
+              Good Afternoon, Admin <br />
               What do you want to <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#d946ef] to-[#c026d3]">translate?</span>
             </h1>
           </motion.div>
 
           {/* Chat-like Input Card / Dropzone */}
           <motion.div
-            className={`w-full bg-white rounded-3xl transition-all duration-300 relative ${
-              isDragOver ? 'ring-2 ring-[#d946ef] shadow-[0_0_40px_rgba(217,70,239,0.15)] bg-[#faf5ff]' : 'shadow-[0_2px_18px_rgba(0,0,0,0.04)] ring-1 ring-black/5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]'
-            }`}
+            className={`w-full bg-white rounded-3xl transition-all duration-300 relative ${isDragOver ? 'ring-2 ring-[#d946ef] shadow-[0_0_40px_rgba(217,70,239,0.15)] bg-[#faf5ff]' : 'shadow-[0_2px_18px_rgba(0,0,0,0.04)] ring-1 ring-black/5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]'
+              }`}
             style={{ minHeight: '160px' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -325,14 +324,14 @@ export default function DocumentUpload() {
             {/* Bottom Toolbar */}
             <div className="px-3 py-3 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-3 bg-gray-50/50 rounded-b-3xl">
               <div className="flex flex-wrap items-center gap-3">
-                <button 
+                <button
                   onClick={() => fileInputRef.current?.click()}
                   className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-black/10 bg-white text-[13px] font-medium text-brand-indigo hover:bg-gray-50 transition-colors"
                 >
                   <Paperclip className="w-4 h-4" />
                   Attach
                 </button>
-                
+
                 <div className="flex items-center gap-1.5 p-1 rounded-xl border border-black/10 bg-white">
                   <div className="h-8 px-3 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center gap-1.5 text-[13px] font-medium text-brand-indigo">
                     <Sparkles className="w-3.5 h-3.5 text-purple-500" />
@@ -359,12 +358,12 @@ export default function DocumentUpload() {
               </div>
 
               <div className="flex items-center gap-4">
-                <button 
+                <button
                   onClick={handleUpload}
                   disabled={!selectedFile || isParsing}
                   className={`flex items-center justify-center w-10 h-10 rounded-full transition-all shadow-sm
-                    ${selectedFile && !isParsing 
-                      ? 'bg-brand-indigo text-white hover:bg-black hover:scale-105 active:scale-95 cursor-pointer' 
+                    ${selectedFile && !isParsing
+                      ? 'bg-brand-indigo text-white hover:bg-black hover:scale-105 active:scale-95 cursor-pointer'
                       : 'bg-black/5 text-black/30 cursor-not-allowed'}`}
                 >
                   <ArrowUp className="w-5 h-5 stroke-[2.5]" />

@@ -138,16 +138,11 @@ export async function runAutomatedQualityCheck() {
 
   for (const item of testSet) {
     try {
-      const translationResult = await llmOrchestrator.translate(
-        item.source,
-        'en',
-        'hi_IN',
-        null,
-        null,
-        [],
-        null,
-        []
-      );
+      const translationResult = await llmOrchestrator.translateSegment({
+        sourceText: item.source,
+        sourceLang: 'en',
+        targetLang: 'hi_IN',
+      });
 
       const modelOutput = translationResult.translation;
       const proxyBleu = calculateTokenOverlapScore(modelOutput, item.target);
@@ -234,16 +229,11 @@ export async function runFloresEval(targetLangCode, options = {}) {
     if (options.onProgress) options.onProgress(i + 1, pairs.length);
 
     try {
-      const translationResult = await llmOrchestrator.translate(
-        pair.source,
-        'en',
-        apiLangCode,
-        null,
-        null,
-        [],
-        null,
-        []
-      );
+      const translationResult = await llmOrchestrator.translateSegment({
+        sourceText: pair.source,
+        sourceLang: 'en',
+        targetLang: apiLangCode,
+      });
 
       const modelOutput = translationResult.translation || translationResult.targetText || '';
       const bleu = computeBLEU1(modelOutput, pair.reference);
