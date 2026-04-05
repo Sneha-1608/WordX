@@ -150,7 +150,7 @@ function App() {
       });
       if (!res.ok) {
         let errMsg = 'Export failed';
-        try { const e = await res.json(); errMsg = e.error || errMsg; } catch {}
+        try { const e = await res.json(); errMsg = e.error || errMsg; } catch { }
         throw new Error(errMsg);
       }
       const blob = await res.blob();
@@ -293,7 +293,7 @@ function App() {
                         onDrop={handleDrop}
                       >
                         <label className={`compact-row-upload ${file ? 'has-file' : ''}`}>
-                          <input type="file" className="file-input" onChange={handleFileChange} accept=".pdf,.docx,.doc,.txt" />
+                          <input type="file" className="file-input" onChange={handleFileChange} accept=".pdf,.docx,.doc" />
                           <div className="icon-wrap">
                             {file ? <FileText size={20} className="text-primary" /> : <Plus size={20} />}
                           </div>
@@ -348,11 +348,9 @@ function App() {
 
                         <div className="compact-box-footer">
                           <div className="compact-hints">
-                            <span>PDF, DOCX, TXT</span>
+                            <span>PDF, DOCX</span>
                             <span className="dot"></span>
-                            <span>Max 50MB</span>
-                            <span className="dot"></span>
-                            <span className="secure"><CheckCircle2 size={12} /> Secure</span>
+                            <span>Max 10MB</span>
                           </div>
 
                           <button

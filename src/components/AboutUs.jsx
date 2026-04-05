@@ -10,7 +10,7 @@ const STEPS = [
     icon: Upload,
     step: '01',
     title: 'Upload Your Document',
-    desc: 'Drag and drop any PDF, DOCX, or TXT file. Our parser preserves original formatting, tables, headers, and styles while extracting clean text segments.',
+    desc: 'Drag and drop any PDF or DOCX file. Our parser preserves original formatting, tables, headers, and styles while extracting clean text segments.',
     color: '#10b981',
   },
   {
@@ -127,31 +127,7 @@ const AboutUs = () => {
           Verb AI combines cutting-edge neural translation with a growing Translation Memory,
           so every document you translate makes the next one faster, cheaper, and more accurate.
         </p>
-        <div className="about-slogans">
-          <span className="about-slogan-pill">🧠 Neural + Memory</span>
-          <span className="about-slogan-pill">🇮🇳 22 Indian Languages</span>
-          <span className="about-slogan-pill">⚡ Real-Time Streaming</span>
-          <span className="about-slogan-pill">🔒 Privacy First</span>
-        </div>
       </section>
-
-      {/* Live Stats Bar */}
-      <section className="about-stats-bar">
-        {STATS_LIVE.map((s, i) => {
-          let value = s.value;
-          if (s.endpoint && s.key) {
-            const raw = getNestedValue(liveStats, s.key);
-            value = raw !== undefined ? `${raw.toLocaleString()}${s.suffix}` : s.fallback;
-          }
-          return (
-            <div key={i} className="about-stat-item">
-              <span className="about-stat-value">{value}</span>
-              <span className="about-stat-label">{s.label}</span>
-            </div>
-          );
-        })}
-      </section>
-
       {/* How It Works */}
       <section className="about-section">
         <div className="about-section-header">
