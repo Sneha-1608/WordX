@@ -207,34 +207,6 @@ const Analytics = () => {
         </div>
       </div>
 
-      {/* TM Growth Chart */}
-      {tmGrowth.data && tmGrowth.data.length > 0 && (
-        <div className="recent-files-section" style={{ marginBottom: '2rem' }}>
-          <div className="section-header" style={{ marginBottom: '1.5rem' }}>
-            <h2 className="section-title">TM Growth (Last 7 Days)</h2>
-          </div>
-          <div className="css-bar-chart">
-            {tmGrowth.data.map((item, i) => {
-              const maxRecords = Math.max(...tmGrowth.data.map(d => d.records), 1);
-              const height = Math.max(4, (item.records / maxRecords) * 100);
-              return (
-                <div key={i} className="bar-group">
-                  <div className="bar-wrapper">
-                    <div
-                      className="bar"
-                      style={{ height: `${height}%`, animationDelay: `${i * 0.1}s` }}
-                    >
-                      <div className="bar-tooltip">{item.records.toLocaleString()}</div>
-                    </div>
-                  </div>
-                  <span className="bar-label">{item.day}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* Language Coverage Heatmap */}
       {langCov.languages && langCov.languages.length > 0 && (
         <div className="recent-files-section" style={{ marginBottom: '2rem' }}>
