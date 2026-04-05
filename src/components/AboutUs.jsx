@@ -82,7 +82,7 @@ const INTL_LANGS = [
 
 const STATS_LIVE = [
   { label: 'Translations Delivered', endpoint: '/api/analytics/dashboard', key: 'velocity.allTime', suffix: '+', fallback: '—' },
-  { label: 'Languages Supported', value: '40+' },
+  { label: 'Languages Supported', endpoint: '/api/analytics/dashboard', key: 'languageCoverage.activeLanguages', suffix: '', fallback: '—' },
   { label: 'TM Match Rate', endpoint: '/api/analytics/dashboard', key: 'leverage.leverageRate', suffix: '%', fallback: '—' },
   { label: 'Glossary Terms', endpoint: '/api/analytics/dashboard', key: 'compliance.glossaryTerms', suffix: '', fallback: '—' },
 ];

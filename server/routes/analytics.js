@@ -327,12 +327,10 @@ function getTmGrowthData() {
     dayDate.setDate(dayDate.getDate() - i);
     const dayName = days[dayDate.getDay()];
 
-    // Simulate growth curve if TM was seeded all at once
-    const simulated = Math.round(tmTotal * ((7 - i) / 7) * (0.8 + Math.random() * 0.4));
     data.push({
       day: dayName,
       date: dayDate.toISOString().substring(0, 10),
-      records: countBefore > 0 ? countBefore : Math.max(simulated, 1),
+      records: countBefore,
     });
   }
 
@@ -361,10 +359,10 @@ function getSegmentsVelocity() {
   const segTotal = db.prepare('SELECT COUNT(*) as c FROM segments').get().c;
 
   return {
-    today: today || Math.floor(segTotal * 0.12),
-    thisWeek: thisWeek || Math.floor(segTotal * 0.65),
+    today: today,
+    thisWeek: thisWeek,
     allTime: Math.max(allTime, segTotal),
-    trend: today > 0 ? '+' + today + ' today' : '+' + Math.floor(segTotal * 0.12) + ' today',
+    trend: today > 0 ? '+' + today + ' today' : '0 today',
   };
 }
 
@@ -372,24 +370,17 @@ function getSegmentsVelocity() {
  * Average review time (simulated from approval timestamps)
  */
 function getReviewTimeMetrics() {
-  // Compute from segments: time between creation and approval
-  // Since we don't have explicit review timing, use LLM call latency as proxy
   const avgLatency = db.prepare(`
     SELECT AVG(latency_ms) as avg, MIN(latency_ms) as min, MAX(latency_ms) as max
     FROM llm_call_log WHERE status = 'success'
   `).get();
 
-  // Simulated review time: realistic values for enterprise
-  const avgReviewSeconds = avgLatency?.avg
-    ? Math.max(8, Math.round(avgLatency.avg / 1000 * 3))
-    : 18;
-
   return {
-    avgSeconds: avgReviewSeconds,
-    minSeconds: Math.max(3, Math.round((avgLatency?.min || 5000) / 1000)),
-    maxSeconds: Math.min(120, Math.round((avgLatency?.max || 30000) / 1000)),
-    trend: avgReviewSeconds < 20 ? '↓ Fast' : '→ Normal',
-    improvement: '3s faster', // Simulated improvement
+    avgSeconds: avgLatency?.avg ? Math.round(avgLatency.avg / 1000) : 0,
+    minSeconds: avgLatency?.min ? Math.round(avgLatency.min / 1000) : 0,
+    maxSeconds: avgLatency?.max ? Math.round(avgLatency.max / 1000) : 0,
+    trend: avgLatency?.avg ? (avgLatency.avg < 15000 ? '↓ Fast' : '→ Normal') : '—',
+    improvement: avgLatency?.avg ? 'Based on LLM latency' : 'No data yet',
   };
 }
 
@@ -479,7 +470,7 @@ function getRecentApprovals() {
       ...a,
       language: langCodeToName(a.language),
       reviewer: a.reviewer === 'reviewer-1' ? 'Priya S.' : a.reviewer === 'reviewer-2' ? 'Raj K.' : a.reviewer || 'Admin',
-      timeAgo: `${(i + 1) * 2}m ago`,
+      timeAgo: formatDate(a.time),
     }));
   }
 
@@ -497,7 +488,7 @@ function getRecentApprovals() {
     tmScore: a.tmScore,
     language: langCodeToName(a.language),
     reviewer: i % 3 === 0 ? 'Priya S.' : i % 3 === 1 ? 'Raj K.' : 'Amit P.',
-    timeAgo: `${(i + 1) * 2}m ago`,
+    timeAgo: formatDate(a.time),
   }));
 }
 
@@ -574,6 +565,18 @@ function langCodeToName(code) {
     ur_PK: 'Urdu', ne_NP: 'Nepali', si_LK: 'Sinhala',
   };
   return map[code] || code;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return 'Recently';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffSecs = Math.round((now - date) / 1000);
+  
+  if (diffSecs < 60) return `${diffSecs}s ago`;
+  if (diffSecs < 3600) return `${Math.floor(diffSecs / 60)}m ago`;
+  if (diffSecs < 86400) return `${Math.floor(diffSecs / 3600)}h ago`;
+  return date.toLocaleDateString();
 }
 
 // ═══════════════════════════════════════════════════════════════
